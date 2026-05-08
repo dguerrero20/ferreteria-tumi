@@ -347,13 +347,20 @@ async function reporteVentasPorFecha() {
     limpiarVista('Reporte de Ventas por Fecha');
 
     const query = obtenerFechas();
-    const url = query ? `${API_REPORTES}/ventas?${query}` : `${API_REPORTES}/ventas`;
+    const url = query
+      ? `${API_REPORTES}/ventas?${query}`
+      : `${API_REPORTES}/ventas`;
 
     const res = await fetch(url);
     const data = await res.json();
 
+    if (!res.ok) {
+      mostrarMensaje(data.msg || 'Error cargando ventas por fecha.');
+      return;
+    }
+
     if (!data.ventas || data.ventas.length === 0) {
-      mostrarMensaje('No hay ventas en el rango seleccionado.');
+      mostrarMensaje('No hay ventas registradas.');
       return;
     }
 
@@ -366,8 +373,8 @@ async function reporteVentasPorFecha() {
 
     document.getElementById('resumenReporte').innerHTML = `
       <div class="resumen">
-        <p><strong>Total ventas:</strong> ${data.resumen.total_ventas}</p>
-        <p><strong>Ingresos totales:</strong> S/ ${Number(data.resumen.ingresos_totales).toFixed(2)}</p>
+        <p><strong>Total ventas:</strong> ${data.total_ventas}</p>
+        <p><strong>Ingresos totales:</strong> S/ ${Number(data.total_ingresos).toFixed(2)}</p>
       </div>
     `;
 
@@ -389,15 +396,17 @@ async function reporteVentasPorFecha() {
         <tr>
           <td>${v.id}</td>
           <td>S/ ${Number(v.total).toFixed(2)}</td>
-          <td>${v.usuario || '-'}</td>
+          <td>${v.vendedor || v.usuario || '-'}</td>
           <td>${new Date(v.created_at).toLocaleString()}</td>
         </tr>
       `;
     });
 
     html += '</tbody></table>';
+
     document.getElementById('contenidoReporte').innerHTML = html;
     aplicarVista();
+
   } catch (error) {
     console.error(error);
     mostrarMensaje('Error cargando ventas por fecha.');
