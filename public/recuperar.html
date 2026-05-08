@@ -2,31 +2,30 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Login - Ferretería</title>
+  <title>Recuperar contraseña</title>
   <link rel="stylesheet" href="./css/global.css">
 </head>
 <body>
 
 <div class="main" style="max-width: 420px; margin: 80px auto;">
   <div class="box">
-    <h1>Ingresar</h1>
+    <h1>Recuperar contraseña</h1>
     <br>
 
     <input type="email" id="email" placeholder="Correo electrónico" style="width:100%;">
     <br><br>
 
-    <input type="password" id="password" placeholder="Contraseña" style="width:100%;">
-    <br><br>
-
-    <button onclick="login()" style="width:100%;">Ingresar</button>
+    <button id="btnRecuperar" onclick="recuperarPassword()" style="width:100%;">
+  Enviar correo
+</button>
 
     <p class="mensaje" id="mensaje"></p>
-
     <br>
-    <a href="/app/recuperar.html">¿Olvidaste tu contraseña?</a>
+
+    <a href="/login.html">Volver al login</a>
   </div>
 </div>
 
-<script src="./js/login.js"></script>
+<script src="./js/recuperar.js"></script>
 </body>
 </html>
