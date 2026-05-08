@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Restablecer contraseña</title>
+  <link rel="stylesheet" href="./css/global.css">
+</head>
+<body>
+
+<div class="main" style="max-width: 440px; margin: 80px auto;">
+  <div class="box">
+    <h1>Nueva contraseña</h1>
+    <br>
+
+    <label>Nueva contraseña</label>
+    <input type="password" id="password" placeholder="Nueva contraseña" style="width:100%;">
+    <br><br>
+
+    <label>Confirmar nueva contraseña</label>
+    <input type="password" id="confirmPassword" placeholder="Confirmar contraseña" style="width:100%;">
+    <br><br>
+
+    <label style="display:flex; align-items:center; gap:8px;">
+      <input type="checkbox" id="mostrarPassword" onclick="togglePassword()" style="width:auto;">
+      Mostrar contraseña
+    </label>
+
+    <br>
+
+    <button onclick="restablecerPassword()" style="width:100%;">
+      Cambiar contraseña
+    </button>
+
+    <p class="mensaje" id="mensaje"></p>
+
+    <br>
+    <a href="/app/login.html">Volver al login</a>
+  </div>
+</div>
+
+<script src="./js/restablecer.js"></script>
+</body>
+</html>

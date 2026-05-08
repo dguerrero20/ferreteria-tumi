@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Ferretería</title>
+  <link rel="stylesheet" href="./css/global.css">
+</head>
+<body>
+
+<div class="main" style="max-width: 420px; margin: 80px auto;">
+  <div class="box">
+    <h1>Ingresar</h1>
+    <br>
+
+    <input type="email" id="email" placeholder="Correo electrónico" style="width:100%;">
+    <br><br>
+
+    <input type="password" id="password" placeholder="Contraseña" style="width:100%;">
+    <br><br>
+
+    <button onclick="login()" style="width:100%;">Ingresar</button>
+
+    <p class="mensaje" id="mensaje"></p>
+
+    <br>
+    <a href="/app/recuperar.html">¿Olvidaste tu contraseña?</a>
+  </div>
+</div>
+
+<script src="./js/login.js"></script>
+</body>
+</html>

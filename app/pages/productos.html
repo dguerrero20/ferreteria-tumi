@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Productos</title>
+  <link rel="stylesheet" href="../css/global.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>Ferretería</h2>
+
+  <ul class="menu">
+    <ul class="menu">
+
+  <li>
+    <a href="/app/pages/dashboard.html">Dashboard</a>
+  </li>
+
+  <li class="active">
+    <a href="/app/pages/productos.html">Productos</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/categorias.html">Categorías</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/ventas.html">Ventas</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/proveedores.html">Proveedores</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/reportes.html">Reportes</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/perfil.html">Perfil</a>
+  </li>
+
+  <li>
+    <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+  </li>
+
+</ul>
+  </ul>
+</div>
+
+<div class="main">
+  <h1>Productos</h1>
+  <br>
+
+  <div class="box" id="formProducto" style="display:none;">
+    <h3>Agregar producto</h3>
+    <br>
+
+    <div class="filters">
+      <select id="nuevaCategoria">
+        <option value="">Seleccionar categoría</option>
+      </select>
+
+      <select id="nuevoTipo">
+        <option value="">Seleccionar tipo</option>
+      </select>
+
+      <select id="nuevaVariante">
+        <option value="">Seleccionar variante</option>
+      </select>
+    </div>
+
+    <br>
+
+    <div class="filters">
+      <input type="text" id="nuevaMarca" placeholder="Marca">
+      <input type="text" id="nuevaUnidad" placeholder="Unidad: unidad, kg, litro...">
+      <input type="number" id="nuevoPrecio" placeholder="Precio" step="0.01">
+      <input type="number" id="nuevoStock" placeholder="Stock" step="0.01">
+      <input type="number" id="nuevoStockMin" placeholder="Stock mínimo" step="0.01">
+    </div>
+
+    <br>
+
+    <button onclick="crearProducto()">Guardar producto</button>
+
+    <p class="mensaje" id="mensajeProducto"></p>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="buscar" placeholder="Buscar producto, marca o categoría">
+    <button onclick="buscarProductos()">Buscar</button>
+    <button onclick="cargarProductos()">Ver todos</button>
+  </div>
+
+  <div class="table-box">
+    <h3>Listado de productos</h3>
+    <br>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Producto</th>
+          <th>Categoría</th>
+          <th>Tipo</th>
+          <th>Variante</th>
+          <th>Marca</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Unidad</th>
+          <th id="accionesHeader" style="display:none;">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody id="productos"></tbody>
+    </table>
+  </div>
+</div>
+
+<script src="../js/auth.js"></script>
+<script>
+  verificarSesion();
+</script>
+
+<script src="../js/productos.js"></script>
+
+</body>
+</html>

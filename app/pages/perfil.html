@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Perfil</title>
+
+  <link rel="stylesheet" href="../css/global.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+
+  <h2>Ferretería</h2>
+
+  <ul class="menu">
+
+    <ul class="menu">
+
+  <li>
+    <a href="/app/pages/dashboard.html">Dashboard</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/productos.html">Productos</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/categorias.html">Categorías</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/ventas.html">Ventas</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/proveedores.html">Proveedores</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/reportes.html">Reportes</a>
+  </li>
+
+  <li class="active">
+    <a href="/app/pages/perfil.html">Perfil</a>
+  </li>
+
+  <li>
+    <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+  </li>
+
+</ul>
+  </ul>
+
+</div>
+
+<div class="main">
+
+  <h1>Perfil</h1>
+
+  <br>
+
+  <div class="box">
+
+    <h3>Información del usuario</h3>
+
+    <br>
+
+    <p>
+      <strong>Nombre:</strong>
+      <span id="nombre"></span>
+    </p>
+
+    <br>
+
+    <p>
+      <strong>Email:</strong>
+      <span id="email"></span>
+    </p>
+
+    <br>
+
+    <p>
+      <strong>Rol:</strong>
+      <span id="rol"></span>
+    </p>
+
+    <br>
+
+    <p>
+      <strong>Modo administrador:</strong>
+      <span id="modoAdmin">No</span>
+    </p>
+
+  </div>
+
+  <div class="box">
+
+    <h3>Activar modo administrador</h3>
+
+    <br>
+
+    <input
+      type="password"
+      id="adminPassword"
+      placeholder="Contraseña administrador"
+    >
+
+    <br><br>
+
+    <button
+  id="btnAdmin"
+  onclick="activarModoAdmin()"
+>
+  Activar modo administrador
+</button>
+
+    <p
+      class="mensaje"
+      id="mensaje"
+    ></p>
+
+  </div>
+
+</div>
+
+<script src="../js/auth.js"></script>
+
+<script>
+  verificarSesion();
+</script>
+
+<script src="../js/perfil.js"></script>
+
+</body>
+</html>

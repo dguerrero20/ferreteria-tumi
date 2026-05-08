@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+
+
+</head>
+<body>
+<link rel="stylesheet" href="../css/global.css">
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h2>Ferretería</h2>
+
+  <ul class="menu">
+
+  <ul class="menu">
+
+  <li class="active">
+    <a href="/app/pages/dashboard.html">Dashboard</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/productos.html">Productos</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/categorias.html">Categorías</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/ventas.html">Ventas</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/proveedores.html">Proveedores</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/reportes.html">Reportes</a>
+  </li>
+
+  <li>
+    <a href="/app/pages/perfil.html">Perfil</a>
+  </li>
+
+  <li>
+    <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+  </li>
+
+</ul>
+
+</ul>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- CARDS -->
+  <div class="cards">
+    <div class="card">
+      <h3>Ventas</h3>
+      <p id="totalVentas">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Productos</h3>
+      <p id="totalProductos">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Stock bajo</h3>
+      <p id="stockBajo">0</p>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <div class="table">
+    <h3>Últimas ventas</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Total</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+
+      <tbody id="ventas">
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+
+<script src="../js/auth.js"></script>
+
+<script>
+  verificarSesion();
+</script>
+
+<!-- JS -->
+<script src="../js/dashboard.js"></script>
+
+</body>
+</html>
