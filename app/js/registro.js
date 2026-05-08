@@ -65,7 +65,7 @@ async function registrarCuenta() {
     if (res.ok) {
 
       setTimeout(() => {
-        window.location.href = '/app/login.html';
+        window.location.href = '/index.html';
       }, 1500);
 
     }
