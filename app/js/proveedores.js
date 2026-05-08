@@ -4,12 +4,16 @@ const API_CATEGORIAS = 'https://ferreteria-tumi.onrender.com/api/categorias';
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 const usuarioEsAdmin = usuario?.modo_admin === true;
 
+let proveedorEditando = null;
+let proveedoresActuales = [];
+
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS);
     const data = await res.json();
 
     const select = document.getElementById('categoria');
+    select.innerHTML = '<option value="">Todas las categorías</option>';
 
     data.categorias.forEach((cat) => {
       const option = document.createElement('option');
@@ -52,7 +56,8 @@ async function cargarProveedores(url = API_PROVEEDORES) {
     const res = await fetch(url);
     const data = await res.json();
 
-    mostrarProveedores(data.proveedores);
+    proveedoresActuales = data.proveedores || [];
+    mostrarProveedores(proveedoresActuales);
   } catch (error) {
     console.error('Error cargando proveedores:', error);
   }
@@ -75,7 +80,9 @@ function mostrarProveedores(proveedores) {
   if (!proveedores || proveedores.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="${usuarioEsAdmin ? 7 : 6}">No se encontraron proveedores</td>
+        <td colspan="${usuarioEsAdmin ? 6 : 5}">
+          No se encontraron proveedores
+        </td>
       </tr>
     `;
     return;
@@ -83,11 +90,12 @@ function mostrarProveedores(proveedores) {
 
   proveedores.forEach((p) => {
     const fila = document.createElement('tr');
+    const editando = proveedorEditando === p.id;
 
     fila.innerHTML = `
       <td>
         ${
-          usuarioEsAdmin
+          editando
             ? `<input id="empresa-${p.id}" value="${p.empresa || ''}" style="min-width:160px;">`
             : `${p.empresa || '-'}`
         }
@@ -95,7 +103,7 @@ function mostrarProveedores(proveedores) {
 
       <td>
         ${
-          usuarioEsAdmin
+          editando
             ? `<input id="nombre-${p.id}" value="${p.nombre || ''}" style="min-width:140px;">`
             : `${p.nombre || '-'}`
         }
@@ -103,7 +111,7 @@ function mostrarProveedores(proveedores) {
 
       <td>
         ${
-          usuarioEsAdmin
+          editando
             ? `<input id="telefono-${p.id}" value="${p.telefono || ''}" style="min-width:120px;">`
             : `${p.telefono || '-'}`
         }
@@ -111,7 +119,7 @@ function mostrarProveedores(proveedores) {
 
       <td>
         ${
-          usuarioEsAdmin
+          editando
             ? `<input id="email-${p.id}" value="${p.email || ''}" style="min-width:180px;">`
             : `${p.email || '-'}`
         }
@@ -119,20 +127,27 @@ function mostrarProveedores(proveedores) {
 
       <td>
         ${
-          usuarioEsAdmin
+          editando
             ? `<input id="direccion-${p.id}" value="${p.direccion || ''}" style="min-width:200px;">`
             : `${p.direccion || '-'}`
         }
       </td>
 
-      
-
       ${
         usuarioEsAdmin
           ? `
             <td>
-              <button onclick="actualizarProveedor(${p.id})">Guardar</button>
-              <button class="danger" onclick="eliminarProveedor(${p.id})">Eliminar</button>
+              ${
+                editando
+                  ? `
+                    <button onclick="actualizarProveedor(${p.id})">Guardar</button>
+                    <button onclick="cancelarEdicion()">Cancelar</button>
+                  `
+                  : `
+                    <button onclick="editarProveedor(${p.id})">Editar</button>
+                    <button class="danger" onclick="eliminarProveedor(${p.id})">Eliminar</button>
+                  `
+              }
             </td>
           `
           : ''
@@ -141,6 +156,16 @@ function mostrarProveedores(proveedores) {
 
     tbody.appendChild(fila);
   });
+}
+
+function editarProveedor(id) {
+  proveedorEditando = id;
+  mostrarProveedores(proveedoresActuales);
+}
+
+function cancelarEdicion() {
+  proveedorEditando = null;
+  mostrarProveedores(proveedoresActuales);
 }
 
 function filtrarProveedores() {
@@ -215,6 +240,15 @@ async function crearProveedor() {
 }
 
 async function actualizarProveedor(id) {
+  const confirmar = confirm(
+    '¿Estás seguro de hacer estos cambios?'
+  );
+
+  if (!confirmar) {
+    cancelarEdicion();
+    return;
+  }
+
   const body = {
     nombre: document.getElementById(`nombre-${id}`).value.trim(),
     empresa: document.getElementById(`empresa-${id}`).value.trim(),
@@ -238,6 +272,8 @@ async function actualizarProveedor(id) {
     }
 
     alert('Proveedor actualizado correctamente');
+
+    proveedorEditando = null;
     cargarProveedores();
   } catch (error) {
     console.error(error);
@@ -269,7 +305,9 @@ async function eliminarProveedor(id) {
   }
 }
 
-document.getElementById('categoria').addEventListener('change', cargarTiposPorCategoria);
+document
+  .getElementById('categoria')
+  .addEventListener('change', cargarTiposPorCategoria);
 
 cargarCategorias();
-cargarProveedores();  
+cargarProveedores();
