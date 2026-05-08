@@ -175,8 +175,9 @@ async function crearVariante() {
 }
 
 async function eliminarCategoria(id) {
+
   const confirmar = confirm(
-    '¿Seguro que deseas eliminar esta categoría?'
+    '¿Estás seguro de eliminar esta categoría?'
   );
 
   if (!confirmar) {
@@ -184,22 +185,52 @@ async function eliminarCategoria(id) {
   }
 
   try {
-    const res = await fetch(`${API_CATEGORIAS}/${id}`, {
-      method: 'DELETE',
-    });
+
+    // VALIDAR SI TIENE DATOS RELACIONADOS
+    const resValidacion = await fetch(
+      `${API_CATEGORIAS}/${id}/tipos`
+    );
+
+    const dataValidacion = await resValidacion.json();
+
+    // SI TIENE TIPOS O DATOS
+    if (
+      dataValidacion.tipos &&
+      dataValidacion.tipos.length > 0
+    ) {
+
+      const segundaConfirmacion = confirm(
+        'Esta categoría contiene datos relacionados.\n\n' +
+        'Si continúas, se perderán permanentemente.\n\n' +
+        '¿Deseas continuar?'
+      );
+
+      if (!segundaConfirmacion) {
+        return;
+      }
+    }
+
+    // ELIMINAR
+    const res = await fetch(
+      `${API_CATEGORIAS}/${id}`,
+      {
+        method: 'DELETE',
+      }
+    );
 
     const data = await res.json();
 
-    if (!res.ok) {
-      alert(data.msg || 'No se pudo eliminar la categoría');
-      return;
+    alert(data.msg);
+
+    if (res.ok) {
+      cargarCategorias();
     }
 
-    alert(data.msg);
-    cargarCategorias();
   } catch (error) {
-    console.error('Error eliminando categoría:', error);
-    alert('Error conectando con el servidor');
+
+    console.error(error);
+
+    alert('Error eliminando categoría');
   }
 }
 
