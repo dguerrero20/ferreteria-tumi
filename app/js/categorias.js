@@ -5,7 +5,7 @@ const usuarioEsAdmin = usuario?.modo_admin === true;
 
 if (!usuarioEsAdmin) {
   alert('Solo el administrador puede gestionar categorías');
-  window.location.href = '/app/pages/dashboard.html';
+  window.location.href = '/pages/dashboard.html';
 }
 
 async function cargarCategorias() {
@@ -38,6 +38,11 @@ async function cargarCategorias() {
       fila.innerHTML = `
         <td>${cat.id}</td>
         <td>${cat.nombre}</td>
+        <td>
+          <button class="danger" onclick="eliminarCategoria(${cat.id})">
+            Eliminar
+          </button>
+        </td>
       `;
 
       tbody.appendChild(fila);
@@ -80,20 +85,26 @@ async function crearCategoria() {
     return;
   }
 
-  const res = await fetch(API_CATEGORIAS, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nombre }),
-  });
+  try {
+    const res = await fetch(API_CATEGORIAS, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre }),
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  mensaje.textContent = data.msg;
-  mensaje.style.color = res.ok ? 'green' : 'red';
+    mensaje.textContent = data.msg;
+    mensaje.style.color = res.ok ? 'green' : 'red';
 
-  if (res.ok) {
-    document.getElementById('nombreCategoria').value = '';
-    cargarCategorias();
+    if (res.ok) {
+      document.getElementById('nombreCategoria').value = '';
+      cargarCategorias();
+    }
+  } catch (error) {
+    console.error('Error creando categoría:', error);
+    mensaje.textContent = 'Error conectando con el servidor';
+    mensaje.style.color = 'red';
   }
 }
 
@@ -108,19 +119,25 @@ async function crearTipo() {
     return;
   }
 
-  const res = await fetch(`${API_CATEGORIAS}/tipos`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ categoria_id, nombre }),
-  });
+  try {
+    const res = await fetch(`${API_CATEGORIAS}/tipos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ categoria_id, nombre }),
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  mensaje.textContent = data.msg;
-  mensaje.style.color = res.ok ? 'green' : 'red';
+    mensaje.textContent = data.msg;
+    mensaje.style.color = res.ok ? 'green' : 'red';
 
-  if (res.ok) {
-    document.getElementById('nombreTipo').value = '';
+    if (res.ok) {
+      document.getElementById('nombreTipo').value = '';
+    }
+  } catch (error) {
+    console.error('Error creando tipo:', error);
+    mensaje.textContent = 'Error conectando con el servidor';
+    mensaje.style.color = 'red';
   }
 }
 
@@ -135,19 +152,54 @@ async function crearVariante() {
     return;
   }
 
-  const res = await fetch(`${API_CATEGORIAS}/variantes`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ tipo_id, nombre }),
-  });
+  try {
+    const res = await fetch(`${API_CATEGORIAS}/variantes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tipo_id, nombre }),
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  mensaje.textContent = data.msg;
-  mensaje.style.color = res.ok ? 'green' : 'red';
+    mensaje.textContent = data.msg;
+    mensaje.style.color = res.ok ? 'green' : 'red';
 
-  if (res.ok) {
-    document.getElementById('nombreVariante').value = '';
+    if (res.ok) {
+      document.getElementById('nombreVariante').value = '';
+    }
+  } catch (error) {
+    console.error('Error creando variante:', error);
+    mensaje.textContent = 'Error conectando con el servidor';
+    mensaje.style.color = 'red';
+  }
+}
+
+async function eliminarCategoria(id) {
+  const confirmar = confirm(
+    '¿Seguro que deseas eliminar esta categoría?'
+  );
+
+  if (!confirmar) {
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_CATEGORIAS}/${id}`, {
+      method: 'DELETE',
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.msg || 'No se pudo eliminar la categoría');
+      return;
+    }
+
+    alert(data.msg);
+    cargarCategorias();
+  } catch (error) {
+    console.error('Error eliminando categoría:', error);
+    alert('Error conectando con el servidor');
   }
 }
 

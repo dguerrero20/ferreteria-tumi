@@ -8,6 +8,7 @@ const {
   crearCategoria,
   crearTipo,
   crearVariante,
+  eliminarCategoria,
 } = require('../controllers/categorias.controller');
 
 router.get('/', listarCategorias);
@@ -17,5 +18,7 @@ router.get('/tipos/:tipo_id/variantes', listarVariantesPorTipo);
 router.post('/', crearCategoria);
 router.post('/tipos', crearTipo);
 router.post('/variantes', crearVariante);
+
+router.delete('/:id', eliminarCategoria);
 
 module.exports = router;

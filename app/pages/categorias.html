@@ -13,39 +13,39 @@
 
   <ul class="menu">
 
-  <li >
-    <a href="/pages/dashboard.html">Dashboard</a>
-  </li>
+    <li>
+      <a href="/pages/dashboard.html">Dashboard</a>
+    </li>
 
-  <li>
-    <a href="/pages/productos.html">Productos</a>
-  </li>
+    <li>
+      <a href="/pages/productos.html">Productos</a>
+    </li>
 
- <li class="active solo-admin">
-  <a href="/pages/categorias.html">Categorías</a>
-</li>
+    <li class="active solo-admin">
+      <a href="/pages/categorias.html">Categorías</a>
+    </li>
 
-  <li>
-    <a href="/pages/ventas.html">Ventas</a>
-  </li>
+    <li>
+      <a href="/pages/ventas.html">Ventas</a>
+    </li>
 
-  <li>
-    <a href="/pages/proveedores.html">Proveedores</a>
-  </li>
+    <li>
+      <a href="/pages/proveedores.html">Proveedores</a>
+    </li>
 
-  <li>
-    <a href="/pages/reportes.html">Reportes</a>
-  </li>
+    <li>
+      <a href="/pages/reportes.html">Reportes</a>
+    </li>
 
-  <li>
-    <a href="/pages/perfil.html">Perfil</a>
-  </li>
+    <li>
+      <a href="/pages/perfil.html">Perfil</a>
+    </li>
 
-  <li>
-    <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
-  </li>
+    <li>
+      <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+    </li>
 
-</ul>
+  </ul>
 </div>
 
 <div class="main">
@@ -56,8 +56,15 @@
     <h3>Crear categoría</h3>
     <br>
 
-    <input type="text" id="nombreCategoria" placeholder="Nombre de categoría">
-    <button onclick="crearCategoria()">Guardar categoría</button>
+    <input
+      type="text"
+      id="nombreCategoria"
+      placeholder="Nombre de categoría"
+    >
+
+    <button onclick="crearCategoria()">
+      Guardar categoría
+    </button>
 
     <p class="mensaje" id="mensajeCategoria"></p>
   </div>
@@ -70,8 +77,15 @@
       <option value="">Seleccionar categoría</option>
     </select>
 
-    <input type="text" id="nombreTipo" placeholder="Nombre del tipo">
-    <button onclick="crearTipo()">Guardar tipo</button>
+    <input
+      type="text"
+      id="nombreTipo"
+      placeholder="Nombre del tipo"
+    >
+
+    <button onclick="crearTipo()">
+      Guardar tipo
+    </button>
 
     <p class="mensaje" id="mensajeTipo"></p>
   </div>
@@ -88,8 +102,15 @@
       <option value="">Seleccionar tipo</option>
     </select>
 
-    <input type="text" id="nombreVariante" placeholder="Nombre de variante">
-    <button onclick="crearVariante()">Guardar variante</button>
+    <input
+      type="text"
+      id="nombreVariante"
+      placeholder="Nombre de variante"
+    >
+
+    <button onclick="crearVariante()">
+      Guardar variante
+    </button>
 
     <p class="mensaje" id="mensajeVariante"></p>
   </div>
@@ -103,14 +124,17 @@
         <tr>
           <th>ID</th>
           <th>Categoría</th>
+          <th>Acciones</th>
         </tr>
       </thead>
+
       <tbody id="tablaCategorias"></tbody>
     </table>
   </div>
 </div>
 
 <script src="../js/auth.js"></script>
+
 <script>
   verificarSesion();
 </script>
