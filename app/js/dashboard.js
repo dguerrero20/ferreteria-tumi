@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api/dashboard';
+const API_URL = 'https://ferreteria-tumi.onrender.com/api/dashboard';
 
 async function cargarDashboard() {
   try {

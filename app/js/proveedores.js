@@ -1,5 +1,5 @@
-const API_PROVEEDORES = 'http://localhost:3000/api/proveedores';
-const API_CATEGORIAS = 'http://localhost:3000/api/categorias';
+const API_PROVEEDORES = 'https://ferreteria-tumi.onrender.com/api/proveedores';
+const API_CATEGORIAS = 'https://ferreteria-tumi.onrender.com/api/categorias';
 
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 const usuarioEsAdmin = usuario?.modo_admin === true;

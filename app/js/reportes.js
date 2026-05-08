@@ -1,4 +1,4 @@
-const API = 'http://localhost:3000/api';
+const API = 'https://ferreteria-tumi.onrender.com/api';
 const API_REPORTES = `${API}/reportes`;
 const API_VENDEDORES = `${API}/usuarios/vendedores`;
 

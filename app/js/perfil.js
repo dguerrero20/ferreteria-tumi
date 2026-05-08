@@ -1,5 +1,5 @@
 const API_ADMIN =
-  'http://localhost:3000/api/auth/verificar-admin';
+  'https://ferreteria-tumi.onrender.com/api/auth/verificar-admin';
 
 const usuario =
   JSON.parse(localStorage.getItem('usuario'));

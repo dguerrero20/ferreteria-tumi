@@ -1,4 +1,4 @@
-const API_REGISTRO = 'http://localhost:3000/api/auth/registro';
+const API_REGISTRO = 'https://ferreteria-tumi.onrender.com/api/auth/registro';
 
 function togglePassword(id) {
   const input = document.getElementById(id);

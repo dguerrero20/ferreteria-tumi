@@ -1,6 +1,6 @@
-const API_PRODUCTOS = 'http://localhost:3000/api/productos';
-const API_VENTAS = 'http://localhost:3000/api/ventas';
-const API_VENDEDORES = 'http://localhost:3000/api/usuarios/vendedores';
+const API_PRODUCTOS = 'https://ferreteria-tumi.onrender.com/api/productos';
+const API_VENTAS = 'https://ferreteria-tumi.onrender.com/api/ventas';
+const API_VENDEDORES = 'https://ferreteria-tumi.onrender.com/api/usuarios/vendedores';
 
 let carrito = [];
 

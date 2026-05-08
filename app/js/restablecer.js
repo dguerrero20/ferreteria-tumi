@@ -1,4 +1,4 @@
-const API_RESTABLECER = 'http://localhost:3000/api/auth/restablecer-password';
+const API_RESTABLECER = 'https://ferreteria-tumi.onrender.com/api/auth/restablecer-password';
 
 function togglePassword() {
   const password = document.getElementById('password');

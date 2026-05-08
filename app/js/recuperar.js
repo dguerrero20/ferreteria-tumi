@@ -1,4 +1,4 @@
-const API_RECUPERAR = 'http://localhost:3000/api/auth/recuperar-password';
+const API_RECUPERAR = 'https://ferreteria-tumi.onrender.com/api/auth/recuperar-password';
 
 let contador = 60;
 let intervalo = null;
