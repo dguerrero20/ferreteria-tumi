@@ -43,7 +43,7 @@ async function login() {
     );
 
     window.location.href =
-      '/app/pages/dashboard.html';
+      '/pages/dashboard.html';
 
   } catch (error) {
 

@@ -55,7 +55,7 @@ async function restablecerPassword() {
 
   if (res.ok) {
     setTimeout(() => {
-      window.location.href = '/app/login.html';
+      window.location.href = '/login.html';
     }, 1500);
   }
 }

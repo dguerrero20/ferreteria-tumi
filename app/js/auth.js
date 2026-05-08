@@ -11,7 +11,7 @@ function verificarSesion() {
   if (!usuario) {
 
     window.location.href =
-      '/app/login.html';
+      '/login.html';
 
   }
 }
@@ -29,7 +29,7 @@ function cerrarSesion() {
   localStorage.removeItem('usuario');
 
   window.location.href =
-    '/public/index.html';
+    '/index.html';
 }
 
 function esAdmin() {
