@@ -13,7 +13,19 @@ function verificarSesion() {
     window.location.href =
       '/login.html';
 
+    return;
   }
+
+  // OCULTAR OPCIONES SOLO ADMIN
+  document
+    .querySelectorAll('.solo-admin')
+    .forEach((elemento) => {
+
+      if (usuario.modo_admin !== true) {
+        elemento.remove();
+      }
+
+    });
 }
 
 function cerrarSesion() {
