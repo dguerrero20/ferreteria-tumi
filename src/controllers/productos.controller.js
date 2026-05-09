@@ -1,7 +1,16 @@
 const pool = require('../db/primary');
 
+function obtenerEmpresaId(req) {
+  return req.query.empresa_id || req.body.empresa_id;
+}
+
 const listarProductos = async (req, res) => {
   const { buscar, categoria_id, tipo_id, variante_id, stock_bajo } = req.query;
+  const empresa_id = obtenerEmpresaId(req);
+
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
 
   try {
     let query = `
@@ -16,10 +25,7 @@ const listarProductos = async (req, res) => {
         p.stock,
         p.stock_min,
         CONCAT(t.nombre, ' ', v.nombre, ' ', p.marca) AS producto,
-        CASE 
-          WHEN p.stock <= p.stock_min THEN true
-          ELSE false
-        END AS alerta_stock
+        CASE WHEN p.stock <= p.stock_min THEN true ELSE false END AS alerta_stock
       FROM public.productos p
       JOIN public.categorias c ON c.id = p.categoria_id
       JOIN public.tipos_producto t ON t.id = p.tipo_id
@@ -27,7 +33,7 @@ const listarProductos = async (req, res) => {
       WHERE p.empresa_id = $1
     `;
 
-    const values = [1];
+    const values = [empresa_id];
 
     if (buscar) {
       values.push(`%${buscar}%`);
@@ -60,9 +66,7 @@ const listarProductos = async (req, res) => {
       query += ` AND p.stock <= p.stock_min`;
     }
 
-    query += `
-      ORDER BY alerta_stock DESC, c.nombre, t.nombre, v.nombre, p.marca
-    `;
+    query += ` ORDER BY alerta_stock DESC, c.nombre, t.nombre, v.nombre, p.marca`;
 
     const result = await pool.query(query, values);
 
@@ -80,6 +84,12 @@ const listarProductos = async (req, res) => {
 };
 
 const productosStockBajo = async (req, res) => {
+  const empresa_id = obtenerEmpresaId(req);
+
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
+
   try {
     const result = await pool.query(
       `
@@ -103,7 +113,7 @@ const productosStockBajo = async (req, res) => {
       AND p.stock <= p.stock_min
       ORDER BY cantidad_faltante DESC
       `,
-      [1]
+      [empresa_id]
     );
 
     res.json({
@@ -119,6 +129,7 @@ const productosStockBajo = async (req, res) => {
 
 const crearProducto = async (req, res) => {
   const {
+    empresa_id,
     categoria_id,
     tipo_id,
     variante_id,
@@ -129,6 +140,10 @@ const crearProducto = async (req, res) => {
     stock_min,
   } = req.body;
 
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
+
   try {
     const result = await pool.query(
       `
@@ -137,7 +152,7 @@ const crearProducto = async (req, res) => {
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *
       `,
-      [1, categoria_id, tipo_id, variante_id, marca, unidad_medida, precio, stock, stock_min]
+      [empresa_id, categoria_id, tipo_id, variante_id, marca, unidad_medida, precio, stock, stock_min]
     );
 
     res.status(201).json({
@@ -150,54 +165,13 @@ const crearProducto = async (req, res) => {
   }
 };
 
-const actualizarProducto = async (req, res) => {
-  const { id } = req.params;
-  const {
-    categoria_id,
-    tipo_id,
-    variante_id,
-    marca,
-    unidad_medida,
-    precio,
-    stock,
-    stock_min,
-  } = req.body;
-
-  try {
-    const result = await pool.query(
-      `
-      UPDATE public.productos
-      SET categoria_id = $1,
-          tipo_id = $2,
-          variante_id = $3,
-          marca = $4,
-          unidad_medida = $5,
-          precio = $6,
-          stock = $7,
-          stock_min = $8
-      WHERE id = $9 AND empresa_id = $10
-      RETURNING *
-      `,
-      [categoria_id, tipo_id, variante_id, marca, unidad_medida, precio, stock, stock_min, id, 1]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ msg: 'Producto no encontrado' });
-    }
-
-    res.json({
-      msg: 'Producto actualizado correctamente',
-      producto: result.rows[0],
-    });
-  } catch (error) {
-    console.error('ERROR ACTUALIZANDO PRODUCTO:', error);
-    res.status(500).json({ msg: 'Error al actualizar producto' });
-  }
-};
-
 const actualizarPrecio = async (req, res) => {
   const { id } = req.params;
-  const { precio } = req.body;
+  const { precio, empresa_id } = req.body;
+
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
 
   try {
     const result = await pool.query(
@@ -207,7 +181,7 @@ const actualizarPrecio = async (req, res) => {
       WHERE id = $2 AND empresa_id = $3
       RETURNING *
       `,
-      [precio, id, 1]
+      [precio, id, empresa_id]
     );
 
     if (result.rows.length === 0) {
@@ -223,7 +197,11 @@ const actualizarPrecio = async (req, res) => {
 
 const actualizarStock = async (req, res) => {
   const { id } = req.params;
-  const { stock } = req.body;
+  const { stock, empresa_id } = req.body;
+
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
 
   try {
     const result = await pool.query(
@@ -233,7 +211,7 @@ const actualizarStock = async (req, res) => {
       WHERE id = $2 AND empresa_id = $3
       RETURNING *
       `,
-      [stock, id, 1]
+      [stock, id, empresa_id]
     );
 
     if (result.rows.length === 0) {
@@ -249,6 +227,11 @@ const actualizarStock = async (req, res) => {
 
 const eliminarProducto = async (req, res) => {
   const { id } = req.params;
+  const { empresa_id } = req.body;
+
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
 
   try {
     const result = await pool.query(
@@ -257,7 +240,7 @@ const eliminarProducto = async (req, res) => {
       WHERE id = $1 AND empresa_id = $2
       RETURNING *
       `,
-      [id, 1]
+      [id, empresa_id]
     );
 
     if (result.rows.length === 0) {
@@ -278,7 +261,6 @@ module.exports = {
   listarProductos,
   productosStockBajo,
   crearProducto,
-  actualizarProducto,
   actualizarPrecio,
   actualizarStock,
   eliminarProducto,

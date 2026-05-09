@@ -2,11 +2,18 @@ const API_PRODUCTOS = 'https://ferreteria-tumi.onrender.com/api/productos';
 const API_VENTAS = 'https://ferreteria-tumi.onrender.com/api/ventas';
 const API_VENDEDORES = 'https://ferreteria-tumi.onrender.com/api/usuarios/vendedores';
 
+const usuario = JSON.parse(localStorage.getItem('usuario'));
+const empresaId = usuario?.empresa_id;
+
 let carrito = [];
+
+if (!usuario || !empresaId) {
+  window.location.href = '/login.html';
+}
 
 async function cargarVendedores() {
   try {
-    const res = await fetch(API_VENDEDORES);
+    const res = await fetch(`${API_VENDEDORES}?empresa_id=${empresaId}`);
     const data = await res.json();
 
     const select = document.getElementById('vendedor');
@@ -33,7 +40,10 @@ async function buscarProductos() {
   }
 
   try {
-    const res = await fetch(`${API_PRODUCTOS}?buscar=${encodeURIComponent(texto)}`);
+    const res = await fetch(
+      `${API_PRODUCTOS}?empresa_id=${empresaId}&buscar=${encodeURIComponent(texto)}`
+    );
+
     const data = await res.json();
 
     mostrarResultados(data.productos);
@@ -181,6 +191,7 @@ async function registrarVenta() {
   }
 
   const body = {
+    empresa_id: empresaId,
     usuario_id: Number(vendedorId),
     productos: carrito.map((item) => ({
       producto_id: item.id,

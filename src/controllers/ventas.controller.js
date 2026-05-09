@@ -1,7 +1,15 @@
 const pool = require('../db/primary');
 
+function obtenerEmpresaId(req) {
+  return req.query.empresa_id || req.body.empresa_id;
+}
+
 const registrarVenta = async (req, res) => {
-  const { usuario_id, productos } = req.body;
+  const { empresa_id, usuario_id, productos } = req.body;
+
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
 
   const client = await pool.connect();
 
@@ -24,7 +32,7 @@ const registrarVenta = async (req, res) => {
         FROM public.productos
         WHERE id = $1 AND empresa_id = $2
         `,
-        [item.producto_id, 1]
+        [item.producto_id, empresa_id]
       );
 
       if (productoResult.rows.length === 0) {
@@ -54,7 +62,7 @@ const registrarVenta = async (req, res) => {
       VALUES ($1, $2, $3)
       RETURNING *
       `,
-      [1, usuario_id, total]
+      [empresa_id, usuario_id, total]
     );
 
     const venta = ventaResult.rows[0];
@@ -66,13 +74,11 @@ const registrarVenta = async (req, res) => {
         FROM public.productos
         WHERE id = $1 AND empresa_id = $2
         `,
-        [item.producto_id, 1]
+        [item.producto_id, empresa_id]
       );
 
       const producto = productoResult.rows[0];
-
-      const subtotal =
-        Number(producto.precio) * Number(item.cantidad);
+      const subtotal = Number(producto.precio) * Number(item.cantidad);
 
       await client.query(
         `
@@ -80,13 +86,7 @@ const registrarVenta = async (req, res) => {
         (venta_id, producto_id, cantidad, precio_unitario, subtotal)
         VALUES ($1, $2, $3, $4, $5)
         `,
-        [
-          venta.id,
-          item.producto_id,
-          item.cantidad,
-          producto.precio,
-          subtotal,
-        ]
+        [venta.id, item.producto_id, item.cantidad, producto.precio, subtotal]
       );
 
       await client.query(
@@ -95,7 +95,7 @@ const registrarVenta = async (req, res) => {
         SET stock = stock - $1
         WHERE id = $2 AND empresa_id = $3
         `,
-        [item.cantidad, item.producto_id, 1]
+        [item.cantidad, item.producto_id, empresa_id]
       );
     }
 
@@ -121,6 +121,12 @@ const registrarVenta = async (req, res) => {
 };
 
 const listarVentas = async (req, res) => {
+  const empresa_id = obtenerEmpresaId(req);
+
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
+
   try {
     const result = await pool.query(
       `
@@ -135,7 +141,7 @@ const listarVentas = async (req, res) => {
       WHERE v.empresa_id = $1
       ORDER BY v.id DESC
       `,
-      [1]
+      [empresa_id]
     );
 
     res.json({
@@ -154,6 +160,11 @@ const listarVentas = async (req, res) => {
 
 const detalleVenta = async (req, res) => {
   const { id } = req.params;
+  const empresa_id = obtenerEmpresaId(req);
+
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
 
   try {
     const ventaResult = await pool.query(
@@ -168,7 +179,7 @@ const detalleVenta = async (req, res) => {
       ON u.id = v.usuario_id
       WHERE v.id = $1 AND v.empresa_id = $2
       `,
-      [id, 1]
+      [id, empresa_id]
     );
 
     if (ventaResult.rows.length === 0) {
@@ -188,16 +199,14 @@ const detalleVenta = async (req, res) => {
         vd.precio_unitario,
         vd.subtotal
       FROM public.ventas_detalle vd
-      JOIN public.productos p
-      ON p.id = vd.producto_id
-      JOIN public.tipos_producto t
-      ON t.id = p.tipo_id
-      JOIN public.variantes_producto vp
-      ON vp.id = p.variante_id
+      JOIN public.productos p ON p.id = vd.producto_id
+      JOIN public.tipos_producto t ON t.id = p.tipo_id
+      JOIN public.variantes_producto vp ON vp.id = p.variante_id
       WHERE vd.venta_id = $1
+      AND p.empresa_id = $2
       ORDER BY vd.id
       `,
-      [id]
+      [id, empresa_id]
     );
 
     res.json({

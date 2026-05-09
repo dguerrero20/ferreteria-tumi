@@ -2,6 +2,11 @@ const API_CATEGORIAS = 'https://ferreteria-tumi.onrender.com/api/categorias';
 
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 const usuarioEsAdmin = usuario?.modo_admin === true;
+const empresaId = usuario?.empresa_id;
+
+if (!usuario || !empresaId) {
+  window.location.href = '/login.html';
+}
 
 if (!usuarioEsAdmin) {
   alert('Solo el administrador puede gestionar categorías');
@@ -10,7 +15,7 @@ if (!usuarioEsAdmin) {
 
 async function cargarCategorias() {
   try {
-    const res = await fetch(API_CATEGORIAS);
+    const res = await fetch(`${API_CATEGORIAS}?empresa_id=${empresaId}`);
     const data = await res.json();
 
     const selects = [
@@ -61,7 +66,10 @@ async function cargarTiposParaVariante() {
   if (!categoriaId) return;
 
   try {
-    const res = await fetch(`${API_CATEGORIAS}/${categoriaId}/tipos`);
+    const res = await fetch(
+      `${API_CATEGORIAS}/${categoriaId}/tipos?empresa_id=${empresaId}`
+    );
+
     const data = await res.json();
 
     data.tipos.forEach((tipo) => {
@@ -89,7 +97,10 @@ async function crearCategoria() {
     const res = await fetch(API_CATEGORIAS, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre }),
+      body: JSON.stringify({
+        nombre,
+        empresa_id: empresaId,
+      }),
     });
 
     const data = await res.json();
@@ -123,7 +134,11 @@ async function crearTipo() {
     const res = await fetch(`${API_CATEGORIAS}/tipos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ categoria_id, nombre }),
+      body: JSON.stringify({
+        categoria_id,
+        nombre,
+        empresa_id: empresaId,
+      }),
     });
 
     const data = await res.json();
@@ -156,7 +171,11 @@ async function crearVariante() {
     const res = await fetch(`${API_CATEGORIAS}/variantes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tipo_id, nombre }),
+      body: JSON.stringify({
+        tipo_id,
+        nombre,
+        empresa_id: empresaId,
+      }),
     });
 
     const data = await res.json();
@@ -175,7 +194,6 @@ async function crearVariante() {
 }
 
 async function eliminarCategoria(id) {
-
   const confirmar = confirm(
     '¿Estás seguro de eliminar esta categoría?'
   );
@@ -185,20 +203,16 @@ async function eliminarCategoria(id) {
   }
 
   try {
-
-    // VALIDAR SI TIENE DATOS RELACIONADOS
     const resValidacion = await fetch(
-      `${API_CATEGORIAS}/${id}/tipos`
+      `${API_CATEGORIAS}/${id}/tipos?empresa_id=${empresaId}`
     );
 
     const dataValidacion = await resValidacion.json();
 
-    // SI TIENE TIPOS O DATOS
     if (
       dataValidacion.tipos &&
       dataValidacion.tipos.length > 0
     ) {
-
       const segundaConfirmacion = confirm(
         'Esta categoría contiene datos relacionados.\n\n' +
         'Si continúas, se perderán permanentemente.\n\n' +
@@ -210,11 +224,14 @@ async function eliminarCategoria(id) {
       }
     }
 
-    // ELIMINAR
     const res = await fetch(
       `${API_CATEGORIAS}/${id}`,
       {
         method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          empresa_id: empresaId,
+        }),
       }
     );
 
@@ -225,11 +242,8 @@ async function eliminarCategoria(id) {
     if (res.ok) {
       cargarCategorias();
     }
-
   } catch (error) {
-
     console.error(error);
-
     alert('Error eliminando categoría');
   }
 }

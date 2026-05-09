@@ -3,13 +3,18 @@ const API_CATEGORIAS = 'https://ferreteria-tumi.onrender.com/api/categorias';
 
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 const usuarioEsAdmin = usuario?.modo_admin === true;
+const empresaId = usuario?.empresa_id;
 
 let proveedorEditando = null;
 let proveedoresActuales = [];
 
+if (!usuario || !empresaId) {
+  window.location.href = '/login.html';
+}
+
 async function cargarCategorias() {
   try {
-    const res = await fetch(API_CATEGORIAS);
+    const res = await fetch(`${API_CATEGORIAS}?empresa_id=${empresaId}`);
     const data = await res.json();
 
     const select = document.getElementById('categoria');
@@ -35,7 +40,7 @@ async function cargarTiposPorCategoria() {
   if (!categoriaId) return;
 
   try {
-    const res = await fetch(`${API_CATEGORIAS}/${categoriaId}/tipos`);
+    const res = await fetch(`${API_CATEGORIAS}/${categoriaId}/tipos?empresa_id=${empresaId}`);
     const data = await res.json();
 
     data.tipos.forEach((tipo) => {
@@ -49,7 +54,7 @@ async function cargarTiposPorCategoria() {
   }
 }
 
-async function cargarProveedores(url = API_PROVEEDORES) {
+async function cargarProveedores(url = `${API_PROVEEDORES}?empresa_id=${empresaId}`) {
   try {
     prepararModoAdmin();
 
@@ -175,15 +180,13 @@ function filtrarProveedores() {
 
   const params = new URLSearchParams();
 
+  params.append('empresa_id', empresaId);
+
   if (buscar) params.append('buscar', buscar);
   if (categoriaId) params.append('categoria_id', categoriaId);
   if (tipoId) params.append('tipo_id', tipoId);
 
-  const url = params.toString()
-    ? `${API_PROVEEDORES}?${params.toString()}`
-    : API_PROVEEDORES;
-
-  cargarProveedores(url);
+  cargarProveedores(`${API_PROVEEDORES}?${params.toString()}`);
 }
 
 function limpiarFiltros() {
@@ -198,6 +201,7 @@ async function crearProveedor() {
   const mensaje = document.getElementById('mensajeProveedor');
 
   const body = {
+    empresa_id: empresaId,
     nombre: document.getElementById('nuevoNombre').value.trim(),
     empresa: document.getElementById('nuevaEmpresa').value.trim(),
     telefono: document.getElementById('nuevoTelefono').value.trim(),
@@ -250,6 +254,7 @@ async function actualizarProveedor(id) {
   }
 
   const body = {
+    empresa_id: empresaId,
     nombre: document.getElementById(`nombre-${id}`).value.trim(),
     empresa: document.getElementById(`empresa-${id}`).value.trim(),
     telefono: document.getElementById(`telefono-${id}`).value.trim(),
@@ -289,6 +294,10 @@ async function eliminarProveedor(id) {
   try {
     const res = await fetch(`${API_PROVEEDORES}/${id}`, {
       method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        empresa_id: empresaId,
+      }),
     });
 
     const data = await res.json();

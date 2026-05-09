@@ -3,6 +3,11 @@ const API_CATEGORIAS = 'https://ferreteria-tumi.onrender.com/api/categorias';
 
 let usuario = JSON.parse(localStorage.getItem('usuario'));
 let usuarioEsAdmin = usuario?.modo_admin === true;
+let empresaId = usuario?.empresa_id;
+
+if (!usuario || !empresaId) {
+  window.location.href = '/login.html';
+}
 
 async function inicializarProductos() {
   prepararModoAdmin();
@@ -27,7 +32,7 @@ async function cargarCategoriasFormulario() {
   if (!usuarioEsAdmin) return;
 
   try {
-    const res = await fetch(API_CATEGORIAS);
+    const res = await fetch(`${API_CATEGORIAS}?empresa_id=${empresaId}`);
     const data = await res.json();
 
     const select = document.getElementById('nuevaCategoria');
@@ -55,7 +60,7 @@ async function cargarTiposFormulario() {
   if (!categoriaId) return;
 
   try {
-    const res = await fetch(`${API_CATEGORIAS}/${categoriaId}/tipos`);
+    const res = await fetch(`${API_CATEGORIAS}/${categoriaId}/tipos?empresa_id=${empresaId}`);
     const data = await res.json();
 
     data.tipos.forEach((tipo) => {
@@ -78,7 +83,7 @@ async function cargarVariantesFormulario() {
   if (!tipoId) return;
 
   try {
-    const res = await fetch(`${API_CATEGORIAS}/tipos/${tipoId}/variantes`);
+    const res = await fetch(`${API_CATEGORIAS}/tipos/${tipoId}/variantes?empresa_id=${empresaId}`);
     const data = await res.json();
 
     data.variantes.forEach((variante) => {
@@ -96,7 +101,7 @@ async function cargarProductos() {
   try {
     prepararModoAdmin();
 
-    const res = await fetch(API_PRODUCTOS);
+    const res = await fetch(`${API_PRODUCTOS}?empresa_id=${empresaId}`);
     const data = await res.json();
 
     mostrarProductos(data.productos);
@@ -114,7 +119,10 @@ async function buscarProductos() {
   }
 
   try {
-    const res = await fetch(`${API_PRODUCTOS}?buscar=${encodeURIComponent(texto)}`);
+    const res = await fetch(
+      `${API_PRODUCTOS}?empresa_id=${empresaId}&buscar=${encodeURIComponent(texto)}`
+    );
+
     const data = await res.json();
 
     mostrarProductos(data.productos);
@@ -203,6 +211,7 @@ async function crearProducto() {
   const mensaje = document.getElementById('mensajeProducto');
 
   const body = {
+    empresa_id: empresaId,
     categoria_id: document.getElementById('nuevaCategoria').value,
     tipo_id: document.getElementById('nuevoTipo').value,
     variante_id: document.getElementById('nuevaVariante').value,
@@ -264,7 +273,10 @@ async function editarPrecio(id, precio) {
     const res = await fetch(`${API_PRODUCTOS}/${id}/precio`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ precio }),
+      body: JSON.stringify({
+        precio,
+        empresa_id: empresaId,
+      }),
     });
 
     const data = await res.json();
@@ -283,7 +295,10 @@ async function editarStock(id, stock) {
     const res = await fetch(`${API_PRODUCTOS}/${id}/stock`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ stock }),
+      body: JSON.stringify({
+        stock,
+        empresa_id: empresaId,
+      }),
     });
 
     const data = await res.json();
@@ -305,6 +320,10 @@ async function eliminarProducto(id) {
   try {
     const res = await fetch(`${API_PRODUCTOS}/${id}`, {
       method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        empresa_id: empresaId,
+      }),
     });
 
     const data = await res.json();

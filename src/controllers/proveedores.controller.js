@@ -1,7 +1,16 @@
 const pool = require('../db/primary');
 
+function obtenerEmpresaId(req) {
+  return req.query.empresa_id || req.body.empresa_id;
+}
+
 const listarProveedores = async (req, res) => {
   const { buscar, categoria_id, tipo_id } = req.query;
+  const empresa_id = obtenerEmpresaId(req);
+
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
 
   try {
     let query = `
@@ -20,7 +29,7 @@ const listarProveedores = async (req, res) => {
       WHERE p.empresa_id = $1
     `;
 
-    const values = [1];
+    const values = [empresa_id];
 
     if (buscar) {
       values.push(`%${buscar}%`);
@@ -63,7 +72,18 @@ const listarProveedores = async (req, res) => {
 };
 
 const crearProveedor = async (req, res) => {
-  const { nombre, empresa, telefono, email, direccion } = req.body;
+  const {
+    empresa_id,
+    nombre,
+    empresa,
+    telefono,
+    email,
+    direccion,
+  } = req.body;
+
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
 
   try {
     const result = await pool.query(
@@ -73,7 +93,7 @@ const crearProveedor = async (req, res) => {
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *
       `,
-      [1, nombre, empresa, telefono, email, direccion]
+      [empresa_id, nombre, empresa, telefono, email, direccion]
     );
 
     res.status(201).json({
@@ -91,7 +111,18 @@ const crearProveedor = async (req, res) => {
 
 const actualizarProveedor = async (req, res) => {
   const { id } = req.params;
-  const { nombre, empresa, telefono, email, direccion } = req.body;
+  const {
+    empresa_id,
+    nombre,
+    empresa,
+    telefono,
+    email,
+    direccion,
+  } = req.body;
+
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
 
   try {
     const result = await pool.query(
@@ -105,7 +136,7 @@ const actualizarProveedor = async (req, res) => {
       WHERE id = $6 AND empresa_id = $7
       RETURNING *
       `,
-      [nombre, empresa, telefono, email, direccion, id, 1]
+      [nombre, empresa, telefono, email, direccion, id, empresa_id]
     );
 
     if (result.rows.length === 0) {
@@ -127,6 +158,11 @@ const actualizarProveedor = async (req, res) => {
 
 const eliminarProveedor = async (req, res) => {
   const { id } = req.params;
+  const empresa_id = obtenerEmpresaId(req);
+
+  if (!empresa_id) {
+    return res.status(400).json({ msg: 'Falta empresa_id' });
+  }
 
   try {
     const result = await pool.query(
@@ -135,7 +171,7 @@ const eliminarProveedor = async (req, res) => {
       WHERE id = $1 AND empresa_id = $2
       RETURNING *
       `,
-      [id, 1]
+      [id, empresa_id]
     );
 
     if (result.rows.length === 0) {
