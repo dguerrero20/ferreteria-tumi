@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
 const pool = require('../db/primary');
 
 const login = async (req, res) => {
@@ -28,10 +27,11 @@ const login = async (req, res) => {
         nombre: user.nombre,
         email: user.email,
         rol: user.rol,
+        empresa_id: user.empresa_id,
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error('ERROR LOGIN:', error);
     res.status(500).json({ msg: 'Error en el servidor' });
   }
 };
@@ -46,7 +46,9 @@ const recuperarPassword = async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ msg: 'No existe una cuenta con ese correo' });
+      return res.status(404).json({
+        msg: 'No existe una cuenta con ese correo',
+      });
     }
 
     const token = crypto.randomBytes(32).toString('hex');
@@ -61,38 +63,47 @@ const recuperarPassword = async (req, res) => {
 
     const resetLink = `${process.env.FRONTEND_URL}/restablecer.html?token=${token}`;
 
-    const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
-    await transporter.sendMail({
-      from: `"Ferretería SaaS" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: 'Recuperación de contraseña',
-      html: `
-        <h2>Recuperar contraseña</h2>
-        <p>Haz clic en el siguiente enlace para cambiar tu contraseña:</p>
-        <a href="${resetLink}">${resetLink}</a>
-        <p>Este enlace vence en 15 minutos.</p>
-      `,
+    const respuestaCorreo = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'Ferretería SaaS <onboarding@resend.dev>',
+        to: email,
+        subject: 'Recuperación de contraseña',
+        html: `
+          <h2>Recuperar contraseña</h2>
+          <p>Haz clic en el siguiente enlace para cambiar tu contraseña:</p>
+          <a href="${resetLink}">${resetLink}</a>
+          <p>Este enlace vence en 15 minutos.</p>
+        `,
+      }),
     });
 
-    res.json({ msg: 'Correo de recuperación enviado' });
-  } catch (error) {
-  console.error('ERROR RECUPERAR PASSWORD:', error);
+    if (!respuestaCorreo.ok) {
+      const errorCorreo = await respuestaCorreo.json();
 
-  res.status(500).json({
-    msg: 'Error enviando correo de recuperación',
-    error: error.message,
-    code: error.code,
-  });
-}
+      console.error('ERROR RESEND:', errorCorreo);
+
+      return res.status(500).json({
+        msg: 'Error enviando correo de recuperación',
+        error: errorCorreo.message || 'Error con Resend',
+      });
+    }
+
+    res.json({
+      msg: 'Correo de recuperación enviado',
+    });
+  } catch (error) {
+    console.error('ERROR RECUPERAR PASSWORD:', error);
+
+    res.status(500).json({
+      msg: 'Error enviando correo de recuperación',
+      error: error.message,
+    });
+  }
 };
 
 const restablecerPassword = async (req, res) => {
@@ -107,7 +118,9 @@ const restablecerPassword = async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(400).json({ msg: 'Token inválido o vencido' });
+      return res.status(400).json({
+        msg: 'Token inválido o vencido',
+      });
     }
 
     await pool.query(
@@ -119,12 +132,17 @@ const restablecerPassword = async (req, res) => {
       [password, token]
     );
 
-    res.json({ msg: 'Contraseña actualizada correctamente' });
+    res.json({
+      msg: 'Contraseña actualizada correctamente',
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: 'Error restableciendo contraseña' });
+    console.error('ERROR RESTABLECER PASSWORD:', error);
+    res.status(500).json({
+      msg: 'Error restableciendo contraseña',
+    });
   }
 };
+
 const registrarCuenta = async (req, res) => {
   const {
     empresa,
@@ -136,7 +154,9 @@ const registrarCuenta = async (req, res) => {
 
   try {
     if (!empresa || !nombre || !email || !password || !admin_password) {
-      return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
+      return res.status(400).json({
+        msg: 'Todos los campos son obligatorios',
+      });
     }
 
     const existeUsuario = await pool.query(
@@ -145,7 +165,9 @@ const registrarCuenta = async (req, res) => {
     );
 
     if (existeUsuario.rows.length > 0) {
-      return res.status(400).json({ msg: 'Ese correo ya está registrado' });
+      return res.status(400).json({
+        msg: 'Ese correo ya está registrado',
+      });
     }
 
     const empresaResult = await pool.query(
@@ -171,8 +193,10 @@ const registrarCuenta = async (req, res) => {
       empresa: nuevaEmpresa,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: 'Error creando cuenta' });
+    console.error('ERROR REGISTRANDO CUENTA:', error);
+    res.status(500).json({
+      msg: 'Error creando cuenta',
+    });
   }
 };
 
@@ -180,7 +204,6 @@ const verificarAdmin = async (req, res) => {
   const { user_id, admin_password } = req.body;
 
   try {
-
     const result = await pool.query(
       `SELECT * FROM usuarios
        WHERE id = $1`,
@@ -204,10 +227,8 @@ const verificarAdmin = async (req, res) => {
     res.json({
       msg: 'Modo administrador activado',
     });
-
   } catch (error) {
-
-    console.error(error);
+    console.error('ERROR VERIFICANDO ADMIN:', error);
 
     res.status(500).json({
       msg: 'Error verificando admin',
