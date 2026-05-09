@@ -59,7 +59,7 @@ const recuperarPassword = async (req, res) => {
       [token, email]
     );
 
-    const resetLink = `${process.env.FRONTEND_URL}/app/restablecer.html?token=${token}`;
+    const resetLink = `${process.env.FRONTEND_URL}/restablecer.html?token=${token}`;
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
