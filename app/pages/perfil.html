@@ -15,41 +15,38 @@
 
   <ul class="menu">
 
-    <ul class="menu">
+    <li>
+      <a href="/pages/dashboard.html">Dashboard</a>
+    </li>
 
-  <li>
-    <a href="/pages/dashboard.html">Dashboard</a>
-  </li>
+    <li>
+      <a href="/pages/productos.html">Productos</a>
+    </li>
 
-  <li>
-    <a href="/pages/productos.html">Productos</a>
-  </li>
+    <li class="solo-admin">
+      <a href="/pages/categorias.html">Categorías</a>
+    </li>
 
-  <li class="solo-admin">
-  <a href="/pages/categorias.html">Categorías</a>
-</li>
+    <li>
+      <a href="/pages/ventas.html">Ventas</a>
+    </li>
 
-  <li>
-    <a href="/pages/ventas.html">Ventas</a>
-  </li>
+    <li>
+      <a href="/pages/proveedores.html">Proveedores</a>
+    </li>
 
-  <li>
-    <a href="/pages/proveedores.html">Proveedores</a>
-  </li>
+    <li>
+      <a href="/pages/reportes.html">Reportes</a>
+    </li>
 
-  <li>
-    <a href="/pages/reportes.html">Reportes</a>
-  </li>
+    <li class="active">
+      <a href="/pages/perfil.html">Perfil</a>
+    </li>
 
-  <li class="active">
-    <a href="/pages/perfil.html">Perfil</a>
-  </li>
+    <li>
+      <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+    </li>
 
-  <li>
-    <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
-  </li>
-
-</ul>
   </ul>
 
 </div>
@@ -109,15 +106,55 @@
     <br><br>
 
     <button
-  id="btnAdmin"
-  onclick="activarModoAdmin()"
->
-  Activar modo administrador
-</button>
+      id="btnAdmin"
+      onclick="activarModoAdmin()"
+    >
+      Activar modo administrador
+    </button>
 
     <p
       class="mensaje"
       id="mensaje"
+    ></p>
+
+  </div>
+
+  <div class="box">
+
+    <h3>Recuperar contraseña de administrador</h3>
+
+    <br>
+
+    <p>
+      Si olvidaste tu contraseña de administrador,
+      puedes crear una nueva aquí.
+    </p>
+
+    <br>
+
+    <input
+      type="password"
+      id="nuevaAdminPassword"
+      placeholder="Nueva contraseña administrador"
+    >
+
+    <br><br>
+
+    <input
+      type="password"
+      id="confirmarAdminPassword"
+      placeholder="Confirmar contraseña administrador"
+    >
+
+    <br><br>
+
+    <button onclick="cambiarAdminPassword()">
+      Actualizar contraseña admin
+    </button>
+
+    <p
+      class="mensaje"
+      id="mensajeAdminPassword"
     ></p>
 
   </div>

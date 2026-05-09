@@ -1,6 +1,9 @@
 const API_ADMIN =
   'https://ferreteria-tumi.onrender.com/api/auth/verificar-admin';
 
+const API_CAMBIAR_ADMIN_PASSWORD =
+  'https://ferreteria-tumi.onrender.com/api/auth/cambiar-admin-password';
+
 const usuario =
   JSON.parse(localStorage.getItem('usuario'));
 
@@ -138,6 +141,95 @@ async function activarModoAdmin() {
 
     mensaje.textContent =
       'Error activando admin';
+
+    mensaje.style.color =
+      'red';
+  }
+}
+
+async function cambiarAdminPassword() {
+
+  const nuevaPassword =
+    document.getElementById('nuevaAdminPassword').value.trim();
+
+  const confirmarPassword =
+    document.getElementById('confirmarAdminPassword').value.trim();
+
+  const mensaje =
+    document.getElementById('mensajeAdminPassword');
+
+  if (!nuevaPassword || !confirmarPassword) {
+
+    mensaje.textContent =
+      'Completa ambos campos';
+
+    mensaje.style.color =
+      'red';
+
+    return;
+  }
+
+  if (nuevaPassword !== confirmarPassword) {
+
+    mensaje.textContent =
+      'Las contraseñas no coinciden';
+
+    mensaje.style.color =
+      'red';
+
+    return;
+  }
+
+  const confirmar = confirm(
+    '¿Estás seguro de cambiar la contraseña de administrador?'
+  );
+
+  if (!confirmar) {
+    return;
+  }
+
+  try {
+
+    const res = await fetch(
+      API_CAMBIAR_ADMIN_PASSWORD,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type':
+            'application/json',
+        },
+        body: JSON.stringify({
+          user_id: usuario.id,
+          nueva_admin_password: nuevaPassword,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    mensaje.textContent =
+      data.msg;
+
+    mensaje.style.color =
+      res.ok ? 'green' : 'red';
+
+    if (res.ok) {
+
+      document.getElementById(
+        'nuevaAdminPassword'
+      ).value = '';
+
+      document.getElementById(
+        'confirmarAdminPassword'
+      ).value = '';
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    mensaje.textContent =
+      'Error conectando con el servidor';
 
     mensaje.style.color =
       'red';

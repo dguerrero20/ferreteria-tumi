@@ -236,10 +236,50 @@ const verificarAdmin = async (req, res) => {
   }
 };
 
+const cambiarAdminPassword = async (req, res) => {
+  const { user_id, nueva_admin_password } = req.body;
+
+  if (!user_id || !nueva_admin_password) {
+    return res.status(400).json({
+      msg: 'Faltan datos para cambiar la contraseña admin',
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `
+      UPDATE usuarios
+      SET admin_password = $1
+      WHERE id = $2
+      RETURNING id, nombre, email
+      `,
+      [nueva_admin_password, user_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        msg: 'Usuario no encontrado',
+      });
+    }
+
+    res.json({
+      msg: 'Contraseña de administrador actualizada correctamente',
+    });
+  } catch (error) {
+    console.error('ERROR CAMBIANDO ADMIN PASSWORD:', error);
+
+    res.status(500).json({
+      msg: 'Error cambiando contraseña admin',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   login,
   registrarCuenta,
   recuperarPassword,
   restablecerPassword,
   verificarAdmin,
+  cambiarAdminPassword,
 };
