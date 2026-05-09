@@ -6,7 +6,6 @@ let intervalo = null;
 async function recuperarPassword() {
   const email = document.getElementById('email').value.trim();
   const mensaje = document.getElementById('mensaje');
-  const boton = document.getElementById('btnRecuperar');
 
   if (!email) {
     mensaje.textContent = 'Ingresa tu correo';
@@ -25,10 +24,20 @@ async function recuperarPassword() {
 
     const data = await res.json();
 
+    console.log('RESPUESTA RECUPERAR:', data);
+
+    if (!res.ok) {
+      mensaje.textContent = `${data.msg || 'Error'} ${data.code ? '(' + data.code + ')' : ''}`;
+      mensaje.style.color = 'red';
+      return;
+    }
+
     mensaje.textContent = data.msg;
-    mensaje.style.color = res.ok ? 'green' : 'red';
+    mensaje.style.color = 'green';
+
   } catch (error) {
-    console.error(error);
+    console.error('ERROR FRONTEND RECUPERAR:', error);
+
     mensaje.textContent = 'Error conectando con el servidor';
     mensaje.style.color = 'red';
   }

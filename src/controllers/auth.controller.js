@@ -85,9 +85,14 @@ const recuperarPassword = async (req, res) => {
 
     res.json({ msg: 'Correo de recuperación enviado' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: 'Error enviando correo de recuperación' });
-  }
+  console.error('ERROR RECUPERAR PASSWORD:', error);
+
+  res.status(500).json({
+    msg: 'Error enviando correo de recuperación',
+    error: error.message,
+    code: error.code,
+  });
+}
 };
 
 const restablecerPassword = async (req, res) => {
