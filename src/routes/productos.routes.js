@@ -5,7 +5,6 @@ const {
   listarProductos,
   productosStockBajo,
   crearProducto,
-  actualizarProducto,
   actualizarPrecio,
   actualizarStock,
   eliminarProducto,
@@ -16,7 +15,6 @@ router.get('/stock-bajo', productosStockBajo);
 
 router.post('/', crearProducto);
 
-router.put('/:id', actualizarProducto);
 router.put('/:id/precio', actualizarPrecio);
 router.put('/:id/stock', actualizarStock);
 
