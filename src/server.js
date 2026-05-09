@@ -18,7 +18,15 @@ const usuariosRoutes = require('./routes/usuarios.routes'); // 🔥 NUEVO
 const app = express();
 
 // MIDDLEWARE
-app.use(cors());
+app.use(cors({
+  origin: [
+    'https://ferreteria-tumi.vercel.app',
+    'http://localhost:5500',
+    'http://127.0.0.1:5500'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json());
 
 // ENDPOINTS
