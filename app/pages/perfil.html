@@ -1,173 +1,64 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Perfil</title>
-
-  <link rel="stylesheet" href="../css/global.css">
+    <meta charset="UTF-8">
+    <title>Perfil</title>
+    <link rel="stylesheet" href="../css/global.css">
 </head>
-
 <body>
 
-<div class="sidebar">
+    <!-- Menú Lateral -->
+    <div class="sidebar">
+        <h2>Ferretería</h2>
+        <ul class="menu">
+            <li><a href="/pages/dashboard.html">Dashboard</a></li>
+            <li><a href="/pages/productos.html">Productos</a></li>
+            <li class="solo-admin"><a href="/pages/categorias.html">Categorías</a></li>
+            <li><a href="/pages/ventas.html">Ventas</a></li>
+            <li><a href="/pages/proveedores.html">Proveedores</a></li>
+            <li><a href="/pages/reportes.html">Reportes</a></li>
+            <li class="active"><a href="/pages/perfil.html">Perfil</a></li>
+            <li><a href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
+        </ul>
+    </div>
 
-  <h2>Ferretería</h2>
+    <!-- Contenido Principal -->
+    <div class="main">
+        <h1>Perfil</h1>
+        <br>
 
-  <ul class="menu">
+        <!-- Caja de Información -->
+        <div class="box">
+            <h3>Información del usuario</h3>
+            <br>
+            <p><strong>Nombre:</strong> <span id="nombre"></span></p>
+            <br>
+            <p><strong>Email:</strong> <span id="email"></span></p>
+            <br>
+            <p><strong>Rol:</strong> <span id="rol"></span></p>
+            <br>
+            <p><strong>Modo administrador:</strong> <span id="modoAdmin">No</span></p>
+        </div>
 
-    <li>
-      <a href="/pages/dashboard.html">Dashboard</a>
-    </li>
+        <!-- Caja de Activación Admin -->
+        <div class="box">
+            <h3>Activar modo administrador</h3>
+            <br>
+            <input type="password" id="adminPassword" placeholder="Contraseña administrador">
+            <br><br>
+            <button id="btnAdmin" onclick="activarModoAdmin()">
+                Activar modo administrador
+            </button>
+            <p class="mensaje" id="mensaje"></p>
+        </div>
+    </div>
 
-    <li>
-      <a href="/pages/productos.html">Productos</a>
-    </li>
-
-    <li class="solo-admin">
-      <a href="/pages/categorias.html">Categorías</a>
-    </li>
-
-    <li>
-      <a href="/pages/ventas.html">Ventas</a>
-    </li>
-
-    <li>
-      <a href="/pages/proveedores.html">Proveedores</a>
-    </li>
-
-    <li>
-      <a href="/pages/reportes.html">Reportes</a>
-    </li>
-
-    <li class="active">
-      <a href="/pages/perfil.html">Perfil</a>
-    </li>
-
-    <li>
-      <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
-    </li>
-
-  </ul>
-
-</div>
-
-<div class="main">
-
-  <h1>Perfil</h1>
-
-  <br>
-
-  <div class="box">
-
-    <h3>Información del usuario</h3>
-
-    <br>
-
-    <p>
-      <strong>Nombre:</strong>
-      <span id="nombre"></span>
-    </p>
-
-    <br>
-
-    <p>
-      <strong>Email:</strong>
-      <span id="email"></span>
-    </p>
-
-    <br>
-
-    <p>
-      <strong>Rol:</strong>
-      <span id="rol"></span>
-    </p>
-
-    <br>
-
-    <p>
-      <strong>Modo administrador:</strong>
-      <span id="modoAdmin">No</span>
-    </p>
-
-  </div>
-
-  <div class="box">
-
-    <h3>Activar modo administrador</h3>
-
-    <br>
-
-    <input
-      type="password"
-      id="adminPassword"
-      placeholder="Contraseña administrador"
-    >
-
-    <br><br>
-
-    <button
-      id="btnAdmin"
-      onclick="activarModoAdmin()"
-    >
-      Activar modo administrador
-    </button>
-
-    <p
-      class="mensaje"
-      id="mensaje"
-    ></p>
-
-  </div>
-
-  <div class="box">
-
-    <h3>Recuperar contraseña de administrador</h3>
-
-    <br>
-
-    <p>
-      Si olvidaste tu contraseña de administrador,
-      puedes crear una nueva aquí.
-    </p>
-
-    <br>
-
-    <input
-      type="password"
-      id="nuevaAdminPassword"
-      placeholder="Nueva contraseña administrador"
-    >
-
-    <br><br>
-
-    <input
-      type="password"
-      id="confirmarAdminPassword"
-      placeholder="Confirmar contraseña administrador"
-    >
-
-    <br><br>
-
-    <button onclick="cambiarAdminPassword()">
-      Actualizar contraseña admin
-    </button>
-
-    <p
-      class="mensaje"
-      id="mensajeAdminPassword"
-    ></p>
-
-  </div>
-
-</div>
-
-<script src="../js/auth.js"></script>
-
-<script>
-  verificarSesion();
-</script>
-
-<script src="../js/perfil.js"></script>
+    <!-- Scripts -->
+    <script src="../js/auth.js"></script>
+    <script>
+        verificarSesion();
+    </script>
+    <script src="../js/perfil.js"></script>
 
 </body>
 </html>

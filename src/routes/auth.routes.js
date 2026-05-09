@@ -8,7 +8,6 @@ const {
   recuperarPassword,
   restablecerPassword,
   verificarAdmin,
-  cambiarAdminPassword,
 } = require('../controllers/auth.controller');
 
 router.post('/login', login);
@@ -28,11 +27,6 @@ router.post(
 router.post(
   '/verificar-admin',
   verificarAdmin
-);
-
-router.put(
-  '/cambiar-admin-password',
-  cambiarAdminPassword
 );
 
 module.exports = router;

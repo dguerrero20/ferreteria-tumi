@@ -54,32 +54,28 @@ const recuperarPassword = async (req, res) => {
     const token = crypto.randomBytes(32).toString('hex');
 
     await pool.query(
-      `UPDATE usuarios
-       SET reset_token = $1,
-           reset_token_expires = NOW() + INTERVAL '15 minutes'
-       WHERE email = $2`,
-      [token, email]
+      UPDATE usuarios SET reset_token = $1,
+      reset_token_expires = NOW() + INTERVAL '15 minutes'
+      WHERE email = $2, [token, email]
     );
 
-    const resetLink = `${process.env.FRONTEND_URL}/restablecer.html?token=${token}`;
+    const resetLink = ${process.env.FRONTEND_URL}/restablecer.html?token=${token};
 
     const respuestaCorreo = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        Authorization: Bearer ${process.env.RESEND_API_KEY},
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         from: 'Ferretería SaaS <onboarding@resend.dev>',
         to: email,
         subject: 'Recuperación de contraseña',
-        html: `
-          <h2>Recuperar contraseña</h2>
-          <p>Haz clic en el siguiente enlace para cambiar tu contraseña:</p>
-          <a href="${resetLink}">${resetLink}</a>
-          <p>Este enlace vence en 15 minutos.</p>
-        `,
-      }),
+        html: <h2>Recuperar contraseña</h2>
+        <p>Haz clic en el siguiente enlace para cambiar tu contraseña:</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>Este enlace vence en 15 minutos.</p>
+        , }),
     });
 
     if (!respuestaCorreo.ok) {
@@ -111,10 +107,8 @@ const restablecerPassword = async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT * FROM usuarios
-       WHERE reset_token = $1
-       AND reset_token_expires > NOW()`,
-      [token]
+      SELECT * FROM usuarios WHERE reset_token = $1
+      AND reset_token_expires > NOW(), [token]
     );
 
     if (result.rows.length === 0) {
@@ -124,12 +118,10 @@ const restablecerPassword = async (req, res) => {
     }
 
     await pool.query(
-      `UPDATE usuarios
-       SET password = $1,
-           reset_token = NULL,
-           reset_token_expires = NULL
-       WHERE reset_token = $2`,
-      [password, token]
+      UPDATE usuarios SET password = $1,
+      reset_token = NULL,
+      reset_token_expires = NULL
+      WHERE reset_token = $2, [password, token]
     );
 
     res.json({
@@ -171,20 +163,16 @@ const registrarCuenta = async (req, res) => {
     }
 
     const empresaResult = await pool.query(
-      `INSERT INTO empresas (nombre)
-       VALUES ($1)
-       RETURNING *`,
-      [empresa]
+      INSERT INTO empresas (nombre) VALUES ($1)
+      RETURNING *, [empresa]
     );
 
     const nuevaEmpresa = empresaResult.rows[0];
 
     const usuarioResult = await pool.query(
-      `INSERT INTO usuarios
-       (empresa_id, nombre, email, password, rol, admin_password)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING id, nombre, email, rol, empresa_id`,
-      [nuevaEmpresa.id, nombre, email, password, 'vendedor', admin_password]
+      INSERT INTO usuarios (empresa_id, nombre, email, password, rol, admin_password)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id, nombre, email, rol, empresa_id, [nuevaEmpresa.id, nombre, email, password, 'vendedor', admin_password]
     );
 
     res.status(201).json({
@@ -205,9 +193,7 @@ const verificarAdmin = async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT * FROM usuarios
-       WHERE id = $1`,
-      [user_id]
+      SELECT * FROM usuarios WHERE id = $1, [user_id]
     );
 
     if (result.rows.length === 0) {
@@ -236,50 +222,10 @@ const verificarAdmin = async (req, res) => {
   }
 };
 
-const cambiarAdminPassword = async (req, res) => {
-  const { user_id, nueva_admin_password } = req.body;
-
-  if (!user_id || !nueva_admin_password) {
-    return res.status(400).json({
-      msg: 'Faltan datos para cambiar la contraseña admin',
-    });
-  }
-
-  try {
-    const result = await pool.query(
-      `
-      UPDATE usuarios
-      SET admin_password = $1
-      WHERE id = $2
-      RETURNING id, nombre, email
-      `,
-      [nueva_admin_password, user_id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        msg: 'Usuario no encontrado',
-      });
-    }
-
-    res.json({
-      msg: 'Contraseña de administrador actualizada correctamente',
-    });
-  } catch (error) {
-    console.error('ERROR CAMBIANDO ADMIN PASSWORD:', error);
-
-    res.status(500).json({
-      msg: 'Error cambiando contraseña admin',
-      error: error.message,
-    });
-  }
-};
-
 module.exports = {
   login,
   registrarCuenta,
   recuperarPassword,
   restablecerPassword,
   verificarAdmin,
-  cambiarAdminPassword,
 };
