@@ -2,8 +2,15 @@ const API = 'https://ferreteria-tumi.onrender.com/api';
 const API_REPORTES = `${API}/reportes`;
 const API_VENDEDORES = `${API}/usuarios/vendedores`;
 
+const usuario = JSON.parse(localStorage.getItem('usuario'));
+const empresaId = usuario?.empresa_id;
+
 let graficoActual = null;
 let vistaActual = 'datos';
+
+if (!usuario || !empresaId) {
+  window.location.href = '/login.html';
+}
 
 function cambiarVista(vista) {
   vistaActual = vista;
@@ -59,7 +66,7 @@ function obtenerVendedoresSeleccionados() {
 }
 
 function construirQueryReportes() {
-  const params = [];
+  const params = [`empresa_id=${empresaId}`];
 
   const fechas = obtenerFechas();
   const vendedores = obtenerVendedoresSeleccionados();
@@ -67,12 +74,12 @@ function construirQueryReportes() {
   if (fechas) params.push(fechas);
   if (vendedores) params.push(vendedores);
 
-  return params.length > 0 ? `?${params.join('&')}` : '';
+  return `?${params.join('&')}`;
 }
 
 async function cargarVendedoresFiltro() {
   try {
-    const res = await fetch(API_VENDEDORES);
+    const res = await fetch(`${API_VENDEDORES}?empresa_id=${empresaId}`);
     const data = await res.json();
 
     const contenedor = document.getElementById('listaVendedores');
@@ -80,7 +87,6 @@ async function cargarVendedoresFiltro() {
 
     data.vendedores.forEach((v) => {
       const label = document.createElement('label');
-
       label.style.marginRight = '15px';
 
       label.innerHTML = `
@@ -158,7 +164,7 @@ async function reporteInventario() {
   try {
     limpiarVista('Reporte de Inventario');
 
-    const res = await fetch(`${API}/productos`);
+    const res = await fetch(`${API}/productos?empresa_id=${empresaId}`);
     const data = await res.json();
 
     if (!data.productos || data.productos.length === 0) {
@@ -219,7 +225,7 @@ async function reporteStockBajo() {
   try {
     limpiarVista('Reporte de Stock Bajo');
 
-    const res = await fetch(`${API}/productos/stock-bajo`);
+    const res = await fetch(`${API}/productos/stock-bajo?empresa_id=${empresaId}`);
     const data = await res.json();
 
     if (!data.productos || data.productos.length === 0) {
@@ -280,7 +286,7 @@ async function reporteVentasSimple() {
   try {
     limpiarVista('Reporte General de Ventas');
 
-    const res = await fetch(`${API}/ventas`);
+    const res = await fetch(`${API}/ventas?empresa_id=${empresaId}`);
     const data = await res.json();
 
     if (!data.ventas || data.ventas.length === 0) {
@@ -346,12 +352,8 @@ async function reporteVentasPorFecha() {
   try {
     limpiarVista('Reporte de Ventas por Fecha');
 
-    const query = obtenerFechas();
-    const url = query
-      ? `${API_REPORTES}/ventas?${query}`
-      : `${API_REPORTES}/ventas`;
-
-    const res = await fetch(url);
+    const query = construirQueryReportes();
+    const res = await fetch(`${API_REPORTES}/ventas${query}`);
     const data = await res.json();
 
     if (!res.ok) {
@@ -417,10 +419,8 @@ async function productosMasVendidos() {
   try {
     limpiarVista('Productos Más Vendidos');
 
-    const params = obtenerFechas();
-    const url = params ? `${API_REPORTES}/productos-mas-vendidos?${params}` : `${API_REPORTES}/productos-mas-vendidos`;
-
-    const res = await fetch(url);
+    const query = construirQueryReportes();
+    const res = await fetch(`${API_REPORTES}/productos-mas-vendidos${query}`);
     const data = await res.json();
 
     if (!data.productos || data.productos.length === 0) {
@@ -453,7 +453,7 @@ async function productosMasVendidos() {
         <tr>
           <td>${p.producto}</td>
           <td>${p.cantidad_vendida}</td>
-          <td>${p.unidad_medida}</td>
+          <td>${p.unidad_medida || '-'}</td>
           <td>S/ ${Number(p.total_vendido).toFixed(2)}</td>
         </tr>
       `;
@@ -479,10 +479,8 @@ async function productosMenosVendidos() {
   try {
     limpiarVista('Productos Menos Vendidos');
 
-    const params = obtenerFechas();
-    const url = params ? `${API_REPORTES}/productos-menos-vendidos?${params}` : `${API_REPORTES}/productos-menos-vendidos`;
-
-    const res = await fetch(url);
+    const query = construirQueryReportes();
+    const res = await fetch(`${API_REPORTES}/productos-menos-vendidos${query}`);
     const data = await res.json();
 
     if (!data.productos || data.productos.length === 0) {
@@ -515,7 +513,7 @@ async function productosMenosVendidos() {
         <tr>
           <td>${p.producto}</td>
           <td>${p.cantidad_vendida}</td>
-          <td>${p.unidad_medida}</td>
+          <td>${p.unidad_medida || '-'}</td>
           <td>S/ ${Number(p.total_vendido).toFixed(2)}</td>
         </tr>
       `;
