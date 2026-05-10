@@ -1,23 +1,42 @@
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
 
 const pool = require('../db/primary');
-
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
 
 function validarPassword(password) {
   const regex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[*#&%@$!])[A-Za-z\d*#&%@$!]{8,}$/;
 
   return regex.test(password);
+}
+
+async function enviarCorreo({ to, subject, html }) {
+  const respuesta = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'api-key': process.env.BREVO_API_KEY,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({
+      sender: {
+        name: 'Ferreteria',
+        email: 'deividguerreropedraza08@gmail.com',
+      },
+      to: [
+        {
+          email: to,
+        },
+      ],
+      subject,
+      htmlContent: html,
+    }),
+  });
+
+  if (!respuesta.ok) {
+    const error = await respuesta.json();
+    console.error('ERROR BREVO:', error);
+    throw new Error(error.message || 'Error enviando correo');
+  }
 }
 
 const login = async (req, res) => {
@@ -92,24 +111,14 @@ const recuperarPassword = async (req, res) => {
     const resetLink =
       `${process.env.FRONTEND_URL}/restablecer.html?token=${token}`;
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+    await enviarCorreo({
       to: email,
       subject: 'Recuperación de contraseña',
       html: `
         <h2>Recuperar contraseña</h2>
-
-        <p>
-          Haz clic en el siguiente enlace para cambiar tu contraseña:
-        </p>
-
-        <a href="${resetLink}">
-          ${resetLink}
-        </a>
-
-        <p>
-          Este enlace vence en 15 minutos.
-        </p>
+        <p>Haz clic en el siguiente enlace para cambiar tu contraseña:</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>Este enlace vence en 15 minutos.</p>
       `,
     });
 
@@ -380,24 +389,14 @@ const recuperarAdminPassword = async (req, res) => {
     const resetLink =
       `${process.env.FRONTEND_URL}/restablecer-admin.html?token=${token}`;
 
-    await transporter.sendMail({
-      from: 'Ferreteria <no-reply@brevo.com>',
+    await enviarCorreo({
       to: usuario.email,
       subject: 'Recuperación de contraseña administrador',
       html: `
         <h2>Recuperar contraseña de administrador</h2>
-
-        <p>
-          Haz clic en el siguiente enlace para cambiar tu contraseña de administrador:
-        </p>
-
-        <a href="${resetLink}">
-          ${resetLink}
-        </a>
-
-        <p>
-          Este enlace vence en 15 minutos.
-        </p>
+        <p>Haz clic en el siguiente enlace para cambiar tu contraseña de administrador:</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>Este enlace vence en 15 minutos.</p>
       `,
     });
 
