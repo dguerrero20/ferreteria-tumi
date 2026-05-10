@@ -341,10 +341,144 @@ const verificarAdmin = async (req, res) => {
   }
 };
 
+const recuperarAdminPassword = async (req, res) => {
+  const { user_id } = req.body;
+
+  try {
+    const result = await pool.query(
+      `
+      SELECT id, email
+      FROM usuarios
+      WHERE id = $1
+      `,
+      [user_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        msg: 'Usuario no encontrado',
+      });
+    }
+
+    const usuario = result.rows[0];
+
+    const token =
+      crypto.randomBytes(32).toString('hex');
+
+    await pool.query(
+      `
+      UPDATE usuarios
+      SET admin_reset_token = $1,
+          admin_reset_token_expires = NOW() + INTERVAL '15 minutes'
+      WHERE id = $2
+      `,
+      [token, user_id]
+    );
+
+    const resetLink =
+      `${process.env.FRONTEND_URL}/restablecer-admin.html?token=${token}`;
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: usuario.email,
+      subject: 'Recuperación de contraseña administrador',
+      html: `
+        <h2>Recuperar contraseña de administrador</h2>
+
+        <p>
+          Haz clic en el siguiente enlace para cambiar tu contraseña de administrador:
+        </p>
+
+        <a href="${resetLink}">
+          ${resetLink}
+        </a>
+
+        <p>
+          Este enlace vence en 15 minutos.
+        </p>
+      `,
+    });
+
+    res.json({
+      msg: 'Correo de recuperación admin enviado',
+    });
+
+  } catch (error) {
+
+    console.error(
+      'ERROR RECUPERAR ADMIN PASSWORD:',
+      error
+    );
+
+    res.status(500).json({
+      msg: 'Error enviando correo',
+      error: error.message,
+    });
+  }
+};
+
+const restablecerAdminPassword = async (req, res) => {
+  const { token, admin_password } = req.body;
+
+  try {
+
+    if (!validarPassword(admin_password)) {
+      return res.status(400).json({
+        msg:
+          'La contraseña admin debe tener mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial',
+      });
+    }
+
+    const result = await pool.query(
+      `
+      SELECT *
+      FROM usuarios
+      WHERE admin_reset_token = $1
+      AND admin_reset_token_expires > NOW()
+      `,
+      [token]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({
+        msg: 'Token inválido o vencido',
+      });
+    }
+
+    await pool.query(
+      `
+      UPDATE usuarios
+      SET admin_password = $1,
+          admin_reset_token = NULL,
+          admin_reset_token_expires = NULL
+      WHERE admin_reset_token = $2
+      `,
+      [admin_password, token]
+    );
+
+    res.json({
+      msg: 'Contraseña administrador actualizada correctamente',
+    });
+
+  } catch (error) {
+
+    console.error(
+      'ERROR RESTABLECER ADMIN PASSWORD:',
+      error
+    );
+
+    res.status(500).json({
+      msg: 'Error restableciendo contraseña admin',
+    });
+  }
+};
+
 module.exports = {
   login,
   registrarCuenta,
   recuperarPassword,
   restablecerPassword,
   verificarAdmin,
+  recuperarAdminPassword,
+  restablecerAdminPassword,
 };
