@@ -4,8 +4,8 @@ const nodemailer = require('nodemailer');
 const pool = require('../db/primary');
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
   secure: false,
   auth: {
     user: process.env.EMAIL_USER,
@@ -381,7 +381,7 @@ const recuperarAdminPassword = async (req, res) => {
       `${process.env.FRONTEND_URL}/restablecer-admin.html?token=${token}`;
 
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: 'Ferreteria <no-reply@brevo.com>',
       to: usuario.email,
       subject: 'Recuperación de contraseña administrador',
       html: `
