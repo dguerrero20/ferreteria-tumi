@@ -1275,3 +1275,14 @@ body.dashboard-page .sidebar .menu li.active {
 body.dashboard-page .sidebar .menu li.active a {
   color: #ffffff !important;
 }
+
+/* FIX PRODUCTOS ACTIVE COLOR */
+body.productos-page .sidebar .menu li.active {
+  background: #2563eb !important;
+  background-image: none !important;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.34) !important;
+}
+
+body.productos-page .sidebar .menu li.active a {
+  color: #ffffff !important;
+}
