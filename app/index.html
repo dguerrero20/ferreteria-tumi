@@ -2,113 +2,257 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ferdev - Inventario y Ventas</title>
   <link rel="stylesheet" href="./css/landing.css">
 </head>
+
 <body>
 
-<header class="navbar">
-  <div class="logo">Ferdev</div>
+<header class="landing-navbar">
+  <a href="#" class="brand">
+    <span class="brand-icon">◆</span>
+    <span><strong>Fer</strong>dev</span>
+  </a>
 
-  <nav>
+  <nav class="nav-links">
     <a href="#beneficios">Beneficios</a>
     <a href="#demo">Demo</a>
     <a href="#planes">Planes</a>
-    <a href="/login.html" class="btn-outline">Ingresar</a>
-    <a href="/registro.html" class="btn-primary">Registrarse</a>
+    <a href="/login.html" class="btn btn-outline">Ingresar</a>
+    <a href="/registro.html" class="btn btn-primary">Registrarse</a>
   </nav>
 </header>
 
-<section class="hero">
-  <div class="hero-text">
-    <h1>Ventas e inventario, sin el caos.</h1>
+<main>
 
-    <p>
-      Un sistema para restaurantes, ferreterías, tiendas y más. Controla tu stock,
-      registra ventas y toma decisiones con datos reales.
-    </p>
+  <section class="hero">
+    <div class="hero-bg-circle hero-bg-circle-one"></div>
+    <div class="hero-bg-circle hero-bg-circle-two"></div>
 
-    <div class="hero-actions">
-      <a href="/login.html" class="btn-primary">Iniciar sesión</a>
-      <a href="#demo" class="btn-secondary">Probar demo limitada</a>
+    <div class="hero-content">
+      <div class="hero-copy">
+        <div class="hero-badge">
+          <span>✓</span>
+          Sistema completo para inventario y ventas
+        </div>
+
+        <h1>
+          Ventas e inventario,
+          <span>sin el caos.</span>
+        </h1>
+
+        <p>
+          Un sistema para restaurantes, ferreterías, tiendas y más.
+          Controla tu stock, registra ventas y toma decisiones con datos reales.
+        </p>
+
+        <div class="hero-actions">
+          <a href="/login.html" class="btn btn-primary btn-large">
+            Iniciar sesión
+          </a>
+
+          <a href="#demo" class="btn btn-light btn-large">
+            <span>▷</span>
+            Probar demo limitada
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="floating-card floating-stock">
+          <div class="floating-icon orange">📦</div>
+          <strong>Stock bajo</strong>
+          <span>23 productos</span>
+        </div>
+
+        <div class="floating-card floating-sales">
+          <div class="floating-icon green">📈</div>
+          <strong>Ventas hoy</strong>
+          <span>S/ 1,250</span>
+        </div>
+
+        <div class="floating-card floating-cart">
+          <div class="floating-icon blue">🛒</div>
+          <strong>Ventas registradas</strong>
+          <span>+58 hoy</span>
+        </div>
+
+        <div class="dashboard-mockup">
+          <aside class="mock-sidebar">
+            <h3>Ferdev</h3>
+            <ul>
+              <li class="active">Dashboard</li>
+              <li>Productos</li>
+              <li>Ventas</li>
+              <li>Categorías</li>
+              <li>Proveedores</li>
+              <li>Reportes</li>
+            </ul>
+          </aside>
+
+          <div class="mock-main">
+            <div class="mock-topbar">
+              <div class="mock-search">Buscar productos, ventas, proveedores...</div>
+              <div class="mock-user"></div>
+            </div>
+
+            <h4>Resumen general</h4>
+
+            <div class="mock-stats">
+              <div>
+                <span>Productos registrados</span>
+                <strong>+100</strong>
+              </div>
+              <div>
+                <span>Ventas del mes</span>
+                <strong>S/ 24,680</strong>
+              </div>
+              <div>
+                <span>Stock bajo</span>
+                <strong>23</strong>
+              </div>
+              <div>
+                <span>Proveedores</span>
+                <strong>45</strong>
+              </div>
+            </div>
+
+            <div class="mock-grid">
+              <div class="mock-chart">
+                <div class="chart-header">
+                  <strong>Ventas últimos 7 días</strong>
+                  <span>Esta semana</span>
+                </div>
+
+                <svg viewBox="0 0 420 170" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stop-color="#2563eb" stop-opacity="0.22"/>
+                      <stop offset="100%" stop-color="#2563eb" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+
+                  <path d="M0,135 L60,90 L120,105 L180,45 L240,95 L300,80 L360,115 L420,100 L420,170 L0,170 Z" fill="url(#chartFill)"/>
+                  <polyline points="0,135 60,90 120,105 180,45 240,95 300,80 360,115 420,100" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+
+              <div class="mock-products">
+                <strong>Productos más vendidos</strong>
+                <div><span>Taladro inalámbrico</span><small>125 unidades</small></div>
+                <div><span>Disco de corte 4 1/2"</span><small>98 unidades</small></div>
+                <div><span>Pintura Látex 1L</span><small>76 unidades</small></div>
+                <div><span>Tornillo 2"</span><small>65 unidades</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </section>
+
+  <section id="beneficios" class="features-section">
+    <div class="section-heading">
+      <h2>¿Para qué sirve?</h2>
+      <p>Todo lo que tu negocio necesita para vender, controlar stock y organizar proveedores.</p>
+    </div>
+
+    <div class="features-grid">
+      <article class="feature-card">
+        <div class="feature-icon blue">▣</div>
+        <h3>Inventario ordenado</h3>
+        <p>Controla productos, categorías, marcas, unidades y stock disponible en tiempo real.</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon green">🛒</div>
+        <h3>Ventas rápidas</h3>
+        <p>Registra ventas, selecciona vendedor y descuenta stock automáticamente.</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon purple">📊</div>
+        <h3>Reportes inteligentes</h3>
+        <p>Visualiza productos más vendidos, stock bajo y desempeño de vendedores.</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon orange">👥</div>
+        <h3>Proveedores</h3>
+        <p>Encuentra proveedores relacionados con productos o categorías específicas.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="demo" class="demo-section">
+    <div class="toolbox">
+      <div class="box-top"></div>
+      <div class="box-body"></div>
+      <div class="tape">5m</div>
+      <div class="bolt"></div>
+    </div>
+
+    <div class="demo-content">
+      <h2>Demo limitada</h2>
+      <p>
+        Prueba una versión básica del sistema y descubre cómo funciona el registro de ventas,
+        búsqueda de productos y control de stock.
+      </p>
+
+      <a href="/login.html" class="btn btn-primary btn-large">
+        Entrar a demo
+      </a>
+    </div>
+  </section>
+
+  <section id="planes" class="pricing-section">
+    <div class="section-heading">
+      <h2>Plan único</h2>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pricing-icon">♛</div>
+
+      <div class="pricing-info">
+        <h3>Plan Ferdev</h3>
+        <div class="price">S/ 49.90 <span>/ mes</span></div>
+      </div>
+
+      <ul>
+        <li>Inventario completo</li>
+        <li>Ventas ilimitadas</li>
+        <li>Reportes con gráficos</li>
+        <li>Gestión de proveedores</li>
+        <li>Modo vendedor y administrador</li>
+      </ul>
+
+      <a href="/registro.html" class="btn btn-primary">Crear cuenta</a>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <h2>¿Listo para llevar tu negocio al siguiente nivel?</h2>
+    <p>Únete a cientos de negocios que ya confían en Ferdev.</p>
+
+    <a href="/registro.html" class="btn btn-white btn-large">
+      Comenzar ahora
+    </a>
+  </section>
+
+</main>
+
+<footer class="landing-footer">
+  <div>
+    <h3>Ferdev</h3>
+    <p>Sistema web para inventario y ventas.</p>
   </div>
 
-  <div class="hero-card">
-    <h3>Resumen del sistema</h3>
-    <div class="stat">
-      <span>Productos registrados</span>
-      <strong>+100</strong>
-    </div>
-    <div class="stat">
-      <span>Ventas controladas</span>
-      <strong>POS</strong>
-    </div>
-    <div class="stat">
-      <span>Reportes</span>
-      <strong>Gráficos</strong>
-    </div>
+  <div class="footer-contact">
+    <h4>Contacto</h4>
+    <p>📧 deividguerreropedraza08@gmail.com</p>
+    <p>📍 Lima, Perú</p>
   </div>
-</section>
-
-<section id="beneficios" class="section">
-  <h2>¿Para qué sirve?</h2>
-
-  <div class="grid">
-    <div class="card">
-      <h3>Inventario ordenado</h3>
-      <p>Controla productos, categorías, marcas, unidades y stock disponible.</p>
-    </div>
-
-    <div class="card">
-      <h3>Ventas rápidas</h3>
-      <p>Registra ventas, selecciona vendedor y descuenta stock automáticamente.</p>
-    </div>
-
-    <div class="card">
-      <h3>Reportes inteligentes</h3>
-      <p>Visualiza productos más vendidos, stock bajo y desempeño de vendedores.</p>
-    </div>
-
-    <div class="card">
-      <h3>Proveedores</h3>
-      <p>Encuentra proveedores relacionados con productos o categorías específicas.</p>
-    </div>
-  </div>
-</section>
-
-<section id="demo" class="section demo">
-  <h2>Demo limitada</h2>
-
-  <p>
-    Prueba una versión básica del sistema para conocer cómo funciona el registro de ventas,
-    búsqueda de productos y control de stock.
-  </p>
-
-  <a href="/login.html" class="btn-primary">Entrar a demo</a>
-</section>
-
-<section id="planes" class="section">
-  <h2>Plan único</h2>
-
-  <div class="pricing">
-    <h3>Plan Ferdev</h3>
-    <p class="price">S/ 49.90 <span>/ mes</span></p>
-
-    <ul>
-      <li>Inventario completo</li>
-      <li>Ventas ilimitadas</li>
-      <li>Reportes con gráficos</li>
-      <li>Gestión de proveedores</li>
-      <li>Modo vendedor y administrador</li>
-    </ul>
-
-    <a href="/registro.html" class="btn-primary">Crear cuenta</a>
-  </div>
-</section>
-
-<footer>
-  <p>© 2026 Ferdev - Sistema web para inventario y ventas</p>
 </footer>
 
 </body>
