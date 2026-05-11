@@ -1262,3 +1262,16 @@ body.dashboard-page .main {
     grid-template-columns: 1fr;
   }
 }
+
+/* FIX DEFINITIVO: MISMO COLOR PARA TODOS LOS ITEMS ACTIVOS */
+.sidebar .menu li.active,
+body.dashboard-page .sidebar .menu li.active {
+  background: #2563eb !important;
+  background-image: none !important;
+  box-shadow: 0 16px 34px rgba(37, 99, 235, 0.34) !important;
+}
+
+.sidebar .menu li.active a,
+body.dashboard-page .sidebar .menu li.active a {
+  color: #ffffff !important;
+}
