@@ -174,8 +174,12 @@ body {
 
 .main {
   flex: 1;
-  padding: 26px 30px 40px;
+  padding: 34px 34px 50px;
   overflow-x: auto;
+
+  background:
+    radial-gradient(circle at top left, rgba(37,99,235,0.05), transparent 22%),
+    linear-gradient(180deg, #f8fbff 0%, #f3f7fd 100%);
 }
 
 .main h1 {
@@ -801,7 +805,7 @@ body.dashboard-page {
 }
 
 body.dashboard-page .sidebar {
-  width: 285px;
+  width: 300px;
   padding: 30px 22px;
   background:
     radial-gradient(circle at 30% 5%, rgba(37, 99, 235, 0.35), transparent 22%),
@@ -824,7 +828,7 @@ body.dashboard-page .menu {
 }
 
 body.dashboard-page .menu li a {
-  padding: 17px 18px;
+  padding: 18px 20px;
   font-size: 18px;
   border-radius: 16px;
 }
