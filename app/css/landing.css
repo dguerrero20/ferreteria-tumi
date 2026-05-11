@@ -208,20 +208,21 @@ body {
 }
 
 .hero-content {
-  width: min(1400px, 92%);
+  width: min(1650px, 92%);
   margin: auto;
 
   padding-top: 90px;
 
   display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  gap: 60px;
+  grid-template-columns: 0.78fr 1.22fr;
+  gap: 120px;
   align-items: center;
 }
 
 .hero-copy {
   position: relative;
   z-index: 2;
+  margin-left: -35px;
 }
 
 .hero-badge {
@@ -272,7 +273,7 @@ body {
 }
 
 .hero-copy p {
-  max-width: 680px;
+  max-width: 560px;
 
   color: var(--muted);
 
@@ -299,7 +300,7 @@ body {
 
 .dashboard-mockup {
   position: absolute;
-  right: 0;
+  right: -80px;
   top: 30px;
 
   width: 850px;
@@ -535,7 +536,7 @@ body {
 }
 
 .floating-stock {
-  left: -40px;
+  left: 5px;
   top: 250px;
 }
 
