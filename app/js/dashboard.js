@@ -302,35 +302,8 @@ function inicializarMenuUsuario() {
   });
 }
 
-function inicializarTema() {
-  const toggle = document.getElementById('themeToggle');
-  if (!toggle) return;
 
-  const temaGuardado = localStorage.getItem('tema') || 'claro';
-
-  if (temaGuardado === 'oscuro') {
-    document.body.classList.add('dark-mode');
-    toggle.classList.add('active');
-    toggle.querySelector('.theme-icon').textContent = '🌙';
-    toggle.querySelector('.theme-text').textContent = 'Modo oscuro';
-  }
-
-  toggle.addEventListener('click', (event) => {
-    event.stopPropagation();
-
-    document.body.classList.toggle('dark-mode');
-    toggle.classList.toggle('active');
-
-    const oscuro = document.body.classList.contains('dark-mode');
-
-    localStorage.setItem('tema', oscuro ? 'oscuro' : 'claro');
-
-    toggle.querySelector('.theme-icon').textContent = oscuro ? '🌙' : '☀️';
-    toggle.querySelector('.theme-text').textContent = oscuro ? 'Modo oscuro' : 'Modo claro';
-  });
-}
 inicializarUsuarioDashboard();
 inicializarMenuUsuario();
 inicializarNotificaciones();
-inicializarTema();
 cargarDashboard();

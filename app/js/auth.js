@@ -50,3 +50,61 @@ function esAdmin() {
 
   return usuario?.modo_admin === true;
 }
+
+/* ========================= */
+/* TEMA GLOBAL */
+/* ========================= */
+
+function aplicarTemaGuardado() {
+  const tema = localStorage.getItem('tema');
+
+  if (tema === 'oscuro') {
+    document.body.classList.add('dark-mode');
+  } else {
+    document.body.classList.remove('dark-mode');
+  }
+}
+
+function toggleTema() {
+  document.body.classList.toggle('dark-mode');
+
+  const oscuro = document.body.classList.contains('dark-mode');
+
+  localStorage.setItem(
+    'tema',
+    oscuro ? 'oscuro' : 'claro'
+  );
+
+  actualizarBotonTema();
+}
+
+function actualizarBotonTema() {
+  const toggle = document.getElementById('themeToggle');
+
+  if (!toggle) return;
+
+  const oscuro = document.body.classList.contains('dark-mode');
+
+  toggle.classList.toggle('active', oscuro);
+
+  toggle.querySelector('.theme-icon').textContent =
+    oscuro ? '🌙' : '☀️';
+
+  toggle.querySelector('.theme-text').textContent =
+    oscuro ? 'Modo oscuro' : 'Modo claro';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  aplicarTemaGuardado();
+
+  const toggle = document.getElementById('themeToggle');
+
+  if (toggle) {
+    actualizarBotonTema();
+
+    toggle.addEventListener('click', (event) => {
+      event.stopPropagation();
+      toggleTema();
+    });
+  }
+});
