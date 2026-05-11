@@ -5,28 +5,32 @@
   <title>Login - Ferretería</title>
   <link rel="stylesheet" href="/css/global.css">
 </head>
-<body>
 
-<div class="main" style="max-width: 420px; margin: 80px auto;">
-  <div class="box">
+<body class="auth-page">
+
+<div class="auth-container">
+  <div class="auth-card">
     <h1>Ingresar</h1>
     <br>
 
-    <input type="email" id="email" placeholder="Correo electrónico" style="width:100%;">
+    <input type="email" id="email" placeholder="Correo electrónico">
     <br><br>
 
-    <input type="password" id="password" placeholder="Contraseña" style="width:100%;">
+    <input type="password" id="password" placeholder="Contraseña">
     <br><br>
 
-    <button onclick="login()" style="width:100%;">Ingresar</button>
+    <button onclick="login()">Ingresar</button>
 
     <p class="mensaje" id="mensaje"></p>
 
     <br>
+
     <a href="/recuperar.html">¿Olvidaste tu contraseña?</a>
   </div>
 </div>
 
 <script src="/js/login.js"></script>
+<script src="/js/transitions.js"></script>
+
 </body>
 </html>

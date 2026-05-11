@@ -275,3 +275,111 @@ tbody tr:hover {
     grid-template-columns: 1fr !important;
   }
 }
+/* ============================= */
+/* FONDOS MODERNOS Y TRANSICIÓN */
+/* ============================= */
+
+body.auth-page {
+  display: block;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(37, 99, 235, 0.18), transparent 28%),
+    radial-gradient(circle at 85% 20%, rgba(16, 185, 129, 0.18), transparent 26%),
+    linear-gradient(135deg, #f8fafc 0%, #eef2ff 45%, #f8fafc 100%);
+  overflow-x: hidden;
+  position: relative;
+}
+
+body.auth-page::before {
+  content: '';
+  position: fixed;
+  width: 420px;
+  height: 420px;
+  right: -120px;
+  top: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(14, 165, 233, 0.08));
+  z-index: -1;
+}
+
+body.auth-page::after {
+  content: '';
+  position: fixed;
+  width: 320px;
+  height: 320px;
+  left: -90px;
+  bottom: -80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.16), rgba(37, 99, 235, 0.08));
+  z-index: -1;
+}
+
+.auth-container {
+  max-width: 430px;
+  margin: 80px auto;
+  animation: fadeUp 0.7s ease both;
+}
+
+.auth-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  border-radius: 28px;
+  padding: 34px;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+}
+
+.auth-card h1 {
+  font-size: 32px;
+  color: #0f172a;
+}
+
+.auth-card input {
+  width: 100%;
+  height: 46px;
+}
+
+.auth-card button {
+  width: 100%;
+  height: 48px;
+  border-radius: 14px;
+  box-shadow: 0 12px 25px rgba(37, 99, 235, 0.25);
+}
+
+.auth-card a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* transición tipo cubrir */
+.page-transition {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18), transparent 30%),
+    linear-gradient(135deg, #2563eb, #0f172a);
+  z-index: 99999;
+  transform: translateX(0);
+  transition: transform 0.55s ease;
+  pointer-events: none;
+}
+
+.page-transition.hide {
+  transform: translateX(100%);
+}
+
+.page-transition.show {
+  transform: translateX(0);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

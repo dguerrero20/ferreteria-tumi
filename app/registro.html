@@ -5,35 +5,36 @@
   <title>Registro - Ferretería SaaS</title>
   <link rel="stylesheet" href="/css/global.css">
 </head>
-<body>
 
-<div class="main" style="max-width: 420px; margin: 80px auto;">
-  <div class="box">
+<body class="auth-page">
+
+<div class="auth-container">
+  <div class="auth-card">
 
     <h1>Crear cuenta</h1>
     <br>
 
-    <input type="text" id="empresa" placeholder="Nombre de la empresa" style="width:100%; margin-bottom:12px;">
+    <input type="text" id="empresa" placeholder="Nombre de la empresa" style="margin-bottom:12px;">
 
-    <input type="text" id="nombre" placeholder="Tu nombre" style="width:100%; margin-bottom:12px;">
+    <input type="text" id="nombre" placeholder="Tu nombre" style="margin-bottom:12px;">
 
-    <input type="email" id="email" placeholder="Correo electrónico" style="width:100%; margin-bottom:12px;">
+    <input type="email" id="email" placeholder="Correo electrónico" style="margin-bottom:12px;">
 
-    <input type="password" id="password" placeholder="Contraseña de acceso" style="width:100%; margin-bottom:8px;">
+    <input type="password" id="password" placeholder="Contraseña de acceso" style="margin-bottom:8px;">
 
     <label style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
-      <input type="checkbox" onclick="togglePassword('password')" style="width:auto;">
+      <input type="checkbox" onclick="togglePassword('password')" style="width:auto; height:auto;">
       Mostrar contraseña de acceso
     </label>
 
-    <input type="password" id="admin_password" placeholder="Contraseña de administrador" style="width:100%; margin-bottom:8px;">
+    <input type="password" id="admin_password" placeholder="Contraseña de administrador" style="margin-bottom:8px;">
 
     <label style="display:flex; align-items:center; gap:8px; margin-bottom:20px;">
-      <input type="checkbox" onclick="togglePassword('admin_password')" style="width:auto;">
+      <input type="checkbox" onclick="togglePassword('admin_password')" style="width:auto; height:auto;">
       Mostrar contraseña de administrador
     </label>
 
-    <button onclick="registrarCuenta()" style="width:100%;">
+    <button onclick="registrarCuenta()">
       Crear cuenta
     </button>
 
@@ -47,5 +48,7 @@
 </div>
 
 <script src="/js/registro.js"></script>
+<script src="/js/transitions.js"></script>
+
 </body>
 </html>
