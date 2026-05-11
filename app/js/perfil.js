@@ -19,9 +19,7 @@ document.getElementById('rol')
 actualizarModoAdmin();
 
 function ocultarEmail(email) {
-
   const partes = email.split('@');
-
   const nombre = partes[0];
   const dominio = partes[1];
 
@@ -29,11 +27,10 @@ function ocultarEmail(email) {
     return email;
   }
 
-  return `${nombre.substring(0,2)}********${nombre.substring(nombre.length - 2)}@${dominio}`;
+  return `${nombre.substring(0, 2)}********${nombre.substring(nombre.length - 2)}@${dominio}`;
 }
 
 function actualizarModoAdmin() {
-
   const usuarioActual =
     JSON.parse(localStorage.getItem('usuario'));
 
@@ -44,16 +41,13 @@ function actualizarModoAdmin() {
     document.getElementById('btnAdmin');
 
   if (usuarioActual.modo_admin) {
-
     modoTexto.textContent = 'Sí';
 
     boton.textContent =
       'Salir del modo administrador';
 
     boton.classList.add('danger');
-
   } else {
-
     modoTexto.textContent = 'No';
 
     boton.textContent =
@@ -64,7 +58,6 @@ function actualizarModoAdmin() {
 }
 
 async function activarModoAdmin() {
-
   const usuarioActual =
     JSON.parse(localStorage.getItem('usuario'));
 
@@ -72,7 +65,6 @@ async function activarModoAdmin() {
     document.getElementById('mensaje');
 
   if (usuarioActual.modo_admin) {
-
     usuarioActual.modo_admin = false;
 
     localStorage.setItem(
@@ -95,7 +87,6 @@ async function activarModoAdmin() {
     document.getElementById('adminPassword').value;
 
   if (!adminPassword) {
-
     mensaje.textContent =
       'Ingresa contraseña admin';
 
@@ -106,7 +97,6 @@ async function activarModoAdmin() {
   }
 
   try {
-
     const res = await fetch(API_ADMIN, {
       method: 'POST',
       headers: {
@@ -122,7 +112,6 @@ async function activarModoAdmin() {
     const data = await res.json();
 
     if (!res.ok) {
-
       mensaje.textContent =
         data.msg;
 
@@ -148,7 +137,6 @@ async function activarModoAdmin() {
       'green';
 
   } catch (error) {
-
     console.error(error);
 
     mensaje.textContent =
@@ -160,7 +148,6 @@ async function activarModoAdmin() {
 }
 
 async function recuperarAdminPassword() {
-
   const mensaje =
     document.getElementById('mensajeAdminRecovery');
 
@@ -174,7 +161,6 @@ async function recuperarAdminPassword() {
   }
 
   try {
-
     const res = await fetch(
       API_RECUPERAR_ADMIN,
       {
@@ -198,7 +184,6 @@ async function recuperarAdminPassword() {
       res.ok ? 'green' : 'red';
 
   } catch (error) {
-
     console.error(error);
 
     mensaje.textContent =
@@ -208,3 +193,9 @@ async function recuperarAdminPassword() {
       'red';
   }
 }
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    activarModoAdmin();
+  }
+});

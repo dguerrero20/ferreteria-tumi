@@ -5,10 +5,11 @@
   <title>Restablecer contraseña admin</title>
   <link rel="stylesheet" href="/css/global.css">
 </head>
-<body>
 
-<div class="main" style="max-width: 440px; margin: 80px auto;">
-  <div class="box">
+<body class="auth-page">
+
+<div class="auth-container">
+  <div class="auth-card">
     <h1>Nueva contraseña admin</h1>
     <br>
 
@@ -19,32 +20,37 @@
 
     <br>
 
-    <label>Nueva contraseña administrador</label>
-    <input type="password" id="adminPassword" placeholder="Nueva contraseña admin" style="width:100%;">
+    <input type="password" id="adminPassword" placeholder="Nueva contraseña admin">
     <br><br>
 
-    <label>Confirmar contraseña administrador</label>
-    <input type="password" id="confirmAdminPassword" placeholder="Confirmar contraseña admin" style="width:100%;">
+    <input type="password" id="confirmAdminPassword" placeholder="Confirmar contraseña admin">
     <br><br>
 
     <label style="display:flex; align-items:center; gap:8px;">
-      <input type="checkbox" onclick="toggleAdminPassword()" style="width:auto;">
+      <input type="checkbox" onclick="toggleAdminPassword()" style="width:auto; height:auto;">
       Mostrar contraseña
     </label>
 
     <br>
 
-    <button onclick="restablecerAdminPassword()" style="width:100%;">
+    <button onclick="restablecerAdminPassword()">
       Cambiar contraseña admin
     </button>
 
     <p class="mensaje" id="mensaje"></p>
 
     <br>
+
     <a href="/login.html">Volver al login</a>
+
+    <br><br>
+
+    <a href="/index.html">Volver al inicio</a>
   </div>
 </div>
 
 <script src="/js/restablecer-admin.js"></script>
+<script src="/js/transitions.js"></script>
+
 </body>
 </html>

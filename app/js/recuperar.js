@@ -6,6 +6,11 @@ let intervalo = null;
 async function recuperarPassword() {
   const email = document.getElementById('email').value.trim();
   const mensaje = document.getElementById('mensaje');
+  const boton = document.getElementById('btnRecuperar');
+
+  if (boton.disabled) {
+    return;
+  }
 
   if (!email) {
     mensaje.textContent = 'Ingresa tu correo';
@@ -62,3 +67,9 @@ function bloquearBoton() {
     }
   }, 1000);
 }
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    recuperarPassword();
+  }
+});

@@ -75,3 +75,9 @@ async function restablecerAdminPassword() {
     mensaje.style.color = 'red';
   }
 }
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    restablecerAdminPassword();
+  }
+});

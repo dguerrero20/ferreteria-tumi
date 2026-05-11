@@ -12,7 +12,6 @@ async function login() {
   }
 
   try {
-
     const res = await fetch(API_LOGIN, {
       method: 'POST',
       headers: {
@@ -42,16 +41,18 @@ async function login() {
       JSON.stringify(usuario)
     );
 
-    window.location.href =
-      '/pages/dashboard.html';
+    window.location.href = '/pages/dashboard.html';
 
   } catch (error) {
-
     console.error(error);
 
-    mensaje.textContent =
-      'Error conectando con el servidor';
-
+    mensaje.textContent = 'Error conectando con el servidor';
     mensaje.style.color = 'red';
   }
 }
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    login();
+  }
+});

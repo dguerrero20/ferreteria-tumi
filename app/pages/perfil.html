@@ -1,72 +1,133 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Perfil</title>
-    <link rel="stylesheet" href="../css/global.css">
+  <meta charset="UTF-8">
+  <title>Perfil</title>
+  <link rel="stylesheet" href="../css/global.css">
 </head>
+
 <body>
 
-    <!-- Menú Lateral -->
-    <div class="sidebar">
-        <h2>Ferretería</h2>
-        <ul class="menu">
-            <li><a href="/pages/dashboard.html">Dashboard</a></li>
-            <li><a href="/pages/productos.html">Productos</a></li>
-            <li class="solo-admin"><a href="/pages/categorias.html">Categorías</a></li>
-            <li><a href="/pages/ventas.html">Ventas</a></li>
-            <li><a href="/pages/proveedores.html">Proveedores</a></li>
-            <li><a href="/pages/reportes.html">Reportes</a></li>
-            <li class="active"><a href="/pages/perfil.html">Perfil</a></li>
-            <li><a href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
-        </ul>
-    </div>
+<div class="sidebar">
+  <h2>FERDEV</h2>
 
-    <!-- Contenido Principal -->
-    <div class="main">
-        <h1>Perfil</h1>
-        <br>
+  <ul class="menu">
+    <li>
+      <a href="/pages/dashboard.html">Dashboard</a>
+    </li>
 
-        <!-- Caja de Información -->
-        <div class="box">
-            <h3>Información del usuario</h3>
-            <br>
-            <p><strong>Nombre:</strong> <span id="nombre"></span></p>
-            <br>
-            <p><strong>Email:</strong> <span id="email"></span></p>
-            <br>
-            <p><strong>Rol:</strong> <span id="rol"></span></p>
-            <br>
-            <p><strong>Modo administrador:</strong> <span id="modoAdmin">No</span></p>
-        </div>
+    <li>
+      <a href="/pages/productos.html">Productos</a>
+    </li>
 
-        <!-- Caja de Activación Admin -->
-        <div class="box">
-            <h3>Activar modo administrador</h3>
-            <br>
-            <input type="password" id="adminPassword" placeholder="Contraseña administrador">
-            <br><br>
-            <button id="btnAdmin" onclick="activarModoAdmin()">
-                Activar modo administrador
-            </button>
-            <p class="mensaje" id="mensaje"></p>
-            <a href="#" onclick="recuperarAdminPassword(); return false;">
-  ¿Olvidaste tu contraseña de administrador?
-</a>
+    <li class="solo-admin">
+      <a href="/pages/categorias.html">Categorías</a>
+    </li>
 
-<p
-  class="mensaje"
-  id="mensajeAdminRecovery"
-></p>
-        </div>
-    </div>
+    <li>
+      <a href="/pages/ventas.html">Ventas</a>
+    </li>
 
-    <!-- Scripts -->
-    <script src="../js/auth.js"></script>
-    <script>
-        verificarSesion();
-    </script>
-    <script src="../js/perfil.js"></script>
+    <li>
+      <a href="/pages/proveedores.html">Proveedores</a>
+    </li>
+
+    <li>
+      <a href="/pages/reportes.html">Reportes</a>
+    </li>
+
+    <li class="active">
+      <a href="/pages/perfil.html">Perfil</a>
+    </li>
+
+    <li>
+      <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+    </li>
+  </ul>
+</div>
+
+<div class="main">
+  <h1>Perfil</h1>
+  <br>
+
+  <div class="box">
+    <h3>Información del usuario</h3>
+    <br>
+
+    <p>
+      <strong>Nombre:</strong>
+      <span id="nombre"></span>
+    </p>
+
+    <br>
+
+    <p>
+      <strong>Email:</strong>
+      <span id="email"></span>
+    </p>
+
+    <br>
+
+    <p>
+      <strong>Rol:</strong>
+      <span id="rol"></span>
+    </p>
+
+    <br>
+
+    <p>
+      <strong>Modo administrador:</strong>
+      <span id="modoAdmin">No</span>
+    </p>
+  </div>
+
+  <div class="box">
+    <h3>Activar modo administrador</h3>
+    <br>
+
+    <input
+      type="password"
+      id="adminPassword"
+      placeholder="Contraseña administrador"
+    >
+
+    <br><br>
+
+    <button
+      id="btnAdmin"
+      onclick="activarModoAdmin()"
+    >
+      Activar modo administrador
+    </button>
+
+    <p
+      class="mensaje"
+      id="mensaje"
+    ></p>
+
+    <br>
+
+    <a
+      href="#"
+      onclick="recuperarAdminPassword(); return false;"
+    >
+      ¿Olvidaste tu contraseña de administrador?
+    </a>
+
+    <p
+      class="mensaje"
+      id="mensajeAdminRecovery"
+    ></p>
+  </div>
+</div>
+
+<script src="../js/auth.js"></script>
+
+<script>
+  verificarSesion();
+</script>
+
+<script src="../js/perfil.js"></script>
 
 </body>
 </html>
