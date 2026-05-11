@@ -22,7 +22,12 @@ async function cargarDashboard() {
     if (!data.ultimas_ventas || data.ultimas_ventas.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="3">No hay ventas registradas</td>
+          <td colspan="3">
+  <div class="empty-state">
+    <div class="empty-state-icon">🧾</div>
+    No hay ventas registradas
+  </div>
+</td>
         </tr>
       `;
       return;

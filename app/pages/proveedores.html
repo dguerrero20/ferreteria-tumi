@@ -2,63 +2,96 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Proveedores</title>
+  <title>Proveedores | Ferdev</title>
   <link rel="stylesheet" href="../css/global.css">
 </head>
+
 <body>
 
 <div class="sidebar">
-  <h2>Ferretería</h2>
+
+  <h2>
+    <span class="brand-fer">Fer</span><span class="brand-dev">dev</span>
+  </h2>
 
   <ul class="menu">
-    <ul class="menu">
 
-  <li>
-    <a href="/pages/dashboard.html">Dashboard</a>
-  </li>
+    <li>
+      <a href="/pages/dashboard.html">Dashboard</a>
+    </li>
 
-  <li>
-    <a href="/pages/productos.html">Productos</a>
-  </li>
+    <li>
+      <a href="/pages/productos.html">Productos</a>
+    </li>
 
-  <li class="solo-admin">
-  <a href="/pages/categorias.html">Categorías</a>
-</li>
+    <li class="solo-admin">
+      <a href="/pages/categorias.html">Categorías</a>
+    </li>
 
-  <li>
-    <a href="/pages/ventas.html">Ventas</a>
-  </li>
+    <li>
+      <a href="/pages/ventas.html">Ventas</a>
+    </li>
 
-  <li class="active">
-    <a href="/pages/proveedores.html">Proveedores</a>
-  </li>
+    <li class="active">
+      <a href="/pages/proveedores.html">Proveedores</a>
+    </li>
 
-  <li>
-    <a href="/pages/reportes.html">Reportes</a>
-  </li>
+    <li>
+      <a href="/pages/reportes.html">Reportes</a>
+    </li>
 
-  <li>
-    <a href="/pages/perfil.html">Perfil</a>
-  </li>
+    <li>
+      <a href="/pages/perfil.html">Perfil</a>
+    </li>
 
-  <li>
-    <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
-  </li>
+    <li>
+      <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+    </li>
 
-</ul>
   </ul>
+
 </div>
 
 <div class="main">
-  <h1>Proveedores</h1>
-  <br>
 
+  <div class="main-header">
+
+    <div>
+      <h1>Proveedores</h1>
+      <p>
+        Gestiona contactos, empresas proveedoras y filtros de abastecimiento.
+      </p>
+    </div>
+
+    <div class="badge primary">
+      Gestión de compras
+    </div>
+
+  </div>
+
+  <!-- FILTROS -->
   <div class="box">
-    <h3>Buscar y filtrar proveedores</h3>
+
+    <div class="filter-panel">
+
+      <div>
+        <h3>Buscar y filtrar proveedores</h3>
+        <p style="margin-top:6px; color: var(--text-secondary);">
+          Encuentra proveedores rápidamente por empresa, categoría o tipo.
+        </p>
+      </div>
+
+    </div>
+
     <br>
 
     <div class="filters">
-      <input type="text" id="buscar" placeholder="Buscar por empresa, nombre, teléfono...">
+
+      <input
+        type="text"
+        id="buscar"
+        placeholder="Buscar por empresa, nombre o teléfono..."
+      >
 
       <select id="categoria">
         <option value="">Todas las categorías</option>
@@ -68,55 +101,152 @@
         <option value="">Todos los tipos</option>
       </select>
 
-      <button onclick="filtrarProveedores()">Filtrar</button>
-      <button onclick="limpiarFiltros()">Limpiar</button>
+      <button onclick="filtrarProveedores()">
+        Filtrar
+      </button>
+
+      <button
+        class="secondary"
+        onclick="limpiarFiltros()"
+      >
+        Limpiar
+      </button>
+
     </div>
+
   </div>
 
-  <div class="box" id="formProveedor" style="display:none;">
-    <h3>Registrar proveedor</h3>
+  <!-- FORM ADMIN -->
+  <div
+    class="box"
+    id="formProveedor"
+    style="display:none;"
+  >
+
+    <div class="filter-panel">
+
+      <div>
+        <h3>Registrar proveedor</h3>
+        <p style="margin-top:6px; color: var(--text-secondary);">
+          Agrega nuevos contactos y empresas proveedoras.
+        </p>
+      </div>
+
+      <div class="badge success">
+        Modo administrador
+      </div>
+
+    </div>
+
     <br>
 
-    <input type="text" id="nuevoNombre" placeholder="Nombre del contacto">
-    <input type="text" id="nuevaEmpresa" placeholder="Empresa">
-    <input type="text" id="nuevoTelefono" placeholder="Teléfono">
-    <input type="email" id="nuevoEmail" placeholder="Email">
-    <input type="text" id="nuevaDireccion" placeholder="Dirección">
+    <div class="form-grid">
 
-    <button onclick="crearProveedor()">Guardar proveedor</button>
+      <input
+        type="text"
+        id="nuevoNombre"
+        placeholder="Nombre del contacto"
+      >
 
-    <p class="mensaje" id="mensajeProveedor"></p>
-  </div>
+      <input
+        type="text"
+        id="nuevaEmpresa"
+        placeholder="Empresa"
+      >
 
-  <div class="box">
-    <h3>Listado de proveedores</h3>
+      <input
+        type="text"
+        id="nuevoTelefono"
+        placeholder="Teléfono"
+      >
+
+      <input
+        type="email"
+        id="nuevoEmail"
+        placeholder="Email"
+      >
+
+      <input
+        type="text"
+        id="nuevaDireccion"
+        placeholder="Dirección"
+      >
+
+    </div>
+
     <br>
 
-    <table>
-      <thead>
-  <tr>
-    <th>Empresa</th>
-    <th>Contacto</th>
-    <th>Teléfono</th>
-    <th>Email</th>
-    <th>Dirección</th>
+    <button onclick="crearProveedor()">
+      Guardar proveedor
+    </button>
 
-    <th id="accionesHeader" style="display:none;">
-      Admin
-    </th>
-  </tr>
-</thead>
+    <p
+      class="mensaje"
+      id="mensajeProveedor"
+    ></p>
 
-      <tbody id="proveedores"></tbody>
-    </table>
   </div>
+
+  <!-- TABLA -->
+  <div class="table-box">
+
+    <div class="filter-panel">
+
+      <div>
+        <h3>Listado de proveedores</h3>
+        <p style="margin-top:6px; color: var(--text-secondary);">
+          Directorio general de abastecimiento y contactos.
+        </p>
+      </div>
+
+      <div class="badge warning">
+        Proveedores activos
+      </div>
+
+    </div>
+
+    <br>
+
+    <div class="table-responsive">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Empresa</th>
+            <th>Contacto</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Dirección</th>
+
+            <th
+              id="accionesHeader"
+              style="display:none;"
+            >
+              Acciones
+            </th>
+          </tr>
+
+        </thead>
+
+        <tbody id="proveedores"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
 </div>
 
 <script src="../js/auth.js"></script>
+
 <script>
   verificarSesion();
 </script>
 
 <script src="../js/proveedores.js"></script>
+
 </body>
 </html>

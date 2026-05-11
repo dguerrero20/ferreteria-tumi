@@ -2,63 +2,95 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Productos</title>
+  <title>Productos | Ferdev</title>
   <link rel="stylesheet" href="../css/global.css">
 </head>
 
 <body>
 
 <div class="sidebar">
-  <h2>Ferretería</h2>
+
+  <h2>
+    <span class="brand-fer">Fer</span><span class="brand-dev">dev</span>
+  </h2>
 
   <ul class="menu">
-    <ul class="menu">
 
-  <li>
-    <a href="/pages/dashboard.html">Dashboard</a>
-  </li>
+    <li>
+      <a href="/pages/dashboard.html">Dashboard</a>
+    </li>
 
-  <li class="active">
-    <a href="/pages/productos.html">Productos</a>
-  </li>
+    <li class="active">
+      <a href="/pages/productos.html">Productos</a>
+    </li>
 
- <li class="solo-admin">
-  <a href="/pages/categorias.html">Categorías</a>
-</li>
+    <li class="solo-admin">
+      <a href="/pages/categorias.html">Categorías</a>
+    </li>
 
-  <li>
-    <a href="/pages/ventas.html">Ventas</a>
-  </li>
+    <li>
+      <a href="/pages/ventas.html">Ventas</a>
+    </li>
 
-  <li>
-    <a href="/pages/proveedores.html">Proveedores</a>
-  </li>
+    <li>
+      <a href="/pages/proveedores.html">Proveedores</a>
+    </li>
 
-  <li>
-    <a href="/pages/reportes.html">Reportes</a>
-  </li>
+    <li>
+      <a href="/pages/reportes.html">Reportes</a>
+    </li>
 
-  <li>
-    <a href="/pages/perfil.html">Perfil</a>
-  </li>
+    <li>
+      <a href="/pages/perfil.html">Perfil</a>
+    </li>
 
-  <li>
-    <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
-  </li>
+    <li>
+      <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+    </li>
 
-</ul>
   </ul>
+
 </div>
 
 <div class="main">
-  <h1>Productos</h1>
-  <br>
 
+  <div class="main-header">
+
+    <div>
+      <h1>Productos</h1>
+      <p>
+        Gestiona inventario, precios, categorías y stock de todos tus productos.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <div class="badge primary">
+        Inventario activo
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FORMULARIO ADMIN -->
   <div class="box" id="formProducto" style="display:none;">
-    <h3>Agregar producto</h3>
+
+    <div class="filter-panel">
+      <div>
+        <h3>Registrar producto</h3>
+        <p style="margin-top:6px; color: var(--text-secondary);">
+          Agrega nuevos productos al inventario.
+        </p>
+      </div>
+
+      <div class="badge success">
+        Modo administrador
+      </div>
+    </div>
+
     <br>
 
-    <div class="filters">
+    <div class="form-grid">
+
       <select id="nuevaCategoria">
         <option value="">Seleccionar categoría</option>
       </select>
@@ -70,57 +102,153 @@
       <select id="nuevaVariante">
         <option value="">Seleccionar variante</option>
       </select>
+
+      <input
+        type="text"
+        id="nuevaMarca"
+        placeholder="Marca"
+      >
+
+      <input
+        type="text"
+        id="nuevaUnidad"
+        placeholder="Unidad: unidad, kg, litro..."
+      >
+
+      <input
+        type="number"
+        id="nuevoPrecio"
+        placeholder="Precio"
+        step="0.01"
+      >
+
+      <input
+        type="number"
+        id="nuevoStock"
+        placeholder="Stock"
+        step="0.01"
+      >
+
+      <input
+        type="number"
+        id="nuevoStockMin"
+        placeholder="Stock mínimo"
+        step="0.01"
+      >
+
     </div>
 
     <br>
 
-    <div class="filters">
-      <input type="text" id="nuevaMarca" placeholder="Marca">
-      <input type="text" id="nuevaUnidad" placeholder="Unidad: unidad, kg, litro...">
-      <input type="number" id="nuevoPrecio" placeholder="Precio" step="0.01">
-      <input type="number" id="nuevoStock" placeholder="Stock" step="0.01">
-      <input type="number" id="nuevoStockMin" placeholder="Stock mínimo" step="0.01">
+    <button onclick="crearProducto()">
+      Guardar producto
+    </button>
+
+    <p
+      class="mensaje"
+      id="mensajeProducto"
+    ></p>
+
+  </div>
+
+  <!-- BUSCADOR -->
+  <div class="box">
+
+    <div class="filter-panel">
+
+      <div>
+        <h3>Buscar productos</h3>
+        <p style="margin-top:6px; color: var(--text-secondary);">
+          Busca por nombre, marca o categoría.
+        </p>
+      </div>
+
     </div>
 
     <br>
 
-    <button onclick="crearProducto()">Guardar producto</button>
+    <div class="search-box">
 
-    <p class="mensaje" id="mensajeProducto"></p>
+      <input
+        type="text"
+        id="buscar"
+        placeholder="Buscar producto, marca o categoría"
+      >
+
+      <button onclick="buscarProductos()">
+        Buscar
+      </button>
+
+      <button
+        class="secondary"
+        onclick="cargarProductos()"
+      >
+        Ver todos
+      </button>
+
+    </div>
+
   </div>
 
-  <div class="search-box">
-    <input type="text" id="buscar" placeholder="Buscar producto, marca o categoría">
-    <button onclick="buscarProductos()">Buscar</button>
-    <button onclick="cargarProductos()">Ver todos</button>
-  </div>
-
+  <!-- TABLA -->
   <div class="table-box">
-    <h3>Listado de productos</h3>
+
+    <div class="filter-panel">
+
+      <div>
+        <h3>Listado de productos</h3>
+        <p style="margin-top:6px; color: var(--text-secondary);">
+          Control completo de inventario y precios.
+        </p>
+      </div>
+
+      <div class="badge warning">
+        Inventario
+      </div>
+
+    </div>
+
     <br>
 
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Producto</th>
-          <th>Categoría</th>
-          <th>Tipo</th>
-          <th>Variante</th>
-          <th>Marca</th>
-          <th>Precio</th>
-          <th>Stock</th>
-          <th>Unidad</th>
-          <th id="accionesHeader" style="display:none;">Acciones</th>
-        </tr>
-      </thead>
+    <div class="table-responsive">
 
-      <tbody id="productos"></tbody>
-    </table>
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>ID</th>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Tipo</th>
+            <th>Variante</th>
+            <th>Marca</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Unidad</th>
+
+            <th
+              id="accionesHeader"
+              style="display:none;"
+            >
+              Acciones
+            </th>
+          </tr>
+
+        </thead>
+
+        <tbody id="productos"></tbody>
+
+      </table>
+
+    </div>
+
   </div>
+
 </div>
 
 <script src="../js/auth.js"></script>
+
 <script>
   verificarSesion();
 </script>

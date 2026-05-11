@@ -70,7 +70,7 @@ function mostrarResultados(productos) {
       <td>${p.stock}</td>
       <td>${p.unidad_medida}</td>
       <td>
-        <button onclick='agregarAlCarrito(${JSON.stringify(p)})'>Agregar</button>
+        <button class="small" onclick='agregarAlCarrito(${JSON.stringify(p)})'>Agregar</button>
       </td>
     `;
 
@@ -165,7 +165,7 @@ function renderCarrito() {
         ${item.unidad_medida}
       </td>
       <td>S/ ${subtotal.toFixed(2)}</td>
-      <td><button class="danger" onclick="eliminarDelCarrito(${item.id})">X</button></td>
+      <td><button class="danger small" onclick="eliminarDelCarrito(${item.id})">X</button></td>
     `;
 
     tbody.appendChild(fila);

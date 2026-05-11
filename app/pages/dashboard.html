@@ -1,108 +1,106 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Dashboard</title>
-
-
-
+  <meta charset="UTF-8">
+  <title>Dashboard | Ferdev</title>
+  <link rel="stylesheet" href="../css/global.css">
 </head>
+
 <body>
-<link rel="stylesheet" href="../css/global.css">
-<!-- SIDEBAR -->
+
 <div class="sidebar">
-  <h2>Ferretería</h2>
+  <h2><span class="brand-fer">Fer</span><span class="brand-dev">dev</span></h2>
 
   <ul class="menu">
-
-  <ul class="menu">
-
-  <li class="active">
-    <a href="/pages/dashboard.html">Dashboard</a>
-  </li>
-
-  <li>
-    <a href="/pages/productos.html">Productos</a>
-  </li>
-
-  <li class="solo-admin">
-  <a href="/pages/categorias.html">Categorías</a>
-</li>
-
-  <li>
-    <a href="/pages/ventas.html">Ventas</a>
-  </li>
-
-  <li>
-    <a href="/pages/proveedores.html">Proveedores</a>
-  </li>
-
-  <li>
-    <a href="/pages/reportes.html">Reportes</a>
-  </li>
-
-  <li>
-    <a href="/pages/perfil.html">Perfil</a>
-  </li>
-
-  <li>
-    <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
-  </li>
-
-</ul>
-
-</ul>
+    <li class="active"><a href="/pages/dashboard.html">Dashboard</a></li>
+    <li><a href="/pages/productos.html">Productos</a></li>
+    <li class="solo-admin"><a href="/pages/categorias.html">Categorías</a></li>
+    <li><a href="/pages/ventas.html">Ventas</a></li>
+    <li><a href="/pages/proveedores.html">Proveedores</a></li>
+    <li><a href="/pages/reportes.html">Reportes</a></li>
+    <li><a href="/pages/perfil.html">Perfil</a></li>
+    <li><a href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
+  </ul>
 </div>
 
-<!-- MAIN -->
 <div class="main">
 
-  <!-- CARDS -->
+  <div class="main-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Resumen general de ventas, productos y stock de tu negocio.</p>
+    </div>
+
+    <div class="user-pill">
+      <div>
+        <strong>Administrador</strong>
+        <p>Panel interno</p>
+      </div>
+      <div class="user-avatar">AD</div>
+    </div>
+  </div>
+
   <div class="cards">
     <div class="card">
-      <h3>Ventas</h3>
+      <h3>Ventas registradas</h3>
       <p id="totalVentas">0</p>
     </div>
 
     <div class="card">
-      <h3>Productos</h3>
+      <h3>Productos activos</h3>
       <p id="totalProductos">0</p>
     </div>
 
     <div class="card">
-      <h3>Stock bajo</h3>
+      <h3>Productos con stock bajo</h3>
       <p id="stockBajo">0</p>
     </div>
   </div>
 
-  <!-- TABLA -->
-  <div class="table">
-    <h3>Últimas ventas</h3>
+  <div class="dashboard-grid">
+    <div class="table">
+      <h3>Últimas ventas</h3>
+      <br>
 
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Total</th>
-          <th>Fecha</th>
-        </tr>
-      </thead>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Total</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
 
-      <tbody id="ventas">
-      </tbody>
-    </table>
+          <tbody id="ventas"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>Accesos rápidos</h3>
+      <br>
+
+      <div class="quick-actions">
+        <a class="btn" href="/pages/ventas.html">Nueva venta</a>
+        <a class="btn secondary" href="/pages/productos.html">Ver productos</a>
+        <a class="btn secondary" href="/pages/reportes.html">Reportes</a>
+      </div>
+
+      <br>
+
+      <div class="resumen">
+        <strong>Consejo:</strong> revisa el stock bajo antes de registrar nuevas ventas para evitar quiebres de inventario.
+      </div>
+    </div>
   </div>
 
 </div>
 
-
 <script src="../js/auth.js"></script>
-
 <script>
   verificarSesion();
 </script>
-
-<!-- JS -->
 <script src="../js/dashboard.js"></script>
 
 </body>

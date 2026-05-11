@@ -2,123 +2,92 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Perfil</title>
+  <title>Perfil | Ferdev</title>
   <link rel="stylesheet" href="../css/global.css">
 </head>
 
 <body>
 
 <div class="sidebar">
-  <h2>FERDEV</h2>
+  <h2><span class="brand-fer">Fer</span><span class="brand-dev">dev</span></h2>
 
   <ul class="menu">
-    <li>
-      <a href="/pages/dashboard.html">Dashboard</a>
-    </li>
-
-    <li>
-      <a href="/pages/productos.html">Productos</a>
-    </li>
-
-    <li class="solo-admin">
-      <a href="/pages/categorias.html">Categorías</a>
-    </li>
-
-    <li>
-      <a href="/pages/ventas.html">Ventas</a>
-    </li>
-
-    <li>
-      <a href="/pages/proveedores.html">Proveedores</a>
-    </li>
-
-    <li>
-      <a href="/pages/reportes.html">Reportes</a>
-    </li>
-
-    <li class="active">
-      <a href="/pages/perfil.html">Perfil</a>
-    </li>
-
-    <li>
-      <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
-    </li>
+    <li><a href="/pages/dashboard.html">Dashboard</a></li>
+    <li><a href="/pages/productos.html">Productos</a></li>
+    <li class="solo-admin"><a href="/pages/categorias.html">Categorías</a></li>
+    <li><a href="/pages/ventas.html">Ventas</a></li>
+    <li><a href="/pages/proveedores.html">Proveedores</a></li>
+    <li><a href="/pages/reportes.html">Reportes</a></li>
+    <li class="active"><a href="/pages/perfil.html">Perfil</a></li>
+    <li><a href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
   </ul>
 </div>
 
 <div class="main">
-  <h1>Perfil</h1>
-  <br>
 
-  <div class="box">
-    <h3>Información del usuario</h3>
-    <br>
+  <div class="main-header">
+    <div>
+      <h1>Perfil</h1>
+      <p>Gestiona tu información, seguridad y modo administrador.</p>
+    </div>
 
-    <p>
-      <strong>Nombre:</strong>
-      <span id="nombre"></span>
-    </p>
-
-    <br>
-
-    <p>
-      <strong>Email:</strong>
-      <span id="email"></span>
-    </p>
-
-    <br>
-
-    <p>
-      <strong>Rol:</strong>
-      <span id="rol"></span>
-    </p>
-
-    <br>
-
-    <p>
-      <strong>Modo administrador:</strong>
-      <span id="modoAdmin">No</span>
-    </p>
+    <div class="badge primary">Cuenta de usuario</div>
   </div>
 
-  <div class="box">
-    <h3>Activar modo administrador</h3>
-    <br>
+  <div class="profile-grid">
 
-    <input
-      type="password"
-      id="adminPassword"
-      placeholder="Contraseña administrador"
-    >
+    <div class="box">
+      <h3>Información del usuario</h3>
+      <br>
 
-    <br><br>
+      <p><strong>Nombre:</strong> <span id="nombre"></span></p>
+      <br>
 
-    <button
-      id="btnAdmin"
-      onclick="activarModoAdmin()"
-    >
-      Activar modo administrador
-    </button>
+      <p><strong>Email:</strong> <span id="email"></span></p>
+      <br>
 
-    <p
-      class="mensaje"
-      id="mensaje"
-    ></p>
+      <p><strong>Rol:</strong> <span id="rol"></span></p>
+      <br>
 
-    <br>
+      <p>
+        <strong>Modo administrador:</strong>
+        <span id="modoAdmin" class="badge warning">No</span>
+      </p>
+    </div>
 
-    <a
-      href="#"
-      onclick="recuperarAdminPassword(); return false;"
-    >
-      ¿Olvidaste tu contraseña de administrador?
-    </a>
+    <div class="box">
+      <h3>Activar modo administrador</h3>
+      <p style="margin-top:6px; color: var(--text-secondary);">
+        Ingresa tu contraseña administrativa para habilitar acciones avanzadas.
+      </p>
 
-    <p
-      class="mensaje"
-      id="mensajeAdminRecovery"
-    ></p>
+      <br>
+
+      <input
+        type="password"
+        id="adminPassword"
+        placeholder="Contraseña administrador"
+      >
+
+      <br><br>
+
+      <button id="btnAdmin" onclick="activarModoAdmin()">
+        Activar modo administrador
+      </button>
+
+      <p class="mensaje" id="mensaje"></p>
+
+      <br>
+
+      <a href="#" onclick="recuperarAdminPassword(); return false;">
+        ¿Olvidaste tu contraseña de administrador?
+      </a>
+
+      <p class="mensaje" id="mensajeAdminRecovery"></p>
+    </div>
+
   </div>
+
 </div>
 
 <script src="../js/auth.js"></script>

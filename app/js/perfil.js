@@ -41,14 +41,14 @@ function actualizarModoAdmin() {
     document.getElementById('btnAdmin');
 
   if (usuarioActual.modo_admin) {
-    modoTexto.textContent = 'Sí';
+    modoTexto.innerHTML = '<span class="badge success">Activo</span>';
 
     boton.textContent =
       'Salir del modo administrador';
 
     boton.classList.add('danger');
   } else {
-    modoTexto.textContent = 'No';
+    modoTexto.innerHTML = '<span class="badge warning">Inactivo</span>';
 
     boton.textContent =
       'Activar modo administrador';

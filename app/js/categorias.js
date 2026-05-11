@@ -44,9 +44,9 @@ async function cargarCategorias() {
         <td>${cat.id}</td>
         <td>${cat.nombre}</td>
         <td>
-          <button class="danger" onclick="eliminarCategoria(${cat.id})">
-            Eliminar
-          </button>
+          <button class="danger small" onclick="eliminarCategoria(${cat.id})">
+  Eliminar
+</button>
         </td>
       `;
 

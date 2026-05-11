@@ -194,9 +194,9 @@ function mostrarProductos(productos) {
         usuarioEsAdmin
           ? `
             <td>
-              <button class="danger" onclick="eliminarProducto(${p.id})">
-                Eliminar
-              </button>
+              <button class="danger small" onclick="eliminarProducto(${p.id})">
+  Eliminar
+</button>
             </td>
           `
           : ''
