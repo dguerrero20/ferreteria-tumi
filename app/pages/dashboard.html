@@ -49,17 +49,45 @@
   </div>
 </div>
 
-      <div class="dashboard-user" id="dashboardUserMenu">
-  <div>
+<div class="dashboard-user" id="dashboardUserMenu">
+
+  <div class="dashboard-user-info">
     <strong id="dashboardUserName">Administrador</strong>
     <span id="dashboardUserRole">Administrador</span>
   </div>
 
-  <div class="dashboard-avatar" id="dashboardAvatar">AD</div>
+  <div class="dashboard-avatar" id="dashboardAvatar">
+    AD
+  </div>
 
   <div class="user-dropdown" id="userDropdown">
-    <button onclick="cerrarSesion()">Cerrar sesión</button>
+
+    <button
+      class="theme-toggle"
+      id="themeToggle"
+      type="button"
+    >
+      <span class="theme-icon">☀️</span>
+
+      <span class="theme-text">
+        Modo claro
+      </span>
+
+      <span class="theme-switch">
+        <span class="theme-knob"></span>
+      </span>
+    </button>
+
+    <button
+      class="logout-btn"
+      onclick="cerrarSesion()"
+      type="button"
+    >
+      Cerrar sesión
+    </button>
+
   </div>
+
 </div>
     </div>
   </div>
