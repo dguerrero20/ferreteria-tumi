@@ -1453,3 +1453,17 @@ html.dark-mode-preload .main {
     transform: translateY(0);
   }
 }
+
+/* FIX RESUMEN DE REPORTES EN MODO OSCURO */
+body.dark-mode .resumen {
+  background: #111827 !important;
+  border-color: #334155 !important;
+  border-left-color: #2563eb !important;
+  color: #e5e7eb !important;
+}
+
+body.dark-mode .resumen strong,
+body.dark-mode .resumen p,
+body.dark-mode .resumen span {
+  color: #e5e7eb !important;
+}
