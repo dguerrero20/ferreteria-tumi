@@ -378,21 +378,7 @@ body.dashboard-page .main {
   color: #334155;
 }
 
-.notification::after {
-  content: "3";
-  position: absolute;
-  top: 3px;
-  right: 2px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #ef4444;
-  color: white;
-  display: grid;
-  place-items: center;
-  font-size: 11px;
-  font-weight: 900;
-}
+
 
 .dashboard-user {
   display: flex;
@@ -1082,3 +1068,128 @@ body.auth-page {
   }
 }
 
+/* ========================= */
+/* NOTIFICATIONS */
+/* ========================= */
+
+.notification {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+  color: #334155;
+  cursor: pointer;
+  border-radius: 14px;
+  transition: 0.2s ease;
+}
+
+.notification:hover {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.notification-badge {
+  position: absolute;
+  top: 1px;
+  right: 0;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: white;
+  display: none;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 900;
+  border: 2px solid #f8fbff;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 54px;
+  right: 0;
+  width: 360px;
+  max-height: 460px;
+  overflow: hidden;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18);
+  z-index: 999;
+  display: none;
+}
+
+.notification-dropdown.show {
+  display: block;
+}
+
+.notification-header {
+  padding: 16px 18px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.notification-header strong {
+  color: #0f172a;
+  font-size: 15px;
+}
+
+.notification-item {
+  display: flex;
+  gap: 12px;
+  padding: 15px 18px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.notification-icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #ffedd5;
+  color: #f97316;
+  font-size: 18px;
+}
+
+.notification-item strong {
+  display: block;
+  color: #0f172a;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.notification-item p {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.notification-item span {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.notification-empty {
+  padding: 24px 18px;
+  color: #64748b;
+  text-align: center;
+  font-size: 14px;
+}
+
+.notification-more {
+  width: 100%;
+  border-radius: 0;
+  background: #eff6ff;
+  color: #2563eb;
+  box-shadow: none;
+}
+
+.notification-more:hover {
+  background: #dbeafe;
+  transform: none;
+  box-shadow: none;
+}

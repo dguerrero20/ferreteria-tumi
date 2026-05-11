@@ -32,7 +32,22 @@
     </div>
 
     <div class="dashboard-user-area">
-      <div class="notification">🔔</div>
+      <div class="notification" id="notificationBell">
+  🔔
+  <span class="notification-badge" id="notificationBadge">0</span>
+
+  <div class="notification-dropdown" id="notificationDropdown">
+    <div class="notification-header">
+      <strong>Notificaciones</strong>
+    </div>
+
+    <div id="notificationList"></div>
+
+    <button class="notification-more" id="notificationMore" style="display:none;">
+      Leer más notificaciones
+    </button>
+  </div>
+</div>
 
       <div class="dashboard-user">
         <div>
