@@ -1286,3 +1286,13 @@ body.productos-page .sidebar .menu li.active {
 body.productos-page .sidebar .menu li.active a {
   color: #ffffff !important;
 }
+
+/* FIX PRODUCTOS MISMO ACTIVE QUE LAS DEMÁS SECCIONES */
+.sidebar .menu li.menu-active-premium {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.34) !important;
+}
+
+.sidebar .menu li.menu-active-premium a {
+  color: #ffffff !important;
+}
