@@ -1217,3 +1217,20 @@ sidebar {
     width: 100%;
   }
 }
+
+
+.sidebar .menu li.active,
+.sidebar .menu .active {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.34) !important;
+}
+
+.sidebar .menu li.active a,
+.sidebar .menu .active a {
+  color: #ffffff !important;
+}
+
+.sidebar .menu li.active:hover,
+.sidebar .menu .active:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+}
