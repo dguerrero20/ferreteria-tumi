@@ -1081,3 +1081,16 @@ body.auth-page {
     width: 100%;
   }
 }
+
+/* FIX SOLO PRODUCTOS */
+body.productos-page .sidebar .menu li.active {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.productos-page .sidebar .menu li.active > a {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  background-image: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.34) !important;
+  }
