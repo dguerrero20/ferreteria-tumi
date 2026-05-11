@@ -146,11 +146,11 @@ function mostrarProveedores(proveedores) {
                 editando
                   ? `
                     <button class="small" onclick="actualizarProveedor(${p.id})">Guardar</button>
-<button class="secondary small" onclick="cancelarEdicion()">Cancelar</button>
+                    <button class="secondary small" onclick="cancelarEdicion()">Cancelar</button>
                   `
                   : `
-                    <button onclick="editarProveedor(${p.id})">Editar</button>
-                    <button class="danger" onclick="eliminarProveedor(${p.id})">Eliminar</button>
+                    <button class="small" onclick="editarProveedor(${p.id})">Editar</button>
+                    <button class="danger small" onclick="eliminarProveedor(${p.id})">Eliminar</button>
                   `
               }
             </td>
