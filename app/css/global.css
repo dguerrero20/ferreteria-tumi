@@ -58,7 +58,7 @@ body {
 }
 
 /* ========================= */
-/* SIDEBAR UNIFICADO */
+/* SIDEBAR */
 /* ========================= */
 
 .sidebar,
@@ -121,8 +121,6 @@ body.dashboard-page .menu {
 body.dashboard-page .menu li {
   border-radius: 16px;
   transition: 0.2s ease;
-  background: transparent !important;
-  box-shadow: none !important;
 }
 
 .menu li a,
@@ -137,6 +135,8 @@ body.dashboard-page .menu li a {
   font-weight: 700;
   border-radius: 16px;
   transition: 0.2s ease;
+  background: transparent;
+  box-shadow: none;
 }
 
 .menu li a::before,
@@ -155,7 +155,6 @@ body.dashboard-page .menu li a::before {
 .menu li:nth-child(7) a::before { content: "♡"; }
 .menu li:nth-child(8) a::before { content: "↪"; }
 
-/* ACTIVO: aplicado al enlace, no al li */
 .sidebar .menu li.active > a,
 body.dashboard-page .sidebar .menu li.active > a,
 body.productos-page .sidebar .menu li.active > a {
@@ -163,6 +162,13 @@ body.productos-page .sidebar .menu li.active > a {
   background-image: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
   color: #ffffff !important;
   box-shadow: 0 14px 28px rgba(37, 99, 235, 0.34) !important;
+}
+
+.sidebar .menu li.active,
+body.dashboard-page .sidebar .menu li.active,
+body.productos-page .sidebar .menu li.active {
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .sidebar .menu li:not(.active):hover > a,
