@@ -19,7 +19,7 @@
     <li><a href="/pages/proveedores.html">Proveedores</a></li>
     <li><a href="/pages/reportes.html">Reportes</a></li>
     <li><a href="/pages/perfil.html">Perfil</a></li>
-    <li><a href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
+    
   </ul>
 </div>
 
@@ -49,14 +49,18 @@
   </div>
 </div>
 
-      <div class="dashboard-user">
-        <div>
-          <strong id="dashboardUserName">Administrador</strong>
-          <span id="dashboardUserRole">Administrador</span>
-        </div>
+      <div class="dashboard-user" id="dashboardUserMenu">
+  <div>
+    <strong id="dashboardUserName">Administrador</strong>
+    <span id="dashboardUserRole">Administrador</span>
+  </div>
 
-        <div class="dashboard-avatar" id="dashboardAvatar">AD</div>
-      </div>
+  <div class="dashboard-avatar" id="dashboardAvatar">AD</div>
+
+  <div class="user-dropdown" id="userDropdown">
+    <button onclick="cerrarSesion()">Cerrar sesión</button>
+  </div>
+</div>
     </div>
   </div>
 

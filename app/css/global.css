@@ -1193,3 +1193,45 @@ body.auth-page {
   transform: none;
   box-shadow: none;
 }
+
+/* ========================= */
+/* USER DROPDOWN */
+/* ========================= */
+
+.dashboard-user {
+  position: relative;
+  cursor: pointer;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 64px;
+  right: 0;
+  width: 180px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.14);
+  padding: 10px;
+  display: none;
+  z-index: 999;
+}
+
+.user-dropdown.show {
+  display: block;
+}
+
+.user-dropdown button {
+  width: 100%;
+  background: #fee2e2;
+  color: #dc2626;
+  box-shadow: none;
+  border-radius: 12px;
+}
+
+.user-dropdown button:hover {
+  background: #ef4444;
+  color: white;
+  transform: none;
+  box-shadow: none;
+}

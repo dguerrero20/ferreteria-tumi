@@ -286,7 +286,23 @@ async function cargarDashboard() {
     console.error('Error cargando dashboard:', error);
   }
 }
+function inicializarMenuUsuario() {
+  const userMenu = document.getElementById('dashboardUserMenu');
+  const dropdown = document.getElementById('userDropdown');
+
+  if (!userMenu || !dropdown) return;
+
+  userMenu.addEventListener('click', (event) => {
+    event.stopPropagation();
+    dropdown.classList.toggle('show');
+  });
+
+  document.addEventListener('click', () => {
+    dropdown.classList.remove('show');
+  });
+}
 
 inicializarUsuarioDashboard();
+inicializarMenuUsuario();
 inicializarNotificaciones();
 cargarDashboard();
