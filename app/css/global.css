@@ -1235,3 +1235,153 @@ body.auth-page {
   transform: none;
   box-shadow: none;
 }
+
+/* ========================= */
+/* THEME TOGGLE */
+/* ========================= */
+
+.theme-toggle {
+  width: 100%;
+  min-height: 54px;
+  background: #f8fafc;
+  color: #0f172a;
+  box-shadow: none;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  justify-content: space-between;
+  padding: 10px 12px;
+}
+
+.theme-toggle:hover {
+  background: #eef4ff;
+  color: #0f172a;
+  transform: none;
+  box-shadow: none;
+}
+
+.theme-icon {
+  font-size: 18px;
+}
+
+.theme-text {
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.theme-switch {
+  width: 48px;
+  height: 26px;
+  border-radius: 999px;
+  background: #dbeafe;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+}
+
+.theme-knob {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #facc15;
+  transition: 0.25s ease;
+}
+
+.theme-toggle.active .theme-switch {
+  background: #1e293b;
+}
+
+.theme-toggle.active .theme-knob {
+  transform: translateX(22px);
+  background: #e5e7eb;
+}
+
+/* ========================= */
+/* DARK MODE */
+/* ========================= */
+
+body.dark-mode {
+  background: #020617;
+  color: #e5e7eb;
+}
+
+body.dark-mode .main {
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 25%),
+    linear-gradient(180deg, #020617 0%, #0f172a 100%);
+}
+
+body.dark-mode .dashboard-panel,
+body.dark-mode .stat-card,
+body.dark-mode .box,
+body.dark-mode .card,
+body.dark-mode .table-box,
+body.dark-mode .table,
+body.dark-mode .user-dropdown,
+body.dark-mode .notification-dropdown {
+  background: #0f172a;
+  border-color: #1e293b;
+  color: #e5e7eb;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode strong,
+body.dark-mode .stat-value,
+body.dark-mode .notification-header strong,
+body.dark-mode .notification-item strong {
+  color: #f8fafc;
+}
+
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode td,
+body.dark-mode th,
+body.dark-mode .dashboard-title p,
+body.dark-mode .stat-small,
+body.dark-mode .notification-item p,
+body.dark-mode .notification-item span {
+  color: #cbd5e1;
+}
+
+body.dark-mode input,
+body.dark-mode select {
+  background: #020617;
+  border-color: #334155;
+  color: #e5e7eb;
+}
+
+body.dark-mode table tbody tr:hover {
+  background: #111827;
+}
+
+body.dark-mode .quick-card {
+  background: #1e293b;
+  color: #93c5fd;
+}
+
+body.dark-mode .quick-card:hover {
+  background: #334155;
+}
+
+body.dark-mode .dashboard-search {
+  background: #0f172a;
+  border-color: #1e293b;
+  color: #cbd5e1;
+}
+
+body.dark-mode .dashboard-search input {
+  background: transparent;
+  color: #e5e7eb;
+}
+
+body.dark-mode .user-dropdown button:not(.theme-toggle) {
+  background: #7f1d1d;
+  color: #fecaca;
+}
+
+body.dark-mode .user-dropdown button:not(.theme-toggle):hover {
+  background: #dc2626;
+  color: white;
+}
