@@ -804,38 +804,118 @@ body.dashboard-page {
   background: #f4f8ff;
 }
 
+/* ========================= */
+/* SIDEBAR PREMIUM UNIFICADO */
+/* ========================= */
+
+.sidebar,
 body.dashboard-page .sidebar {
   width: 300px;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
   padding: 30px 22px;
+  color: white;
   background:
     radial-gradient(circle at 30% 5%, rgba(37, 99, 235, 0.35), transparent 22%),
     linear-gradient(180deg, #071529 0%, #0f172a 55%, #111827 100%);
+  box-shadow: 10px 0 35px rgba(15, 23, 42, 0.12);
+  z-index: 10;
 }
 
+.sidebar h2,
 body.dashboard-page .sidebar h2 {
   font-size: 34px;
   margin-bottom: 54px;
+  letter-spacing: -0.03em;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
+.sidebar h2::before,
 body.dashboard-page .sidebar h2::before {
+  content: "◈";
   width: 46px;
   height: 46px;
+  display: grid;
+  place-items: center;
   border-radius: 16px;
+  background: linear-gradient(135deg, var(--primary), #38bdf8);
+  color: white;
+  font-size: 15px;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
 }
 
+.menu,
 body.dashboard-page .menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
   gap: 18px;
 }
 
-body.dashboard-page .menu li a {
-  padding: 18px 20px;
-  font-size: 18px;
+.menu li,
+body.dashboard-page .menu li {
   border-radius: 16px;
+  transition: 0.2s ease;
+}
+
+.menu li a,
+body.dashboard-page .menu li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px;
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 16px;
+  transition: 0.2s ease;
+}
+
+.menu li a::before,
+body.dashboard-page .menu li a::before {
+  width: 20px;
+  text-align: center;
+  opacity: 0.95;
+}
+
+.sidebar .menu li.active,
+body.dashboard-page .sidebar .menu li.active {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.34) !important;
+}
+
+.sidebar .menu li.active a,
+body.dashboard-page .sidebar .menu li.active a {
+  color: #ffffff !important;
+}
+
+.sidebar .menu li:not(.active):hover,
+body.dashboard-page .sidebar .menu li:not(.active):hover {
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.sidebar .menu li:not(.active):hover a,
+body.dashboard-page .sidebar .menu li:not(.active):hover a {
+  color: white;
+  transform: translateX(2px);
+}
+
+body.dashboard-page {
+  background: #f4f8ff;
 }
 
 body.dashboard-page .main {
   padding: 26px 42px 24px;
 }
+
+/* ========================= */
+/* DASHBOARD PREMIUM */
+/* ========================= */
 
 .dashboard-topbar {
   display: flex;
@@ -1146,8 +1226,17 @@ body.dashboard-page .main {
 }
 
 @media (max-width: 850px) {
+  .sidebar,
   body.dashboard-page .sidebar {
     width: 100%;
+    min-height: auto;
+    position: relative;
+  }
+
+  .menu,
+  body.dashboard-page .menu {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .dashboard-topbar {
@@ -1172,65 +1261,4 @@ body.dashboard-page .main {
   .quick-grid {
     grid-template-columns: 1fr;
   }
-}
-
-sidebar {
-  width: 285px;
-  padding: 30px 22px;
-  background:
-    radial-gradient(circle at 30% 5%, rgba(37, 99, 235, 0.35), transparent 22%),
-    linear-gradient(180deg, #071529 0%, #0f172a 55%, #111827 100%);
-}
-
-.sidebar h2 {
-  font-size: 34px;
-  margin-bottom: 54px;
-}
-
-.sidebar h2::before {
-  width: 46px;
-  height: 46px;
-  border-radius: 16px;
-}
-
-.menu {
-  gap: 18px;
-}
-
-.menu li a {
-  padding: 17px 18px;
-  font-size: 18px;
-  border-radius: 16px;
-}
-
-.menu .active {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.34);
-}
-
-.menu .active a {
-  color: white;
-}
-
-@media (max-width: 850px) {
-  .sidebar {
-    width: 100%;
-  }
-}
-
-
-.sidebar .menu li.active,
-.sidebar .menu .active {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
-  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.34) !important;
-}
-
-.sidebar .menu li.active a,
-.sidebar .menu .active a {
-  color: #ffffff !important;
-}
-
-.sidebar .menu li.active:hover,
-.sidebar .menu .active:hover {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
 }
