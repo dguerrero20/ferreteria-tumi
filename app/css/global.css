@@ -79,7 +79,7 @@ body.dashboard-page .sidebar {
 .sidebar h2,
 body.dashboard-page .sidebar h2 {
   font-size: 34px;
-  margin-bottom: 54px;
+  margin-bottom: 30px;
   letter-spacing: -0.03em;
   font-weight: 900;
   display: flex;
@@ -114,7 +114,7 @@ body.dashboard-page .menu {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
 }
 
 .menu li,
