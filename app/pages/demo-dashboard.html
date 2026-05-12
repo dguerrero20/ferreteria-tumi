@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+   <script>
+    if (localStorage.getItem('tema') === 'oscuro') {
+      document.documentElement.classList.add('dark-mode-preload');
+    }
+  </script>
+  <title>Dashboard | Ferdev</title>
+  <link rel="stylesheet" href="../css/global.css">
+</head>
+
+<body class="dashboard-page">
+
+<div class="sidebar">
+  <h2><span class="brand-fer">Fer</span><span class="brand-dev">dev</span></h2>
+
+  <ul class="menu">
+    <li class="active"><a href="/pages/dashboard.html">Dashboard</a></li>
+    <li><a href="/pages/productos.html">Productos</a></li>
+    <li class="solo-admin"><a href="/pages/categorias.html">Categorías</a></li>
+    <li><a href="/pages/ventas.html">Ventas</a></li>
+    <li><a href="/pages/proveedores.html">Proveedores</a></li>
+    <li><a href="/pages/reportes.html">Reportes</a></li>
+    <li><a href="/pages/perfil.html">Perfil</a></li>
+    
+  </ul>
+</div>
+
+<div class="main">
+
+  <div class="dashboard-topbar">
+    <div class="dashboard-search">
+      <span>⌕</span>
+      <input type="text" placeholder="Buscar productos, ventas, proveedores...">
+    </div>
+
+    <div class="dashboard-user-area">
+      <div class="notification" id="notificationBell">
+  🔔
+  <span class="notification-badge" id="notificationBadge">0</span>
+
+  <div class="notification-dropdown" id="notificationDropdown">
+    <div class="notification-header">
+      <strong>Notificaciones</strong>
+    </div>
+
+    <div id="notificationList"></div>
+
+    <button class="notification-more" id="notificationMore" style="display:none;">
+      Leer más notificaciones
+    </button>
+  </div>
+</div>
+
+<div class="dashboard-user" id="dashboardUserMenu">
+
+  <div class="dashboard-user-info">
+    <strong id="dashboardUserName">Administrador</strong>
+    <span id="dashboardUserRole">Administrador</span>
+  </div>
+
+  <div class="dashboard-avatar" id="dashboardAvatar">
+    AD
+  </div>
+
+  <div class="user-dropdown" id="userDropdown">
+
+    <button
+      class="theme-toggle"
+      id="themeToggle"
+      type="button"
+    >
+      <span class="theme-icon">☀️</span>
+
+      <span class="theme-text">
+        Modo claro
+      </span>
+
+      <span class="theme-switch">
+        <span class="theme-knob"></span>
+      </span>
+    </button>
+
+    <button
+      class="logout-btn"
+      onclick="cerrarSesion()"
+      type="button"
+    >
+      Cerrar sesión
+    </button>
+
+  </div>
+
+</div>
+    </div>
+  </div>
+
+  <div class="dashboard-title">
+    <h1>Dashboard</h1>
+    <p>Resumen general de tu negocio</p>
+  </div>
+
+  <div class="dashboard-stat-grid">
+    <div class="stat-card">
+      <div class="stat-icon blue">💵</div>
+      <div class="stat-info">
+        <h3>Ventas de hoy</h3>
+        <div>
+          <span class="stat-value">S/ <span id="ventasHoy">0.00</span></span>
+          <span class="stat-trend">↑ 12.5%</span>
+        </div>
+        <span class="stat-small">vs. ayer</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon green">▣</div>
+      <div class="stat-info">
+        <h3>Productos</h3>
+        <div class="stat-value" id="totalProductos">0</div>
+        <span class="stat-small">Total registrados</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon orange">⚠</div>
+      <div class="stat-info">
+        <h3>Stock bajo</h3>
+        <div class="stat-value" id="stockBajo">0</div>
+        <span class="stat-small">Productos</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon purple">♙</div>
+      <div class="stat-info">
+        <h3>Ventas</h3>
+        <div class="stat-value" id="totalVentas">0</div>
+        <span class="stat-small">Registradas</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-content-grid">
+    <div class="dashboard-panel">
+      <div class="panel-header">
+        <h3>Ventas últimos 7 días</h3>
+
+        <select class="panel-select">
+          <option>Esta semana</option>
+        </select>
+      </div>
+
+      <div class="chart-box">
+        <canvas id="ventasChart"></canvas>
+      </div>
+    </div>
+
+    <div class="dashboard-side">
+      <div class="dashboard-panel">
+        <div class="panel-header">
+          <h3>Últimas ventas</h3>
+          <a href="/pages/reportes.html">Ver todas</a>
+        </div>
+
+        <div class="table-responsive">
+          <table class="dashboard-mini-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Total</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+
+            <tbody id="ventas"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="dashboard-panel">
+        <div class="panel-header">
+          <h3>Accesos rápidos</h3>
+        </div>
+
+        <div class="quick-grid">
+          <a class="quick-card" href="/pages/ventas.html">🛒 Nueva venta</a>
+          <a class="quick-card" href="/pages/productos.html">▣ Nuevo producto</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-footer">
+    © 2026 <strong>Ferdev.</strong> Todos los derechos reservados.
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../js/demo-data.js"></script>
+<script src="../js/demo-mode.js"></script>
+
+</body>
+</html>

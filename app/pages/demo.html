@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <script>
+    if (localStorage.getItem('tema') === 'oscuro') {
+      document.documentElement.classList.add('dark-mode-preload');
+    }
+  </script>
+
+  <title>Demo | Ferdev</title>
+
+  <link rel="stylesheet" href="../css/global.css">
+</head>
+
+<body class="dashboard-page">
+
+<div class="sidebar">
+  <h2>
+    <span class="brand-fer">Fer</span>
+    <span class="brand-dev">dev</span>
+  </h2>
+
+  <ul class="menu">
+    <li class="active"><a href="#">Dashboard</a></li>
+    <li><a href="#">Productos</a></li>
+    <li><a href="#">Categorías</a></li>
+    <li><a href="#">Ventas</a></li>
+    <li><a href="#">Proveedores</a></li>
+    <li><a href="#">Reportes</a></li>
+    <li><a href="#">Perfil</a></li>
+  </ul>
+</div>
+
+<div class="main">
+
+  <div class="dashboard-topbar">
+
+    <div class="dashboard-search">
+      <span>⌕</span>
+
+      <input
+        type="text"
+        placeholder="Buscar productos, ventas, proveedores..."
+      >
+    </div>
+
+    <div class="dashboard-user-area">
+
+      <div class="badge primary">
+        DEMO
+      </div>
+
+      <div class="dashboard-user">
+        <div>
+          <strong>Usuario demo</strong>
+          <span>Modo prueba</span>
+        </div>
+
+        <div class="dashboard-avatar">
+          D
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="dashboard-title">
+    <h1>Demo interactiva</h1>
+
+    <p>
+      Puedes probar el sistema libremente.
+      Todos los cambios se reinician automáticamente.
+    </p>
+  </div>
+
+  <div class="dashboard-stat-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon blue">💵</div>
+
+      <div class="stat-info">
+        <h3>Ventas de hoy</h3>
+
+        <div class="stat-value">
+          S/ 1,250
+        </div>
+
+        <span class="stat-small">
+          Demo simulada
+        </span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon green">▣</div>
+
+      <div class="stat-info">
+        <h3>Productos</h3>
+
+        <div class="stat-value">
+          112
+        </div>
+
+        <span class="stat-small">
+          Datos de prueba
+        </span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon orange">⚠</div>
+
+      <div class="stat-info">
+        <h3>Stock bajo</h3>
+
+        <div class="stat-value">
+          7
+        </div>
+
+        <span class="stat-small">
+          Productos
+        </span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon purple">♙</div>
+
+      <div class="stat-info">
+        <h3>Ventas</h3>
+
+        <div class="stat-value">
+          356
+        </div>
+
+        <span class="stat-small">
+          Registradas
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="dashboard-panel">
+
+    <div class="panel-header">
+      <h3>Productos demo</h3>
+    </div>
+
+    <div class="table-responsive">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Stock</th>
+            <th>Precio</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+
+        <tbody id="demoProductos"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script src="../js/demo-data.js"></script>
+
+</body>
+</html>

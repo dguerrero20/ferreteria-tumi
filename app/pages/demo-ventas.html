@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+   <script>
+    if (localStorage.getItem('tema') === 'oscuro') {
+      document.documentElement.classList.add('dark-mode-preload');
+    }
+  </script>
+  <title>Ventas | Ferdev</title>
+  <link rel="stylesheet" href="../css/global.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2><span class="brand-fer">Fer</span><span class="brand-dev">dev</span></h2>
+
+  <ul class="menu">
+    <li><a href="/pages/dashboard.html">Dashboard</a></li>
+    <li><a href="/pages/productos.html">Productos</a></li>
+    <li class="solo-admin"><a href="/pages/categorias.html">Categorías</a></li>
+    <li class="active"><a href="/pages/ventas.html">Ventas</a></li>
+    <li><a href="/pages/proveedores.html">Proveedores</a></li>
+    <li><a href="/pages/reportes.html">Reportes</a></li>
+    <li><a href="/pages/perfil.html">Perfil</a></li>
+    
+  </ul>
+</div>
+
+<div class="main">
+
+  <div class="main-header">
+    <div>
+      <h1>Ventas</h1>
+      <p>Registra ventas, agrega productos al carrito y descuenta stock automáticamente.</p>
+    </div>
+
+    <div class="badge success">Punto de venta</div>
+  </div>
+
+  <div class="layout">
+
+    <div>
+      <div class="box">
+        <h3>Datos de venta</h3>
+        <br>
+
+        <div class="filters">
+          <label>Vendedor:</label>
+
+          <select id="vendedor">
+            <option value="">Seleccionar vendedor</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="box">
+        <h3>Buscar producto</h3>
+        <p style="margin-top:6px; color: var(--text-secondary);">
+          Busca por nombre, código, marca o categoría.
+        </p>
+
+        <br>
+
+        <div class="search-box">
+          <input
+            type="text"
+            id="buscar"
+            placeholder="Buscar clavos, martillo, marca..."
+          >
+
+          <button onclick="buscarProductos()">Buscar</button>
+        </div>
+      </div>
+
+      <div class="box">
+        <h3>Resultados</h3>
+        <br>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Unidad</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+
+            <tbody id="resultados"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="box">
+        <div class="filter-panel">
+          <div>
+            <h3>Carrito de venta</h3>
+            <p style="margin-top:6px; color: var(--text-secondary);">
+              Productos agregados para esta venta.
+            </p>
+          </div>
+
+          <div class="badge primary">Venta actual</div>
+        </div>
+
+        <br>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cant.</th>
+                <th>Subtotal</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody id="carrito"></tbody>
+          </table>
+        </div>
+
+        <div class="total">
+          Total: S/ <span id="total">0.00</span>
+        </div>
+
+        <br>
+
+        <button class="success" onclick="registrarVenta()">
+          Registrar venta
+        </button>
+
+        <p class="mensaje" id="mensaje"></p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="../js/demo-data.js"></script>
+<script src="../js/demo-mode.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+   <script>
+    if (localStorage.getItem('tema') === 'oscuro') {
+      document.documentElement.classList.add('dark-mode-preload');
+    }
+  </script>
+  <title>Reportes | Ferdev</title>
+  <link rel="stylesheet" href="../css/global.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2><span class="brand-fer">Fer</span><span class="brand-dev">dev</span></h2>
+
+  <ul class="menu">
+    <li><a href="/pages/dashboard.html">Dashboard</a></li>
+    <li><a href="/pages/productos.html">Productos</a></li>
+    <li class="solo-admin"><a href="/pages/categorias.html">Categorías</a></li>
+    <li><a href="/pages/ventas.html">Ventas</a></li>
+    <li><a href="/pages/proveedores.html">Proveedores</a></li>
+    <li class="active"><a href="/pages/reportes.html">Reportes</a></li>
+    <li><a href="/pages/perfil.html">Perfil</a></li>
+    
+  </ul>
+</div>
+
+<div class="main">
+
+  <div class="main-header">
+    <div>
+      <h1>Reportes</h1>
+      <p>Analiza inventario, ventas, stock bajo y desempeño de vendedores.</p>
+    </div>
+
+    <div class="badge primary">Analítica del negocio</div>
+  </div>
+
+  <div class="box">
+    <h3>Filtro por fechas</h3>
+    <br>
+
+    <div class="filters">
+      <label>Desde:</label>
+      <input type="date" id="desde">
+
+      <label>Hasta:</label>
+      <input type="date" id="hasta">
+    </div>
+  </div>
+
+  <div class="box" id="boxVendedores" style="display:none;">
+    <h3>Comparar vendedores</h3>
+    <br>
+
+    <label>
+      <input type="checkbox" id="todosVendedores" checked onchange="toggleTodosVendedores()">
+      Ver todos
+    </label>
+
+    <br><br>
+
+    <div id="listaVendedores"></div>
+  </div>
+
+  <div class="box">
+    <h3>Vista del reporte</h3>
+    <br>
+
+    <div class="quick-actions">
+      <button id="btnDatos" onclick="cambiarVista('datos')">Datos</button>
+      <button id="btnGraficos" onclick="cambiarVista('graficos')">Gráficos</button>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card report-card" onclick="reporteInventario()">
+      <div class="report-icon">📦</div>
+      <h3>Inventario</h3>
+      <p>Stock y precios</p>
+    </div>
+
+    <div class="card report-card" onclick="reporteStockBajo()">
+      <div class="report-icon">⚠</div>
+      <h3>Stock bajo</h3>
+      <p>Reabastecimiento</p>
+    </div>
+
+    <div class="card report-card" onclick="reporteVentasSimple()">
+      <div class="report-icon">🧾</div>
+      <h3>Ventas generales</h3>
+      <p>Historial completo</p>
+    </div>
+
+    <div class="card report-card" onclick="reporteVentasPorFecha()">
+      <div class="report-icon">📈</div>
+      <h3>Ventas por fecha</h3>
+      <p>Ingresos por rango</p>
+    </div>
+
+    <div class="card report-card" onclick="productosMasVendidos()">
+      <div class="report-icon">🛒</div>
+      <h3>Más vendidos</h3>
+      <p>Mayor salida</p>
+    </div>
+
+    <div class="card report-card" onclick="productosMenosVendidos()">
+      <div class="report-icon">📉</div>
+      <h3>Menos vendidos</h3>
+      <p>Poca salida</p>
+    </div>
+
+    <div class="card report-card" onclick="vendedoresTop()">
+      <div class="report-icon">👥</div>
+      <h3>Vendedores Top</h3>
+      <p>Comparativa</p>
+    </div>
+  </div>
+
+  <div class="box">
+    <h3 id="tituloReporte">Selecciona un reporte</h3>
+
+    <div id="resumenReporte"></div>
+
+    <div id="graficoBox" style="display:none;">
+      <br>
+      <canvas id="graficoReporte"></canvas>
+    </div>
+
+    <div id="contenidoReporte"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../js/demo-data.js"></script>
+<script src="../js/demo-mode.js"></script>
+
+</body>
+</html>
