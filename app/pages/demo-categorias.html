@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+   <script>
+    if (localStorage.getItem('tema') === 'oscuro') {
+      document.documentElement.classList.add('dark-mode-preload');
+    }
+  </script>
+  <title>Categorías | Ferdev</title>
+  <link rel="stylesheet" href="../css/global.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2><span class="brand-fer">Fer</span><span class="brand-dev">dev</span></h2>
+
+  <ul class="menu">
+
+  <li>
+    <a href="./demo-dashboard.html">Dashboard</a>
+  </li>
+
+  <li>
+    <a href="./demo-productos.html">Productos</a>
+  </li>
+
+  <li class="solo-admin active">
+    <a href="./demo-categorias.html">Categorías</a>
+  </li>
+
+  <li>
+    <a href="./demo-ventas.html">Ventas</a>
+  </li>
+
+  <li>
+    <a href="./demo-proveedores.html">Proveedores</a>
+  </li>
+
+  <li>
+    <a href="./demo-reportes.html">Reportes</a>
+  </li>
+
+  <li>
+    <a href="./demo-perfil.html">Perfil</a>
+  </li>
+
+</ul>
+</div>
+
+<div class="main">
+
+  <div class="main-header">
+    <div>
+      <h1>Categorías</h1>
+      <p>Organiza productos por categorías, tipos y variantes para mejorar tu inventario.</p>
+    </div>
+
+    <div class="badge success">Modo administrador</div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Crear categoría</h3>
+      <p>Grupo</p>
+    </div>
+
+    <div class="card">
+      <h3>Crear tipo</h3>
+      <p>Clase</p>
+    </div>
+
+    <div class="card">
+      <h3>Crear variante</h3>
+      <p>Detalle</p>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <div>
+      <div class="box">
+        <h3>Crear categoría</h3>
+        <br>
+
+        <div class="filters">
+          <input
+            type="text"
+            id="nombreCategoria"
+            placeholder="Nombre de categoría"
+          >
+
+          <button onclick="crearCategoria()">
+            Guardar categoría
+          </button>
+        </div>
+
+        <p class="mensaje" id="mensajeCategoria"></p>
+      </div>
+
+      <div class="box">
+        <h3>Crear tipo</h3>
+        <br>
+
+        <div class="filters">
+          <select id="categoriaTipo">
+            <option value="">Seleccionar categoría</option>
+          </select>
+
+          <input
+            type="text"
+            id="nombreTipo"
+            placeholder="Nombre del tipo"
+          >
+
+          <button onclick="crearTipo()">
+            Guardar tipo
+          </button>
+        </div>
+
+        <p class="mensaje" id="mensajeTipo"></p>
+      </div>
+
+      <div class="box">
+        <h3>Crear variante</h3>
+        <br>
+
+        <div class="filters">
+          <select id="categoriaVariante">
+            <option value="">Seleccionar categoría</option>
+          </select>
+
+          <select id="tipoVariante">
+            <option value="">Seleccionar tipo</option>
+          </select>
+
+          <input
+            type="text"
+            id="nombreVariante"
+            placeholder="Nombre de variante"
+          >
+
+          <button onclick="crearVariante()">
+            Guardar variante
+          </button>
+        </div>
+
+        <p class="mensaje" id="mensajeVariante"></p>
+      </div>
+    </div>
+
+    <div>
+      <div class="table-box">
+        <div class="filter-panel">
+          <div>
+            <h3>Listado de categorías</h3>
+            <p style="margin-top:6px; color: var(--text-secondary);">
+              Categorías registradas para clasificar productos.
+            </p>
+          </div>
+
+          <div class="badge warning">Inventario</div>
+        </div>
+
+        <br>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Categoría</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody id="tablaCategorias"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="../js/demo-data.js"></script>
+<script src="../js/demo-mode.js"></script>
+
+</body>
+</html>
