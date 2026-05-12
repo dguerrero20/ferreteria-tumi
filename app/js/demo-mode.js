@@ -52,11 +52,14 @@ function reescribirLinksDemo() {
 
     if (texto.includes('dashboard')) link.href = './demo-dashboard.html';
     if (texto.includes('productos')) link.href = './demo-productos.html';
+    if (texto.includes('categorías') || texto.includes('categorias')) {
+  link.href = './demo-categorias.html';
     if (texto.includes('ventas')) link.href = './demo-ventas.html';
     if (texto.includes('proveedores')) link.href = './demo-proveedores.html';
     if (texto.includes('reportes')) link.href = './demo-reportes.html';
     if (texto.includes('perfil')) link.href = './demo-perfil.html';
-    if (texto.includes('categorías')) link.href = '#';
+    
+}
   });
 }
 
@@ -82,6 +85,15 @@ function prepararModoAdmin() {
   if (accionesHeader) {
     accionesHeader.style.display = adminActivo ? 'table-cell' : 'none';
   }
+  controlarMenusAdmin();
+}
+
+function controlarMenusAdmin() {
+  const itemsAdmin = document.querySelectorAll('.solo-admin');
+
+  itemsAdmin.forEach((item) => {
+    item.style.display = esAdmin() ? '' : 'none';
+  });
 }
 
 function cargarCategoriasFormulario() {
