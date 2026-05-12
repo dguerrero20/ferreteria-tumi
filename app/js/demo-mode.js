@@ -69,9 +69,19 @@ function prepararModoAdmin() {
   const formProveedor = document.getElementById('formProveedor');
   const accionesHeader = document.getElementById('accionesHeader');
 
-  if (formProducto) formProducto.style.display = 'block';
-  if (formProveedor) formProveedor.style.display = 'block';
-  if (accionesHeader) accionesHeader.style.display = 'table-cell';
+  const adminActivo = esAdmin();
+
+  if (formProducto) {
+    formProducto.style.display = adminActivo ? 'block' : 'none';
+  }
+
+  if (formProveedor) {
+    formProveedor.style.display = adminActivo ? 'block' : 'none';
+  }
+
+  if (accionesHeader) {
+    accionesHeader.style.display = adminActivo ? 'table-cell' : 'none';
+  }
 }
 
 function cargarCategoriasFormulario() {
@@ -182,15 +192,28 @@ function mostrarProductos(productos) {
       <td>${p.variante || '-'}</td>
       <td>${p.marca || '-'}</td>
       <td>
-        <input type="number" step="0.01" value="${p.precio}" onchange="editarPrecio(${p.id}, this.value)" style="width:90px;">
-      </td>
-      <td>
-        <input type="number" step="0.01" value="${p.stock}" onchange="editarStock(${p.id}, this.value)" style="width:80px;">
-      </td>
-      <td>${p.unidad_medida}</td>
-      <td>
-        <button class="danger small" onclick="eliminarProducto(${p.id})">Eliminar</button>
-      </td>
+  ${
+    esAdmin()
+      ? `<input type="number" step="0.01" value="${p.precio}" onchange="editarPrecio(${p.id}, this.value)" style="width:90px;">`
+      : `S/ ${Number(p.precio).toFixed(2)}`
+  }
+</td>
+
+<td>
+  ${
+    esAdmin()
+      ? `<input type="number" step="0.01" value="${p.stock}" onchange="editarStock(${p.id}, this.value)" style="width:80px;">`
+      : p.stock
+  }
+</td>
+
+<td>${p.unidad_medida}</td>
+
+${
+  esAdmin()
+    ? `<td><button class="danger small" onclick="eliminarProducto(${p.id})">Eliminar</button></td>`
+    : ''
+}
     `;
 
     tbody.appendChild(fila);
@@ -569,6 +592,9 @@ function actualizarModoAdmin() {
     boton.textContent = 'Activar modo administrador';
     boton.classList.remove('danger');
   }
+    prepararModoAdmin();
+  cargarProductos();
+  cargarProveedores();
 }
 
 function activarModoAdmin() {

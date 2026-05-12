@@ -4,7 +4,7 @@ const DEMO_ORIGINAL = {
     nombre: 'Usuario Demo',
     email: 'demo@ferdev.com',
     rol: 'Administrador demo',
-    modo_admin: true,
+    modo_admin: false,
     empresa_id: 999,
   },
 
