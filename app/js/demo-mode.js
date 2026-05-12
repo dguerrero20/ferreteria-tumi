@@ -50,12 +50,12 @@ function reescribirLinksDemo() {
   links.forEach((link) => {
     const texto = link.textContent.trim().toLowerCase();
 
-    if (texto.includes('dashboard')) link.href = '/pages/demo-dashboard.html';
-    if (texto.includes('productos')) link.href = '/pages/demo-productos.html';
-    if (texto.includes('ventas')) link.href = '/pages/demo-ventas.html';
-    if (texto.includes('proveedores')) link.href = '/pages/demo-proveedores.html';
-    if (texto.includes('reportes')) link.href = '/pages/demo-reportes.html';
-    if (texto.includes('perfil')) link.href = '/pages/demo-perfil.html';
+    if (texto.includes('dashboard')) link.href = './demo-dashboard.html';
+    if (texto.includes('productos')) link.href = './demo-productos.html';
+    if (texto.includes('ventas')) link.href = './demo-ventas.html';
+    if (texto.includes('proveedores')) link.href = './demo-proveedores.html';
+    if (texto.includes('reportes')) link.href = './demo-reportes.html';
+    if (texto.includes('perfil')) link.href = './demo-perfil.html';
     if (texto.includes('categorías')) link.href = '#';
   });
 }
