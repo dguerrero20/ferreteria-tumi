@@ -494,6 +494,15 @@ function mostrarProveedores(proveedores) {
 
   tbody.innerHTML = '';
 
+  if (!proveedores || proveedores.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="${esAdmin() ? 6 : 5}">No se encontraron proveedores</td>
+      </tr>
+    `;
+    return;
+  }
+
   proveedores.forEach((p) => {
     const fila = document.createElement('tr');
 
@@ -503,9 +512,18 @@ function mostrarProveedores(proveedores) {
       <td>${p.telefono}</td>
       <td>${p.email}</td>
       <td>${p.direccion}</td>
-      <td>
-        <button class="danger small" onclick="eliminarProveedor(${p.id})">Eliminar</button>
-      </td>
+
+      ${
+        esAdmin()
+          ? `
+            <td>
+              <button class="danger small" onclick="eliminarProveedor(${p.id})">
+                Eliminar
+              </button>
+            </td>
+          `
+          : ''
+      }
     `;
 
     tbody.appendChild(fila);
