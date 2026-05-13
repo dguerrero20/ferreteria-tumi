@@ -286,7 +286,8 @@ async function reporteVentasSimple() {
   try {
     limpiarVista('Reporte General de Ventas');
 
-    const res = await fetch(`${API}/ventas?empresa_id=${empresaId}`);
+    const query = construirQueryReportes();
+const res = await fetch(`${API_REPORTES}/ventas${query}`);
     const data = await res.json();
 
     if (!data.ventas || data.ventas.length === 0) {
@@ -357,7 +358,7 @@ async function reporteVentasSimple() {
   </td>
 
   <td>S/ ${Number(v.total).toFixed(2)}</td>
-          <td>${v.usuario || '-'}</td>
+          <td>${v.vendedor || v.usuario || '-'}</td>
           <td>${new Date(v.created_at).toLocaleString('es-PE')}</td>
           <td>
             <button class="sale-view-btn" id="btnVenta-${v.id}" onclick="verDetalleVenta(${v.id})">
@@ -916,6 +917,22 @@ async function vendedoresTop() {
     mostrarMensaje('Error cargando vendedores top.');
   }
 }
+['desde', 'hasta'].forEach((id) => {
+  const input = document.getElementById(id);
 
+  if (input) {
+    input.addEventListener('change', () => {
+      const tituloActual = document.getElementById('tituloReporte').textContent;
+
+      if (tituloActual === 'Reporte General de Ventas') {
+        reporteVentasSimple();
+      }
+
+      if (tituloActual === 'Reporte de Ventas por Fecha') {
+        reporteVentasPorFecha();
+      }
+    });
+  }
+});
 cargarVendedoresFiltro();
 cambiarVista('datos');

@@ -12,7 +12,16 @@ const reporteVentasPorFechas = async (req, res) => {
 
   try {
     let query = `
-      SELECT v.id, v.total, v.created_at, u.nombre AS vendedor
+      SELECT 
+  v.id,
+  v.total,
+  v.created_at,
+  v.tipo_comprobante,
+  v.cliente_nombre,
+  v.cliente_razon_social,
+  v.serie,
+  v.correlativo,
+  u.nombre AS vendedor
       FROM public.ventas v
       LEFT JOIN public.usuarios u ON u.id = v.usuario_id
       WHERE v.empresa_id = $1

@@ -371,3 +371,137 @@ async function registrarVenta() {
 cargarVendedores();
 seleccionarComprobante('boleta');
 renderCarrito();
+function modoAdminActivo() {
+  return localStorage.getItem('modo_admin') === 'true';
+}
+
+function inicializarPanelAdminVendedores() {
+  const box = document.getElementById('adminVendedoresBox');
+
+  if (!box) return;
+
+  box.style.display = modoAdminActivo() ? 'block' : 'none';
+
+  if (modoAdminActivo()) {
+    cargarGestionVendedores();
+  }
+}
+
+async function cargarGestionVendedores() {
+  const contenedor = document.getElementById('listaGestionVendedores');
+
+  if (!contenedor) return;
+
+  try {
+    const res = await fetch(`${API_VENDEDORES}?empresa_id=${empresaId}`);
+    const data = await res.json();
+
+    if (!data.vendedores || data.vendedores.length === 0) {
+      contenedor.innerHTML = '<p>No hay vendedores registrados.</p>';
+      return;
+    }
+
+    contenedor.innerHTML = data.vendedores.map((v) => `
+      <div class="seller-admin-row">
+        <div>
+          <strong>${v.nombre}</strong>
+          <p>${v.email}</p>
+        </div>
+
+        <button class="danger small" onclick="eliminarVendedor(${v.id})">
+          Eliminar
+        </button>
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error(error);
+    contenedor.innerHTML = '<p>Error cargando vendedores.</p>';
+  }
+}
+
+async function crearVendedor() {
+  const mensaje = document.getElementById('mensajeVendedor');
+
+  const nombre = document.getElementById('nuevoVendedorNombre').value.trim();
+  const email = document.getElementById('nuevoVendedorEmail').value.trim();
+  const password = document.getElementById('nuevoVendedorPassword').value.trim();
+
+  if (!nombre || !email || !password) {
+    mensaje.textContent = 'Completa nombre, correo y contraseña';
+    mensaje.style.color = 'red';
+    return;
+  }
+
+  if (!validarEmail(email)) {
+    mensaje.textContent = 'Ingresa un correo válido';
+    mensaje.style.color = 'red';
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API}/usuarios/vendedores`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        empresa_id: empresaId,
+        nombre,
+        email,
+        password,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      mensaje.textContent = data.msg || 'Error creando vendedor';
+      mensaje.style.color = 'red';
+      return;
+    }
+
+    mensaje.textContent = data.msg;
+    mensaje.style.color = 'green';
+
+    document.getElementById('nuevoVendedorNombre').value = '';
+    document.getElementById('nuevoVendedorEmail').value = '';
+    document.getElementById('nuevoVendedorPassword').value = '';
+
+    await cargarVendedores();
+    await cargarGestionVendedores();
+  } catch (error) {
+    console.error(error);
+    mensaje.textContent = 'Error conectando con el servidor';
+    mensaje.style.color = 'red';
+  }
+}
+
+async function eliminarVendedor(id) {
+  if (!confirm('¿Eliminar este vendedor?')) return;
+
+  const mensaje = document.getElementById('mensajeVendedor');
+
+  try {
+    const res = await fetch(`${API}/usuarios/vendedores/${id}?empresa_id=${empresaId}`, {
+      method: 'DELETE',
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      mensaje.textContent = data.msg || 'Error eliminando vendedor';
+      mensaje.style.color = 'red';
+      return;
+    }
+
+    mensaje.textContent = data.msg;
+    mensaje.style.color = 'green';
+
+    await cargarVendedores();
+    await cargarGestionVendedores();
+  } catch (error) {
+    console.error(error);
+    mensaje.textContent = 'Error conectando con el servidor';
+    mensaje.style.color = 'red';
+  }
+}
+
+inicializarPanelAdminVendedores();

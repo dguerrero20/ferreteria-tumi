@@ -108,7 +108,39 @@
           <p class="helper-text">Se enviará la factura al correo ingresado.</p>
         </div>
       </div>
+      <div class="box admin-vendedores-box" id="adminVendedoresBox" style="display:none;">
+  <h3>Gestión de vendedores</h3>
+  <p class="helper-text">Solo visible con modo administrador activo.</p>
 
+  <br>
+
+  <div class="two-fields">
+    <div>
+      <label>Nombre del vendedor</label>
+      <input type="text" id="nuevoVendedorNombre" placeholder="Ej: Carlos Ramos">
+    </div>
+
+    <div>
+      <label>Correo</label>
+      <input type="email" id="nuevoVendedorEmail" placeholder="vendedor@email.com">
+    </div>
+  </div>
+
+  <br>
+
+  <label>Contraseña inicial</label>
+  <input type="text" id="nuevoVendedorPassword" placeholder="Ej: Vendedor123*">
+
+  <br><br>
+
+  <button onclick="crearVendedor()">Agregar vendedor</button>
+
+  <br><br>
+
+  <div id="listaGestionVendedores"></div>
+
+  <p class="mensaje" id="mensajeVendedor"></p>
+</div>
       <div class="box">
         <h3>Buscar producto</h3>
         <p style="margin-top:6px; color: var(--text-secondary);">
