@@ -372,7 +372,9 @@ cargarVendedores();
 seleccionarComprobante('boleta');
 renderCarrito();
 function modoAdminActivo() {
-  return localStorage.getItem('modo_admin') === 'true';
+  const usuarioActual = JSON.parse(localStorage.getItem('usuario'));
+
+  return usuarioActual?.modo_admin === true;
 }
 
 function inicializarPanelAdminVendedores() {
