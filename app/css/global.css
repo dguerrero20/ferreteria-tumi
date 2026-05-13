@@ -2232,3 +2232,15 @@ html.dark-mode-preload .sale-chevron {
     background: #fff !important;
   }
 }
+
+.stat-trend.positive {
+  color: #16a34a;
+}
+
+.stat-trend.negative {
+  color: #dc2626;
+}
+
+.stat-trend.neutral {
+  color: #64748b;
+}

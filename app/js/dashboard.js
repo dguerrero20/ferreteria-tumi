@@ -28,22 +28,16 @@ function inicializarUsuarioDashboard() {
   document.getElementById('dashboardAvatar').textContent = iniciales || 'AD';
 }
 
-function pintarGraficoVentas(ventas = []) {
+function pintarGraficoVentas(ventasSemana = []) {
   const canvas = document.getElementById('ventasChart');
   if (!canvas) return;
 
-  const ventasOrdenadas = [...ventas]
-    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
-    .slice(-7);
+  const dias = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
-  const labels = ventasOrdenadas.map((venta) =>
-    new Date(venta.created_at).toLocaleDateString('es-PE', {
-      day: 'numeric',
-      month: 'short',
-    })
-  );
-
-  const datos = ventasOrdenadas.map((venta) => Number(venta.total));
+  const datos = dias.map((_, index) => {
+    const item = ventasSemana[index];
+    return item ? Number(item.total) : 0;
+  });
 
   if (ventasChart) {
     ventasChart.destroy();
@@ -52,11 +46,11 @@ function pintarGraficoVentas(ventas = []) {
   ventasChart = new Chart(canvas, {
     type: 'line',
     data: {
-      labels: labels.length ? labels : ['Día 1', 'Día 2', 'Día 3', 'Día 4', 'Día 5', 'Día 6', 'Día 7'],
+      labels: dias,
       datasets: [
         {
-          label: 'Ventas',
-          data: datos.length ? datos : [0, 0, 0, 0, 0, 0, 0],
+          label: 'Ventas por día',
+          data: datos,
           borderWidth: 3,
           tension: 0.35,
           fill: true,
@@ -240,12 +234,30 @@ async function cargarDashboard() {
       resumen.productos_stock_bajo || 0;
 
     document.getElementById('ventasHoy').textContent =
-      calcularVentasHoy(ultimasVentas).toFixed(2);
+  Number(resumen.ventas_hoy || 0).toFixed(2);
+
+const trend = document.getElementById('ventasTrend');
+const porcentaje = Number(resumen.porcentaje_vs_ayer || 0);
+
+if (trend) {
+  const signo = porcentaje > 0 ? '↑' : porcentaje < 0 ? '↓' : '→';
+  trend.textContent = `${signo} ${Math.abs(porcentaje).toFixed(2)}%`;
+
+  trend.classList.remove('positive', 'negative', 'neutral');
+
+  if (porcentaje > 0) {
+    trend.classList.add('positive');
+  } else if (porcentaje < 0) {
+    trend.classList.add('negative');
+  } else {
+    trend.classList.add('neutral');
+  }
+}
 
     notificaciones = generarNotificaciones(resumen);
     actualizarBadgeNotificaciones();
 
-    pintarGraficoVentas(ultimasVentas);
+    pintarGraficoVentas(data.ventas_semana || []);
 
     const tbody = document.getElementById('ventas');
     tbody.innerHTML = '';
