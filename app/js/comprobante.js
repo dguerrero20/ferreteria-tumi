@@ -38,10 +38,36 @@ function descargarComprobante() {
   window.print();
 }
 
-function enviarCorreo() {
+async function enviarCorreo() {
   const mensaje = document.getElementById('mensajeComprobante');
-  mensaje.textContent = 'La función de envío por correo quedará conectada al backend en el siguiente paso.';
-  mensaje.style.color = 'green';
+
+  mensaje.textContent = 'Enviando comprobante por correo...';
+  mensaje.style.color = '#2563eb';
+
+  try {
+    const res = await fetch(`${API}/ventas/${ventaId}/email?empresa_id=${empresaId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      mensaje.textContent = data.msg || 'No se pudo enviar el comprobante.';
+      mensaje.style.color = 'red';
+      return;
+    }
+
+    mensaje.textContent = data.msg || 'Comprobante enviado correctamente.';
+    mensaje.style.color = 'green';
+  } catch (error) {
+    console.error(error);
+
+    mensaje.textContent = 'Error conectando con el servidor.';
+    mensaje.style.color = 'red';
+  }
 }
 
 async function cargarComprobante() {
