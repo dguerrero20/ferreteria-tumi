@@ -52,14 +52,15 @@ function reescribirLinksDemo() {
 
     if (texto.includes('dashboard')) link.href = './demo-dashboard.html';
     if (texto.includes('productos')) link.href = './demo-productos.html';
+
     if (texto.includes('categorías') || texto.includes('categorias')) {
-  link.href = './demo-categorias.html';
+      link.href = './demo-categorias.html';
+    }
+
     if (texto.includes('ventas')) link.href = './demo-ventas.html';
     if (texto.includes('proveedores')) link.href = './demo-proveedores.html';
     if (texto.includes('reportes')) link.href = './demo-reportes.html';
     if (texto.includes('perfil')) link.href = './demo-perfil.html';
-    
-}
   });
 }
 
@@ -820,7 +821,145 @@ function cargarDashboardDemo() {
     });
   }
 }
+function inicializarUsuarioDashboard() {
+  const nombre = demoData.usuario.nombre || 'Usuario Demo';
+  const rol = demoData.usuario.rol || 'Modo prueba';
 
+  const nombreEl = document.getElementById('dashboardUserName');
+  const rolEl = document.getElementById('dashboardUserRole');
+  const avatarEl = document.getElementById('dashboardAvatar');
+
+  if (!nombreEl || !rolEl || !avatarEl) return;
+
+  const iniciales = nombre
+    .split(' ')
+    .map((p) => p[0])
+    .join('')
+    .substring(0, 2)
+    .toUpperCase();
+
+  nombreEl.textContent = nombre;
+  rolEl.textContent = rol;
+  avatarEl.textContent = iniciales || 'UD';
+}
+
+function inicializarMenuUsuarioDemo() {
+  const userMenu = document.getElementById('dashboardUserMenu');
+  const dropdown = document.getElementById('userDropdown');
+
+  if (!userMenu || !dropdown) return;
+
+  userMenu.addEventListener('click', (event) => {
+    event.stopPropagation();
+    dropdown.classList.toggle('show');
+  });
+
+  dropdown.addEventListener('click', (event) => {
+    event.stopPropagation();
+  });
+
+  document.addEventListener('click', () => {
+    dropdown.classList.remove('show');
+  });
+}
+
+function inicializarTemaDemo() {
+  const toggle = document.getElementById('themeToggle');
+  if (!toggle) return;
+
+  const icon = toggle.querySelector('.theme-icon');
+  const text = toggle.querySelector('.theme-text');
+
+  function pintarTema() {
+    const oscuro = localStorage.getItem('tema') === 'oscuro';
+
+    document.body.classList.toggle('dark-mode', oscuro);
+    document.documentElement.classList.toggle('dark-mode-preload', oscuro);
+    toggle.classList.toggle('active', oscuro);
+
+    if (icon) icon.textContent = oscuro ? '🌙' : '☀️';
+    if (text) text.textContent = oscuro ? 'Modo oscuro' : 'Modo claro';
+  }
+
+  pintarTema();
+
+  toggle.addEventListener('click', (event) => {
+    event.stopPropagation();
+
+    const oscuroActual = localStorage.getItem('tema') === 'oscuro';
+    localStorage.setItem('tema', oscuroActual ? 'claro' : 'oscuro');
+
+    pintarTema();
+  });
+}
+
+function inicializarNotificacionesDemo() {
+  const bell = document.getElementById('notificationBell');
+  const badge = document.getElementById('notificationBadge');
+  const dropdown = document.getElementById('notificationDropdown');
+  const list = document.getElementById('notificationList');
+  const more = document.getElementById('notificationMore');
+
+  if (!bell || !badge || !dropdown || !list) return;
+
+  const stockBajo = demoData.productos.filter(
+    (p) => Number(p.stock) <= Number(p.stock_min)
+  );
+
+  const notificaciones = stockBajo.map((p) => ({
+    titulo: 'Stock bajo',
+    mensaje: `${p.producto} tiene stock bajo (${p.stock} disponibles).`,
+  }));
+
+  if (notificaciones.length === 0) {
+    badge.style.display = 'none';
+  } else {
+    badge.style.display = 'grid';
+    badge.textContent = notificaciones.length;
+  }
+
+  bell.addEventListener('click', (event) => {
+    event.stopPropagation();
+
+    dropdown.classList.toggle('show');
+    list.innerHTML = '';
+
+    if (notificaciones.length === 0) {
+      list.innerHTML = `
+        <div class="notification-empty">
+          No hay notificaciones
+        </div>
+      `;
+    } else {
+      notificaciones.slice(0, 10).forEach((noti) => {
+        const item = document.createElement('div');
+        item.className = 'notification-item';
+
+        item.innerHTML = `
+          <div class="notification-icon">⚠️</div>
+          <div>
+            <strong>${noti.titulo}</strong>
+            <p>${noti.mensaje}</p>
+          </div>
+        `;
+
+        list.appendChild(item);
+      });
+
+      badge.style.display = 'none';
+    }
+
+    if (more) more.style.display = 'none';
+  });
+
+  dropdown.addEventListener('click', (event) => {
+    event.stopPropagation();
+  });
+
+  document.addEventListener('click', () => {
+    dropdown.classList.remove('show');
+  });
+}
 /* ========================= */
 /* INIT */
 /* ========================= */
@@ -829,6 +968,10 @@ document.addEventListener('DOMContentLoaded', () => {
   aplicarTemaGuardado();
   reescribirLinksDemo();
   prepararModoAdmin();
+  inicializarUsuarioDashboard();
+inicializarMenuUsuarioDemo();
+inicializarTemaDemo();
+inicializarNotificacionesDemo();
 
   document.getElementById('nuevaCategoria')?.addEventListener('change', cargarTiposFormulario);
   document.getElementById('nuevoTipo')?.addEventListener('change', cargarVariantesFormulario);
