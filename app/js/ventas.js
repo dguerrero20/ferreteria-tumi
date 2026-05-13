@@ -1,6 +1,7 @@
 const API_PRODUCTOS = 'https://ferreteria-tumi.onrender.com/api/productos';
 const API_VENTAS = 'https://ferreteria-tumi.onrender.com/api/ventas';
 const API_VENDEDORES = 'https://ferreteria-tumi.onrender.com/api/usuarios/vendedores';
+const API = 'https://ferreteria-tumi.onrender.com/api';
 
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 const empresaId = usuario?.empresa_id;
