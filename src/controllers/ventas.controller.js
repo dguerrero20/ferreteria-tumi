@@ -1,5 +1,5 @@
 const pool = require('../db/primary');
-
+const puppeteer = require('puppeteer');
 const {
   enviarCorreo,
 } = require('../utils/email');
@@ -363,7 +363,343 @@ const detalleVenta = async (req, res) => {
     });
   }
 };
+function formatoMoneda(valor) {
+  return `S/ ${Number(valor || 0).toFixed(2)}`;
+}
 
+function formatoCorrelativo(numero) {
+  return String(numero || 0).padStart(8, '0');
+}
+
+function textoTipo(tipo) {
+  return tipo === 'factura'
+    ? 'FACTURA ELECTRÓNICA'
+    : 'BOLETA DE VENTA ELECTRÓNICA';
+}
+
+async function generarPDFComprobante(venta, detalle) {
+  const esFactura = venta.tipo_comprobante === 'factura';
+
+  const numero =
+    `${venta.serie || (esFactura ? 'F001' : 'B001')}-${formatoCorrelativo(venta.correlativo)}`;
+
+  const clienteHtml = esFactura
+    ? `
+      <div><strong>Razón social:</strong> ${venta.cliente_razon_social || '-'}</div>
+      <div><strong>RUC:</strong> ${venta.cliente_ruc || '-'}</div>
+      <div><strong>Dirección:</strong> ${venta.cliente_direccion || '-'}</div>
+      <div><strong>Correo:</strong> ${venta.cliente_email || '-'}</div>
+    `
+    : `
+      <div><strong>Cliente:</strong> ${venta.cliente_nombre || '-'}</div>
+      <div><strong>DNI:</strong> ${venta.cliente_dni || '-'}</div>
+      <div><strong>Correo:</strong> ${venta.cliente_email || '-'}</div>
+    `;
+
+  const productosHtml = detalle.map((item, index) => `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${item.producto}</td>
+      <td>${Number(item.cantidad).toFixed(2)}</td>
+      <td>${item.unidad_medida || '-'}</td>
+      <td>${formatoMoneda(item.precio_sin_igv || (Number(item.precio_unitario) / 1.18))}</td>
+      <td>${formatoMoneda(item.igv || (Number(item.subtotal) - Number(item.subtotal) / 1.18))}</td>
+      <td>${formatoMoneda(item.subtotal)}</td>
+    </tr>
+  `).join('');
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+
+      <style>
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          padding: 24px;
+          background: #f3f4f6;
+          font-family: Arial, sans-serif;
+          color: #111827;
+        }
+
+        .comprobante-paper {
+          width: 100%;
+          background: #fff;
+          color: #111827;
+          padding: 28px;
+          border-radius: 18px;
+          box-shadow: 0 20px 50px rgba(15, 23, 42, .12);
+        }
+
+        .comprobante-top {
+          display: grid;
+          grid-template-columns: 1.2fr .8fr;
+          gap: 20px;
+          align-items: stretch;
+        }
+
+        .empresa-box {
+          border: 1px solid #d1d5db;
+          border-radius: 16px;
+          padding: 18px;
+        }
+
+        .empresa-box h2 {
+          font-size: 28px;
+          margin: 0 0 8px;
+        }
+
+        .empresa-box p {
+          margin: 4px 0;
+          color: #374151;
+          font-size: 13px;
+        }
+
+        .documento-box {
+          border: 2px solid #111827;
+          border-radius: 16px;
+          padding: 18px;
+          text-align: center;
+          display: grid;
+          align-content: center;
+        }
+
+        .documento-box h2 {
+          font-size: 18px;
+          margin: 12px 0;
+        }
+
+        .documento-ruc {
+          font-weight: 700;
+          font-size: 14px;
+        }
+
+        .documento-numero {
+          font-size: 22px;
+          font-weight: 800;
+        }
+
+        .comprobante-section {
+          margin-top: 20px;
+        }
+
+        .section-title {
+          background: #111827;
+          color: #fff;
+          padding: 10px 14px;
+          border-radius: 10px;
+          font-weight: 700;
+          margin-bottom: 12px;
+          font-size: 14px;
+        }
+
+        .cliente-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px 20px;
+          padding: 16px;
+          border: 1px solid #d1d5db;
+          border-radius: 14px;
+          font-size: 13px;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        .comprobante-table th {
+          background: #111827;
+          color: #fff;
+          font-size: 12px;
+          text-align: left;
+        }
+
+        .comprobante-table td,
+        .comprobante-table th {
+          border: 1px solid #d1d5db;
+          padding: 10px;
+          font-size: 12px;
+        }
+
+        .comprobante-bottom {
+          display: grid;
+          grid-template-columns: 1fr 280px;
+          gap: 20px;
+          margin-top: 20px;
+        }
+
+        .observaciones-box {
+          border: 1px solid #d1d5db;
+          border-radius: 14px;
+          padding: 16px;
+          font-size: 13px;
+        }
+
+        .observaciones-box p {
+          margin: 6px 0;
+        }
+
+        .qr-box {
+          margin-top: 16px;
+          width: 76px;
+          height: 76px;
+          border: 2px dashed #6b7280;
+          display: grid;
+          place-items: center;
+          font-weight: 800;
+          color: #6b7280;
+        }
+
+        .comprobante-totales {
+          border: 1px solid #d1d5db;
+          border-radius: 14px;
+          padding: 16px;
+          font-size: 13px;
+        }
+
+        .comprobante-totales > div {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 12px;
+        }
+
+        .comprobante-totales .total-final {
+          border-top: 1px solid #d1d5db;
+          padding-top: 14px;
+          font-size: 18px;
+        }
+
+        .comprobante-footer {
+          margin-top: 22px;
+          text-align: center;
+          font-size: 11px;
+          color: #6b7280;
+        }
+      </style>
+    </head>
+
+    <body>
+      <div class="comprobante-paper">
+
+        <div class="comprobante-top">
+          <div class="empresa-box">
+            <h2>FERDEV</h2>
+            <p>Soluciones para ferretería e inventario</p>
+            <p><strong>RUC:</strong> 20600000000</p>
+            <p><strong>Dirección:</strong> Lima, Perú</p>
+            <p><strong>Email:</strong> ventas@ferdev.com</p>
+          </div>
+
+          <div class="documento-box">
+            <div class="documento-ruc">RUC 20600000000</div>
+            <h2>${textoTipo(venta.tipo_comprobante)}</h2>
+            <div class="documento-numero">${numero}</div>
+          </div>
+        </div>
+
+        <div class="comprobante-section">
+          <div class="section-title">Datos del cliente</div>
+
+          <div class="cliente-grid">
+            ${clienteHtml}
+            <div><strong>Fecha de emisión:</strong> ${new Date(venta.created_at).toLocaleString('es-PE')}</div>
+            <div><strong>Vendedor:</strong> ${venta.usuario || '-'}</div>
+          </div>
+        </div>
+
+        <div class="comprobante-section">
+          <div class="section-title">Detalle de productos</div>
+
+          <table class="comprobante-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Unidad</th>
+                <th>Valor venta</th>
+                <th>IGV</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              ${productosHtml}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="comprobante-bottom">
+          <div class="observaciones-box">
+            <strong>Observaciones:</strong>
+            <p>El precio de los productos incluye IGV. Documento generado desde Ferdev.</p>
+
+            <div class="qr-box">
+              QR
+            </div>
+          </div>
+
+          <div class="comprobante-totales">
+            <div>
+              <span>Subtotal sin IGV</span>
+              <strong>${formatoMoneda(venta.subtotal_sin_igv)}</strong>
+            </div>
+
+            <div>
+              <span>IGV 18%</span>
+              <strong>${formatoMoneda(venta.igv)}</strong>
+            </div>
+
+            <div class="total-final">
+              <span>Importe total</span>
+              <strong>${formatoMoneda(venta.total)}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="comprobante-footer">
+          Representación impresa de ${textoTipo(venta.tipo_comprobante)}.
+        </div>
+
+      </div>
+    </body>
+    </html>
+  `;
+
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+
+  try {
+    const page = await browser.newPage();
+
+    await page.setContent(html, {
+      waitUntil: 'networkidle0',
+    });
+
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: {
+        top: '10mm',
+        right: '10mm',
+        bottom: '10mm',
+        left: '10mm',
+      },
+    });
+
+    return pdfBuffer;
+  } finally {
+    await browser.close();
+  }
+}
 const enviarComprobanteEmail = async (req, res) => {
   const { id } = req.params;
   const empresa_id = obtenerEmpresaId(req);
@@ -447,47 +783,49 @@ const enviarComprobanteEmail = async (req, res) => {
           <p><strong>DNI:</strong> ${venta.cliente_dni || '-'}</p>
         `;
 
-    const html = `
-      <div style="font-family: Arial, sans-serif; color:#111827;">
-        <h2>FERDEV</h2>
-        <h3>${tipoTexto} ${numero}</h3>
+    const pdfBuffer = await generarPDFComprobante(
+  venta,
+  detalleResult.rows
+);
 
-        ${clienteHtml}
+const html = `
+  <div style="font-family: Arial, sans-serif; color:#111827;">
+    <h2>FERDEV</h2>
 
-        <p><strong>Fecha:</strong> ${new Date(venta.created_at).toLocaleString('es-PE')}</p>
-        <p><strong>Vendedor:</strong> ${venta.usuario || '-'}</p>
+    <p>Hola,</p>
 
-        <table border="1" cellpadding="8" cellspacing="0" width="100%">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Cantidad</th>
-              <th>Valor venta</th>
-              <th>IGV</th>
-              <th>Total</th>
-            </tr>
-          </thead>
+    <p>
+      Adjuntamos tu ${tipoTexto.toLowerCase()}
+      <strong>${numero}</strong>.
+    </p>
 
-          <tbody>
-            ${productosHtml}
-          </tbody>
-        </table>
+    <p>
+      También puedes conservar este correo como respaldo digital
+      de tu compra.
+    </p>
 
-        <br>
+    <br>
 
-        <p><strong>Subtotal sin IGV:</strong> S/ ${Number(venta.subtotal_sin_igv || 0).toFixed(2)}</p>
-        <p><strong>IGV 18%:</strong> S/ ${Number(venta.igv || 0).toFixed(2)}</p>
-        <h3>Total: S/ ${Number(venta.total || 0).toFixed(2)}</h3>
+    <p>
+      <strong>Total:</strong>
+      S/ ${Number(venta.total || 0).toFixed(2)}
+    </p>
 
-        <p>Representación digital generada desde Ferdev.</p>
-      </div>
-    `;
+    <p>Gracias por tu compra.</p>
+  </div>
+`;
 
-    await enviarCorreo({
-      to: venta.cliente_email,
-      subject: `${tipoTexto} ${numero}`,
-      html,
-    });
+await enviarCorreo({
+  to: venta.cliente_email,
+  subject: `${tipoTexto} ${numero}`,
+  html,
+  attachments: [
+    {
+      name: `${venta.tipo_comprobante}-${numero}.pdf`,
+      content: pdfBuffer.toString('base64'),
+    },
+  ],
+});
 
     res.json({
       msg: `${tipoTexto} enviada correctamente a ${venta.cliente_email}`,

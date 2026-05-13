@@ -1,4 +1,4 @@
-async function enviarCorreo({ to, subject, html }) {
+async function enviarCorreo({ to, subject, html, attachments = [] }) {
   const respuesta = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: {
@@ -18,6 +18,7 @@ async function enviarCorreo({ to, subject, html }) {
       ],
       subject,
       htmlContent: html,
+      attachment: attachments,
     }),
   });
 
