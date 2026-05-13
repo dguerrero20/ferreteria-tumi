@@ -822,7 +822,7 @@ await enviarCorreo({
   attachments: [
     {
       name: `${venta.tipo_comprobante}-${numero}.pdf`,
-      content: pdfBuffer.toString('base64'),
+      content: Buffer.from(pdfBuffer).toString('base64'),
     },
   ],
 });
