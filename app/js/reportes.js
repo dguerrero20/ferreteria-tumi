@@ -315,6 +315,7 @@ async function reporteVentasSimple() {
             <th>Total</th>
             <th>Usuario</th>
             <th>Fecha</th>
+            <th>Acción</th>
           </tr>
         </thead>
         <tbody>
@@ -326,7 +327,20 @@ async function reporteVentasSimple() {
           <td>${v.id}</td>
           <td>S/ ${Number(v.total).toFixed(2)}</td>
           <td>${v.usuario || '-'}</td>
-          <td>${new Date(v.created_at).toLocaleString()}</td>
+          <td>${new Date(v.created_at).toLocaleString('es-PE')}</td>
+          <td>
+            <button class="small" onclick="verDetalleVenta(${v.id})">
+              Ver
+            </button>
+          </td>
+        </tr>
+
+        <tr id="detalleVenta-${v.id}" style="display:none;">
+          <td colspan="5">
+            <div class="resumen">
+              Cargando detalle...
+            </div>
+          </td>
         </tr>
       `;
     });
@@ -342,9 +356,93 @@ async function reporteVentasSimple() {
 
     document.getElementById('contenidoReporte').innerHTML = html;
     aplicarVista();
+
   } catch (error) {
     console.error(error);
     mostrarMensaje('Error cargando reporte general de ventas.');
+  }
+}
+async function verDetalleVenta(id) {
+  const filaDetalle = document.getElementById(`detalleVenta-${id}`);
+
+  if (!filaDetalle) return;
+
+  if (filaDetalle.style.display === 'table-row') {
+    filaDetalle.style.display = 'none';
+    return;
+  }
+
+  filaDetalle.style.display = 'table-row';
+
+  try {
+    const res = await fetch(`${API}/ventas/${id}?empresa_id=${empresaId}`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      filaDetalle.innerHTML = `
+        <td colspan="5">
+          <div class="resumen">
+            ${data.msg || 'No se pudo cargar el detalle de la venta.'}
+          </div>
+        </td>
+      `;
+      return;
+    }
+
+    const venta = data.venta;
+    const detalle = data.detalle || [];
+
+    let productosHtml = `
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Unidad</th>
+            <th>Precio unitario</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    detalle.forEach((item) => {
+      productosHtml += `
+        <tr>
+          <td>${item.producto}</td>
+          <td>${item.cantidad}</td>
+          <td>${item.unidad_medida || '-'}</td>
+          <td>S/ ${Number(item.precio_unitario).toFixed(2)}</td>
+          <td>S/ ${Number(item.subtotal).toFixed(2)}</td>
+        </tr>
+      `;
+    });
+
+    productosHtml += '</tbody></table>';
+
+    filaDetalle.innerHTML = `
+      <td colspan="5">
+        <div class="resumen">
+          <p><strong>Venta:</strong> #${venta.id}</p>
+          <p><strong>Vendedor:</strong> ${venta.usuario || '-'}</p>
+          <p><strong>Fecha y hora:</strong> ${new Date(venta.created_at).toLocaleString('es-PE')}</p>
+          <p><strong>Total final:</strong> S/ ${Number(venta.total).toFixed(2)}</p>
+        </div>
+
+        ${productosHtml}
+      </td>
+    `;
+
+  } catch (error) {
+    console.error(error);
+
+    filaDetalle.innerHTML = `
+      <td colspan="5">
+        <div class="resumen">
+          Error cargando detalle de venta.
+        </div>
+      </td>
+    `;
   }
 }
 
