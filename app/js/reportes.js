@@ -333,6 +333,7 @@ async function reporteVentasSimple() {
           <thead>
             <tr>
               <th>ID Venta</th>
+              <th>Comprobante</th>
               <th>Total</th>
               <th>Vendedor</th>
               <th>Fecha y hora</th>
@@ -345,8 +346,17 @@ async function reporteVentasSimple() {
     data.ventas.forEach((v) => {
       html += `
         <tr class="sale-main-row" id="ventaRow-${v.id}">
-          <td>${v.id}</td>
-          <td>S/ ${Number(v.total).toFixed(2)}</td>
+  <td>${v.id}</td>
+
+  <td>
+    <span class="badge primary">
+      ${v.tipo_comprobante === 'factura'
+        ? 'Factura'
+        : 'Boleta'}
+    </span>
+  </td>
+
+  <td>S/ ${Number(v.total).toFixed(2)}</td>
           <td>${v.usuario || '-'}</td>
           <td>${new Date(v.created_at).toLocaleString('es-PE')}</td>
           <td>
@@ -358,7 +368,7 @@ async function reporteVentasSimple() {
         </tr>
 
         <tr id="detalleVenta-${v.id}" class="sale-detail-row" style="display:none;">
-          <td colspan="5">
+          <td colspan="6">
             <div class="sale-detail-loading">
               Cargando detalle...
             </div>
@@ -390,8 +400,10 @@ async function verDetalleVenta(id) {
 
   if (filaDetalle.style.display === 'table-row') {
     filaDetalle.style.display = 'none';
+
     if (boton) boton.textContent = 'Ver';
     if (chevron) chevron.textContent = '⌄';
+
     return;
   }
 
@@ -408,6 +420,7 @@ async function verDetalleVenta(id) {
   });
 
   filaDetalle.style.display = 'table-row';
+
   if (boton) boton.textContent = 'Ocultar';
   if (chevron) chevron.textContent = '⌃';
 
@@ -417,7 +430,7 @@ async function verDetalleVenta(id) {
 
     if (!res.ok) {
       filaDetalle.innerHTML = `
-        <td colspan="5">
+        <td colspan="6">
           <div class="sale-detail-loading">
             ${data.msg || 'No se pudo cargar el detalle de la venta.'}
           </div>
@@ -430,10 +443,34 @@ async function verDetalleVenta(id) {
     const detalle = data.detalle || [];
 
     const totalProductos = detalle.length;
+
     const cantidadTotal = detalle.reduce(
       (sum, item) => sum + Number(item.cantidad || 0),
       0
     );
+
+    const tipoTexto =
+      venta.tipo_comprobante === 'factura'
+        ? 'Factura electrónica'
+        : 'Boleta electrónica';
+
+    const botonTexto =
+      venta.tipo_comprobante === 'factura'
+        ? 'Ver factura'
+        : 'Ver boleta';
+
+    const clienteTexto =
+      venta.tipo_comprobante === 'factura'
+        ? (venta.cliente_razon_social || '-')
+        : (venta.cliente_nombre || '-');
+
+    const documentoTexto =
+      venta.tipo_comprobante === 'factura'
+        ? `RUC: ${venta.cliente_ruc || '-'}`
+        : `DNI: ${venta.cliente_dni || '-'}`;
+
+    const numeroComprobante =
+      `${venta.serie || '-'}-${String(venta.correlativo || 0).padStart(8, '0')}`;
 
     let productosHtml = '';
 
@@ -450,7 +487,8 @@ async function verDetalleVenta(id) {
     });
 
     filaDetalle.innerHTML = `
-      <td colspan="5">
+      <td colspan="6">
+
         <div class="sale-detail-card">
 
           <div class="sale-detail-title">
@@ -463,8 +501,10 @@ async function verDetalleVenta(id) {
             <div class="sale-detail-left">
 
               <div class="sale-info-strip">
+
                 <div class="sale-info-item">
                   <div class="sale-info-icon">👤</div>
+
                   <div>
                     <span>Vendedor</span>
                     <strong>${venta.usuario || '-'}</strong>
@@ -473,29 +513,75 @@ async function verDetalleVenta(id) {
 
                 <div class="sale-info-item">
                   <div class="sale-info-icon">🗓️</div>
+
                   <div>
                     <span>Fecha y hora</span>
-                    <strong>${new Date(venta.created_at).toLocaleString('es-PE')}</strong>
+                    <strong>
+                      ${new Date(venta.created_at).toLocaleString('es-PE')}
+                    </strong>
                   </div>
                 </div>
 
                 <div class="sale-info-item">
                   <div class="sale-info-icon">#</div>
+
                   <div>
                     <span>ID Venta</span>
                     <strong>${venta.id}</strong>
                   </div>
                 </div>
+
+              </div>
+
+              <div class="sale-comprobante-card">
+
+                <div>
+                  <span class="sale-comprobante-label">
+                    Comprobante
+                  </span>
+
+                  <h4>${tipoTexto}</h4>
+
+                  <p>
+                    <strong>Número:</strong>
+                    ${numeroComprobante}
+                  </p>
+
+                  <p>
+                    <strong>Cliente:</strong>
+                    ${clienteTexto}
+                  </p>
+
+                  <p>
+                    <strong>${documentoTexto}</strong>
+                  </p>
+
+                  <p>
+                    <strong>Correo:</strong>
+                    ${venta.cliente_email || '-'}
+                  </p>
+                </div>
+
+                <button
+                  class="sale-comprobante-btn"
+                  onclick="window.location.href='/pages/comprobante.html?id=${venta.id}'"
+                >
+                  ${botonTexto}
+                </button>
+
               </div>
 
               <div class="sale-products-card">
+
                 <div class="sale-products-title">
                   <div class="sale-products-icon">▣</div>
                   <h4>Productos vendidos</h4>
                 </div>
 
                 <div class="table-responsive">
+
                   <table class="sale-products-table">
+
                     <thead>
                       <tr>
                         <th>Producto</th>
@@ -509,13 +595,17 @@ async function verDetalleVenta(id) {
                     <tbody>
                       ${productosHtml}
                     </tbody>
+
                   </table>
+
                 </div>
+
               </div>
 
             </div>
 
             <div class="sale-summary-panel">
+
               <div class="sale-summary-title">
                 <div class="sale-summary-money">$</div>
                 <h4>Resumen de la venta</h4>
@@ -532,28 +622,35 @@ async function verDetalleVenta(id) {
               </div>
 
               <div class="sale-summary-line">
-                <span>🏷️ Subtotal</span>
-                <strong>S/ ${Number(venta.total).toFixed(2)}</strong>
+                <span>Subtotal sin IGV</span>
+
+                <strong>
+                  S/ ${Number(venta.subtotal_sin_igv || 0).toFixed(2)}
+                </strong>
               </div>
 
               <div class="sale-summary-line">
-                <span>% Descuento</span>
-                <strong>S/ 0.00</strong>
-              </div>
+                <span>IGV 18%</span>
 
-              <div class="sale-summary-line">
-                <span>🏛️ Impuestos</span>
-                <strong>S/ 0.00</strong>
+                <strong>
+                  S/ ${Number(venta.igv || 0).toFixed(2)}
+                </strong>
               </div>
 
               <div class="sale-summary-total">
                 <span>Total final</span>
-                <strong>S/ ${Number(venta.total).toFixed(2)}</strong>
+
+                <strong>
+                  S/ ${Number(venta.total).toFixed(2)}
+                </strong>
               </div>
+
             </div>
 
           </div>
+
         </div>
+
       </td>
     `;
 
@@ -561,7 +658,7 @@ async function verDetalleVenta(id) {
     console.error(error);
 
     filaDetalle.innerHTML = `
-      <td colspan="5">
+      <td colspan="6">
         <div class="sale-detail-loading">
           Error cargando detalle de venta.
         </div>

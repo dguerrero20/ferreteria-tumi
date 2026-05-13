@@ -4,11 +4,68 @@ function obtenerEmpresaId(req) {
   return req.query.empresa_id || req.body.empresa_id;
 }
 
-const registrarVenta = async (req, res) => {
-  const { empresa_id, usuario_id, productos } = req.body;
+function calcularIgvIncluido(total) {
+  const subtotalSinIgv = Number(total) / 1.18;
+  const igv = Number(total) - subtotalSinIgv;
 
-  if (!empresa_id) {
-    return res.status(400).json({ msg: 'Falta empresa_id' });
+  return {
+    subtotalSinIgv: Number(subtotalSinIgv.toFixed(2)),
+    igv: Number(igv.toFixed(2)),
+  };
+}
+
+async function generarCorrelativo(client, empresaId, tipoComprobante) {
+  const serie = tipoComprobante === 'factura' ? 'F001' : 'B001';
+
+  const result = await client.query(
+    `
+    SELECT COALESCE(MAX(correlativo), 0) + 1 AS siguiente
+    FROM public.ventas
+    WHERE empresa_id = $1
+    AND tipo_comprobante = $2
+    AND serie = $3
+    `,
+    [empresaId, tipoComprobante, serie]
+  );
+
+  return {
+    serie,
+    correlativo: Number(result.rows[0].siguiente),
+  };
+}
+
+const registrarVenta = async (req, res) => {
+  const {
+    empresa_id,
+    usuario_id,
+    productos,
+    tipo_comprobante = 'boleta',
+    cliente_nombre,
+    cliente_dni,
+    cliente_ruc,
+    cliente_razon_social,
+    cliente_direccion,
+    cliente_email,
+  } = req.body;
+
+  if (!empresa_id) return res.status(400).json({ msg: 'Falta empresa_id' });
+
+  if (!['boleta', 'factura'].includes(tipo_comprobante)) {
+    return res.status(400).json({ msg: 'Tipo de comprobante inválido' });
+  }
+
+  if (tipo_comprobante === 'boleta' && !cliente_nombre) {
+    return res.status(400).json({ msg: 'El nombre del cliente es obligatorio para boleta' });
+  }
+
+  if (tipo_comprobante === 'factura') {
+    if (!cliente_razon_social || !cliente_ruc || !cliente_email) {
+      return res.status(400).json({ msg: 'Razón social, RUC y correo son obligatorios para factura' });
+    }
+
+    if (!/^\d{11}$/.test(String(cliente_ruc))) {
+      return res.status(400).json({ msg: 'El RUC debe tener 11 dígitos' });
+    }
   }
 
   const client = await pool.connect();
@@ -18,9 +75,7 @@ const registrarVenta = async (req, res) => {
 
     if (!productos || productos.length === 0) {
       await client.query('ROLLBACK');
-      return res.status(400).json({
-        msg: 'Debe agregar productos a la venta',
-      });
+      return res.status(400).json({ msg: 'Debe agregar productos a la venta' });
     }
 
     let total = 0;
@@ -37,9 +92,7 @@ const registrarVenta = async (req, res) => {
 
       if (productoResult.rows.length === 0) {
         await client.query('ROLLBACK');
-        return res.status(404).json({
-          msg: `Producto ${item.producto_id} no encontrado`,
-        });
+        return res.status(404).json({ msg: `Producto ${item.producto_id} no encontrado` });
       }
 
       const producto = productoResult.rows[0];
@@ -55,14 +108,48 @@ const registrarVenta = async (req, res) => {
       total += Number(producto.precio) * Number(item.cantidad);
     }
 
+    const { subtotalSinIgv, igv } = calcularIgvIncluido(total);
+    const { serie, correlativo } = await generarCorrelativo(client, empresa_id, tipo_comprobante);
+
     const ventaResult = await client.query(
       `
       INSERT INTO public.ventas
-      (empresa_id, usuario_id, total)
-      VALUES ($1, $2, $3)
+      (
+        empresa_id,
+        usuario_id,
+        total,
+        tipo_comprobante,
+        cliente_nombre,
+        cliente_dni,
+        cliente_ruc,
+        cliente_razon_social,
+        cliente_direccion,
+        cliente_email,
+        serie,
+        correlativo,
+        subtotal_sin_igv,
+        igv
+      )
+      VALUES
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
       RETURNING *
       `,
-      [empresa_id, usuario_id, total]
+      [
+        empresa_id,
+        usuario_id,
+        total,
+        tipo_comprobante,
+        cliente_nombre || null,
+        cliente_dni || null,
+        cliente_ruc || null,
+        cliente_razon_social || null,
+        cliente_direccion || null,
+        cliente_email || null,
+        serie,
+        correlativo,
+        subtotalSinIgv,
+        igv,
+      ]
     );
 
     const venta = ventaResult.rows[0];
@@ -79,14 +166,31 @@ const registrarVenta = async (req, res) => {
 
       const producto = productoResult.rows[0];
       const subtotal = Number(producto.precio) * Number(item.cantidad);
+      const calcDetalle = calcularIgvIncluido(subtotal);
 
       await client.query(
         `
         INSERT INTO public.ventas_detalle
-        (venta_id, producto_id, cantidad, precio_unitario, subtotal)
-        VALUES ($1, $2, $3, $4, $5)
+        (
+          venta_id,
+          producto_id,
+          cantidad,
+          precio_unitario,
+          subtotal,
+          precio_sin_igv,
+          igv
+        )
+        VALUES ($1,$2,$3,$4,$5,$6,$7)
         `,
-        [venta.id, item.producto_id, item.cantidad, producto.precio, subtotal]
+        [
+          venta.id,
+          item.producto_id,
+          item.cantidad,
+          producto.precio,
+          subtotal,
+          calcDetalle.subtotalSinIgv,
+          calcDetalle.igv,
+        ]
       );
 
       await client.query(
@@ -105,6 +209,11 @@ const registrarVenta = async (req, res) => {
       msg: 'Venta registrada correctamente',
       venta_id: venta.id,
       total,
+      subtotal_sin_igv: subtotalSinIgv,
+      igv,
+      tipo_comprobante,
+      serie,
+      correlativo,
     });
   } catch (error) {
     await client.query('ROLLBACK');
@@ -123,9 +232,7 @@ const registrarVenta = async (req, res) => {
 const listarVentas = async (req, res) => {
   const empresa_id = obtenerEmpresaId(req);
 
-  if (!empresa_id) {
-    return res.status(400).json({ msg: 'Falta empresa_id' });
-  }
+  if (!empresa_id) return res.status(400).json({ msg: 'Falta empresa_id' });
 
   try {
     const result = await pool.query(
@@ -133,11 +240,19 @@ const listarVentas = async (req, res) => {
       SELECT
         v.id,
         v.total,
+        v.subtotal_sin_igv,
+        v.igv,
         v.created_at,
+        v.tipo_comprobante,
+        v.cliente_nombre,
+        v.cliente_ruc,
+        v.cliente_razon_social,
+        v.cliente_email,
+        v.serie,
+        v.correlativo,
         u.nombre AS usuario
       FROM public.ventas v
-      LEFT JOIN public.usuarios u
-      ON u.id = v.usuario_id
+      LEFT JOIN public.usuarios u ON u.id = v.usuario_id
       WHERE v.empresa_id = $1
       ORDER BY v.id DESC
       `,
@@ -162,30 +277,23 @@ const detalleVenta = async (req, res) => {
   const { id } = req.params;
   const empresa_id = obtenerEmpresaId(req);
 
-  if (!empresa_id) {
-    return res.status(400).json({ msg: 'Falta empresa_id' });
-  }
+  if (!empresa_id) return res.status(400).json({ msg: 'Falta empresa_id' });
 
   try {
     const ventaResult = await pool.query(
       `
       SELECT
-        v.id,
-        v.total,
-        v.created_at,
+        v.*,
         u.nombre AS usuario
       FROM public.ventas v
-      LEFT JOIN public.usuarios u
-      ON u.id = v.usuario_id
+      LEFT JOIN public.usuarios u ON u.id = v.usuario_id
       WHERE v.id = $1 AND v.empresa_id = $2
       `,
       [id, empresa_id]
     );
 
     if (ventaResult.rows.length === 0) {
-      return res.status(404).json({
-        msg: 'Venta no encontrada',
-      });
+      return res.status(404).json({ msg: 'Venta no encontrada' });
     }
 
     const detalleResult = await pool.query(
@@ -197,7 +305,9 @@ const detalleVenta = async (req, res) => {
         p.unidad_medida,
         vd.cantidad,
         vd.precio_unitario,
-        vd.subtotal
+        vd.subtotal,
+        vd.precio_sin_igv,
+        vd.igv
       FROM public.ventas_detalle vd
       JOIN public.productos p ON p.id = vd.producto_id
       JOIN public.tipos_producto t ON t.id = p.tipo_id

@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-   <script>
+  <script>
     if (localStorage.getItem('tema') === 'oscuro') {
       document.documentElement.classList.add('dark-mode-preload');
     }
@@ -24,7 +24,6 @@
     <li><a href="/pages/proveedores.html">Proveedores</a></li>
     <li><a href="/pages/reportes.html">Reportes</a></li>
     <li><a href="/pages/perfil.html">Perfil</a></li>
-    
   </ul>
 </div>
 
@@ -33,25 +32,80 @@
   <div class="main-header">
     <div>
       <h1>Ventas</h1>
-      <p>Registra ventas, agrega productos al carrito y descuenta stock automáticamente.</p>
+      <p>Registra ventas, agrega productos al carrito y genera boleta o factura.</p>
     </div>
 
     <div class="badge success">Punto de venta</div>
   </div>
 
-  <div class="layout">
+  <div class="ventas-grid-premium">
 
-    <div>
+    <div class="ventas-left">
+
       <div class="box">
         <h3>Datos de venta</h3>
         <br>
 
         <div class="filters">
           <label>Vendedor:</label>
-
           <select id="vendedor">
             <option value="">Seleccionar vendedor</option>
           </select>
+        </div>
+
+        <hr class="soft-divider">
+
+        <h4>Tipo de comprobante</h4>
+
+        <div class="comprobante-selector">
+          <button type="button" id="btnBoleta" class="comprobante-option active" onclick="seleccionarComprobante('boleta')">
+            🧾 Boleta
+          </button>
+
+          <button type="button" id="btnFactura" class="comprobante-option" onclick="seleccionarComprobante('factura')">
+            📄 Factura
+          </button>
+        </div>
+
+        <p class="helper-text">Selecciona el tipo de comprobante para esta venta.</p>
+
+        <div id="formBoleta" class="comprobante-form">
+          <h4>Datos para Boleta</h4>
+
+          <label>Nombre completo del cliente: <span class="required">*</span></label>
+          <input type="text" id="clienteNombre" placeholder="Ej: María Fernanda Quispe">
+
+          <div class="two-fields">
+            <div>
+              <label>DNI:</label>
+              <input type="text" id="clienteDni" maxlength="8" placeholder="Ej: 12345678">
+            </div>
+
+            <div>
+              <label>Correo electrónico:</label>
+              <input type="email" id="clienteEmailBoleta" placeholder="cliente@email.com">
+            </div>
+          </div>
+
+          <p class="helper-text">El correo permitirá enviar la boleta virtual.</p>
+        </div>
+
+        <div id="formFactura" class="comprobante-form" style="display:none;">
+          <h4>Datos para Factura</h4>
+
+          <label>Razón social: <span class="required">*</span></label>
+          <input type="text" id="clienteRazonSocial" placeholder="Ej: Constructora Andina SAC">
+
+          <label>RUC: <span class="required">*</span></label>
+          <input type="text" id="clienteRuc" maxlength="11" placeholder="Ej: 20123456789">
+
+          <label>Dirección fiscal:</label>
+          <input type="text" id="clienteDireccion" placeholder="Ej: Av. Javier Prado Este 1234, Lima">
+
+          <label>Correo electrónico: <span class="required">*</span></label>
+          <input type="email" id="clienteEmailFactura" placeholder="facturacion@empresa.com">
+
+          <p class="helper-text">Se enviará la factura al correo ingresado.</p>
         </div>
       </div>
 
@@ -64,12 +118,7 @@
         <br>
 
         <div class="search-box">
-          <input
-            type="text"
-            id="buscar"
-            placeholder="Buscar clavos, martillo, marca..."
-          >
-
+          <input type="text" id="buscar" placeholder="Buscar clavos, martillo, marca...">
           <button onclick="buscarProductos()">Buscar</button>
         </div>
       </div>
@@ -94,9 +143,10 @@
           </table>
         </div>
       </div>
+
     </div>
 
-    <div>
+    <div class="ventas-right">
       <div class="box">
         <div class="filter-panel">
           <div>
@@ -117,6 +167,7 @@
               <tr>
                 <th>Producto</th>
                 <th>Cant.</th>
+                <th>Precio unit.</th>
                 <th>Subtotal</th>
                 <th></th>
               </tr>
@@ -126,13 +177,28 @@
           </table>
         </div>
 
-        <div class="total">
-          Total: S/ <span id="total">0.00</span>
+        <div id="resumenComprobante" class="sale-comprobante-summary"></div>
+
+        <div class="tax-summary">
+          <div>
+            <span>Subtotal sin IGV:</span>
+            <strong>S/ <span id="subtotalSinIgv">0.00</span></strong>
+          </div>
+
+          <div>
+            <span>IGV (18%):</span>
+            <strong>S/ <span id="igvTotal">0.00</span></strong>
+          </div>
+
+          <div class="tax-total">
+            <span>Total:</span>
+            <strong>S/ <span id="total">0.00</span></strong>
+          </div>
         </div>
 
         <br>
 
-        <button class="success" onclick="registrarVenta()">
+        <button class="success full-btn" onclick="registrarVenta()">
           Registrar venta
         </button>
 
@@ -145,11 +211,9 @@
 </div>
 
 <script src="../js/auth.js"></script>
-
 <script>
   verificarSesion();
 </script>
-
 <script src="../js/ventas.js"></script>
 
 </body>

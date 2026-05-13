@@ -6,9 +6,33 @@ const usuario = JSON.parse(localStorage.getItem('usuario'));
 const empresaId = usuario?.empresa_id;
 
 let carrito = [];
+let tipoComprobante = 'boleta';
 
 if (!usuario || !empresaId) {
   window.location.href = '/login.html';
+}
+
+function calcularIgvIncluido(total) {
+  const subtotalSinIgv = total / 1.18;
+  const igv = total - subtotalSinIgv;
+
+  return {
+    subtotalSinIgv,
+    igv,
+    total,
+  };
+}
+
+function seleccionarComprobante(tipo) {
+  tipoComprobante = tipo;
+
+  document.getElementById('btnBoleta').classList.toggle('active', tipo === 'boleta');
+  document.getElementById('btnFactura').classList.toggle('active', tipo === 'factura');
+
+  document.getElementById('formBoleta').style.display = tipo === 'boleta' ? 'block' : 'none';
+  document.getElementById('formFactura').style.display = tipo === 'factura' ? 'block' : 'none';
+
+  renderResumenComprobante();
 }
 
 async function cargarVendedores() {
@@ -133,16 +157,108 @@ function eliminarDelCarrito(id) {
   renderCarrito();
 }
 
+function obtenerDatosComprobante() {
+  if (tipoComprobante === 'boleta') {
+    return {
+      tipo_comprobante: 'boleta',
+      cliente_nombre: document.getElementById('clienteNombre').value.trim(),
+      cliente_dni: document.getElementById('clienteDni').value.trim(),
+      cliente_email: document.getElementById('clienteEmailBoleta').value.trim(),
+      cliente_ruc: '',
+      cliente_razon_social: '',
+      cliente_direccion: '',
+    };
+  }
+
+  return {
+    tipo_comprobante: 'factura',
+    cliente_nombre: '',
+    cliente_dni: '',
+    cliente_email: document.getElementById('clienteEmailFactura').value.trim(),
+    cliente_ruc: document.getElementById('clienteRuc').value.trim(),
+    cliente_razon_social: document.getElementById('clienteRazonSocial').value.trim(),
+    cliente_direccion: document.getElementById('clienteDireccion').value.trim(),
+  };
+}
+
+function validarEmail(email) {
+  if (!email) return true;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validarComprobante() {
+  const datos = obtenerDatosComprobante();
+
+  if (datos.tipo_comprobante === 'boleta') {
+    if (!datos.cliente_nombre) {
+      return 'Ingresa el nombre completo del cliente para la boleta';
+    }
+
+    if (datos.cliente_dni && !/^\d{8}$/.test(datos.cliente_dni)) {
+      return 'El DNI debe tener 8 dígitos';
+    }
+
+    if (datos.cliente_email && !validarEmail(datos.cliente_email)) {
+      return 'Ingresa un correo válido para enviar la boleta';
+    }
+  }
+
+  if (datos.tipo_comprobante === 'factura') {
+    if (!datos.cliente_razon_social) {
+      return 'Ingresa la razón social para la factura';
+    }
+
+    if (!/^\d{11}$/.test(datos.cliente_ruc)) {
+      return 'El RUC debe tener 11 dígitos';
+    }
+
+    if (!datos.cliente_email) {
+      return 'Ingresa un correo electrónico para la factura';
+    }
+
+    if (!validarEmail(datos.cliente_email)) {
+      return 'Ingresa un correo válido para enviar la factura';
+    }
+  }
+
+  return null;
+}
+
+function renderResumenComprobante() {
+  const contenedor = document.getElementById('resumenComprobante');
+  if (!contenedor) return;
+
+  const datos = obtenerDatosComprobante();
+
+  if (tipoComprobante === 'boleta') {
+    contenedor.innerHTML = `
+      <h4>Datos del comprobante <span class="badge primary">Boleta</span></h4>
+      <p><strong>Cliente:</strong> ${datos.cliente_nombre || 'Pendiente'}</p>
+      <p><strong>DNI:</strong> ${datos.cliente_dni || '-'}</p>
+      <p><strong>Correo:</strong> ${datos.cliente_email || '-'}</p>
+    `;
+  } else {
+    contenedor.innerHTML = `
+      <h4>Datos del comprobante <span class="badge primary">Factura</span></h4>
+      <p><strong>Razón social:</strong> ${datos.cliente_razon_social || 'Pendiente'}</p>
+      <p><strong>RUC:</strong> ${datos.cliente_ruc || '-'}</p>
+      <p><strong>Correo:</strong> ${datos.cliente_email || '-'}</p>
+    `;
+  }
+}
+
 function renderCarrito() {
   const tbody = document.getElementById('carrito');
   const totalSpan = document.getElementById('total');
+  const subtotalSpan = document.getElementById('subtotalSinIgv');
+  const igvSpan = document.getElementById('igvTotal');
 
   tbody.innerHTML = '';
 
   let total = 0;
 
   if (carrito.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4">Carrito vacío</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5">Carrito vacío</td></tr>';
   }
 
   carrito.forEach((item) => {
@@ -164,6 +280,7 @@ function renderCarrito() {
         >
         ${item.unidad_medida}
       </td>
+      <td>S/ ${item.precio.toFixed(2)}</td>
       <td>S/ ${subtotal.toFixed(2)}</td>
       <td><button class="danger small" onclick="eliminarDelCarrito(${item.id})">X</button></td>
     `;
@@ -171,7 +288,13 @@ function renderCarrito() {
     tbody.appendChild(fila);
   });
 
-  totalSpan.textContent = total.toFixed(2);
+  const calculo = calcularIgvIncluido(total);
+
+  subtotalSpan.textContent = calculo.subtotalSinIgv.toFixed(2);
+  igvSpan.textContent = calculo.igv.toFixed(2);
+  totalSpan.textContent = calculo.total.toFixed(2);
+
+  renderResumenComprobante();
 }
 
 async function registrarVenta() {
@@ -190,9 +313,18 @@ async function registrarVenta() {
     return;
   }
 
+  const errorComprobante = validarComprobante();
+
+  if (errorComprobante) {
+    mensaje.textContent = errorComprobante;
+    mensaje.style.color = 'red';
+    return;
+  }
+
   const body = {
     empresa_id: empresaId,
     usuario_id: Number(vendedorId),
+    ...obtenerDatosComprobante(),
     productos: carrito.map((item) => ({
       producto_id: item.id,
       cantidad: item.cantidad,
@@ -216,16 +348,12 @@ async function registrarVenta() {
       return;
     }
 
-    mensaje.textContent = `Venta registrada correctamente. Total: S/ ${Number(data.total).toFixed(2)}`;
+    mensaje.textContent = `Venta registrada correctamente. ${data.serie}-${String(data.correlativo).padStart(8, '0')}`;
     mensaje.style.color = 'green';
 
-    carrito = [];
-    renderCarrito();
-
-    const texto = document.getElementById('buscar').value.trim();
-    if (texto !== '') {
-      buscarProductos();
-    }
+    setTimeout(() => {
+      window.location.href = `/pages/comprobante.html?id=${data.venta_id}`;
+    }, 900);
   } catch (error) {
     console.error('Error registrando venta:', error);
     mensaje.textContent = 'Error conectando con el servidor';
@@ -233,5 +361,13 @@ async function registrarVenta() {
   }
 }
 
+['clienteNombre', 'clienteDni', 'clienteEmailBoleta', 'clienteRazonSocial', 'clienteRuc', 'clienteDireccion', 'clienteEmailFactura']
+  .forEach((id) => {
+    document.addEventListener('input', (e) => {
+      if (e.target && e.target.id === id) renderResumenComprobante();
+    });
+  });
+
 cargarVendedores();
+seleccionarComprobante('boleta');
 renderCarrito();

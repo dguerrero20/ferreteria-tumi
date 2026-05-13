@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    if (localStorage.getItem('tema') === 'oscuro') {
+      document.documentElement.classList.add('dark-mode-preload');
+    }
+  </script>
+  <title>Comprobante | Ferdev</title>
+  <link rel="stylesheet" href="../css/global.css">
+</head>
+
+<body>
+
+<div class="sidebar no-print">
+  <h2><span class="brand-fer">Fer</span><span class="brand-dev">dev</span></h2>
+
+  <ul class="menu">
+    <li><a href="/pages/dashboard.html">Dashboard</a></li>
+    <li><a href="/pages/productos.html">Productos</a></li>
+    <li class="solo-admin"><a href="/pages/categorias.html">Categorías</a></li>
+    <li><a href="/pages/ventas.html">Ventas</a></li>
+    <li><a href="/pages/proveedores.html">Proveedores</a></li>
+    <li class="active"><a href="/pages/reportes.html">Reportes</a></li>
+    <li><a href="/pages/perfil.html">Perfil</a></li>
+  </ul>
+</div>
+
+<div class="main comprobante-main">
+
+  <div class="main-header no-print">
+    <div>
+      <h1>Comprobante</h1>
+      <p>Visualiza, imprime o descarga la boleta/factura generada.</p>
+    </div>
+
+    <div class="comprobante-actions">
+      <button onclick="volverReportes()">Volver a reportes</button>
+      <button onclick="window.print()">Imprimir</button>
+      <button class="success" onclick="descargarComprobante()">Descargar PDF</button>
+      <button class="primary" onclick="enviarCorreo()">Enviar por correo</button>
+    </div>
+  </div>
+
+  <div id="mensajeComprobante" class="mensaje no-print"></div>
+
+  <div id="comprobanteContainer">
+    <div class="box">
+      Cargando comprobante...
+    </div>
+  </div>
+
+</div>
+
+<script src="../js/auth.js"></script>
+<script>
+  verificarSesion();
+</script>
+<script src="../js/comprobante.js"></script>
+
+</body>
+</html>
