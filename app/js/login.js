@@ -37,9 +37,9 @@ async function login() {
     };
 
     localStorage.setItem(
-      'usuario',
-      JSON.stringify(usuario)
-    );
+  'modo_admin',
+  data.user.rol === 'admin' ? 'true' : 'false'
+);
 
     window.location.href = '/pages/dashboard.html';
 

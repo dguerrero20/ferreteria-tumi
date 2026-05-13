@@ -110,3 +110,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+localStorage.removeItem('modo_admin');
