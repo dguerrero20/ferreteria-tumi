@@ -32,16 +32,16 @@ async function login() {
     }
 
     const usuario = {
-      ...data.user,
-      modo_admin: false,
-    };
+  ...data.user,
+  modo_admin: false,
+};
 
-    localStorage.setItem(
-  'modo_admin',
-  data.user.rol === 'admin' ? 'true' : 'false'
+localStorage.setItem(
+  'usuario',
+  JSON.stringify(usuario)
 );
 
-    window.location.href = '/pages/dashboard.html';
+window.location.href = '/pages/dashboard.html';
 
   } catch (error) {
     console.error(error);
