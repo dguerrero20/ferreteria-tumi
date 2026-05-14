@@ -237,20 +237,23 @@ async function cargarDashboard() {
   Number(resumen.ventas_hoy || 0).toFixed(2);
 
 const trend = document.getElementById('ventasTrend');
-const porcentaje = Number(resumen.porcentaje_vs_ayer || 0);
+const porcentaje = resumen.porcentaje_vs_ayer;
 
 if (trend) {
-  const signo = porcentaje > 0 ? '↑' : porcentaje < 0 ? '↓' : '→';
-  trend.textContent = `${signo} ${Math.abs(porcentaje).toFixed(2)}%`;
-
   trend.classList.remove('positive', 'negative', 'neutral');
 
-  if (porcentaje > 0) {
-    trend.classList.add('positive');
-  } else if (porcentaje < 0) {
-    trend.classList.add('negative');
-  } else {
+  if (porcentaje === null || porcentaje === undefined) {
+    trend.textContent = 'Sin comparación';
     trend.classList.add('neutral');
+  } else {
+    const valor = Number(porcentaje);
+    const signo = valor > 0 ? '↑' : valor < 0 ? '↓' : '→';
+
+    trend.textContent = `${signo} ${Math.abs(valor).toFixed(2)}%`;
+
+    if (valor > 0) trend.classList.add('positive');
+    else if (valor < 0) trend.classList.add('negative');
+    else trend.classList.add('neutral');
   }
 }
 
