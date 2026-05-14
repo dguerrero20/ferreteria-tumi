@@ -39,48 +39,51 @@ const obtenerDashboard = async (req, res) => {
     );
 
     const ventasHoy = await pool.query(
-  `
-  SELECT COALESCE(SUM(total), 0) AS total
-  FROM public.ventas
-  WHERE empresa_id = $1
-  AND (created_at AT TIME ZONE 'America/Lima')::date =
-      (NOW() AT TIME ZONE 'America/Lima')::date
-  `,
-  [empresa_id]
-);
+      `
+      SELECT COALESCE(SUM(total), 0) AS total
+      FROM public.ventas
+      WHERE empresa_id = $1
+      AND (created_at AT TIME ZONE 'America/Lima')::date =
+          (NOW() AT TIME ZONE 'America/Lima')::date
+      `,
+      [empresa_id]
+    );
 
-const ventasAyer = await pool.query(
-  `
-  SELECT COALESCE(SUM(total), 0) AS total
-  FROM public.ventas
-  WHERE empresa_id = $1
-  AND (created_at AT TIME ZONE 'America/Lima')::date =
-      ((NOW() AT TIME ZONE 'America/Lima')::date - INTERVAL '1 day')::date
-  `,
-  [empresa_id]
-);
+    const ventasAyer = await pool.query(
+      `
+      SELECT COALESCE(SUM(total), 0) AS total
+      FROM public.ventas
+      WHERE empresa_id = $1
+      AND (created_at AT TIME ZONE 'America/Lima')::date =
+          ((NOW() AT TIME ZONE 'America/Lima')::date - INTERVAL '1 day')::date
+      `,
+      [empresa_id]
+    );
 
-const ventasSemana = await pool.query(
-  `
-  WITH dias AS (
-    SELECT generate_series(
-      date_trunc('week', (NOW() AT TIME ZONE 'America/Lima')::date)::date,
-      (date_trunc('week', (NOW() AT TIME ZONE 'America/Lima')::date)::date + INTERVAL '6 days')::date,
-      INTERVAL '1 day'
-    )::date AS fecha
-  )
-  SELECT
-    dias.fecha,
-    COALESCE(SUM(v.total), 0) AS total
-  FROM dias
-  LEFT JOIN public.ventas v
-    ON (v.created_at AT TIME ZONE 'America/Lima')::date = dias.fecha
-    AND v.empresa_id = $1
-  GROUP BY dias.fecha
-  ORDER BY dias.fecha
-  `,
-  [empresa_id]
-);
+    const ventasSemana = await pool.query(
+      `
+      WITH dias AS (
+        SELECT generate_series(
+          date_trunc('week', (NOW() AT TIME ZONE 'America/Lima')::date)::date,
+          (
+            date_trunc('week', (NOW() AT TIME ZONE 'America/Lima')::date)::date
+            + INTERVAL '6 days'
+          )::date,
+          INTERVAL '1 day'
+        )::date AS fecha
+      )
+      SELECT
+        dias.fecha,
+        COALESCE(SUM(v.total), 0) AS total
+      FROM dias
+      LEFT JOIN public.ventas v
+        ON (v.created_at AT TIME ZONE 'America/Lima')::date = dias.fecha
+        AND v.empresa_id = $1
+      GROUP BY dias.fecha
+      ORDER BY dias.fecha
+      `,
+      [empresa_id]
+    );
 
     const ultimasVentas = await pool.query(
       `
@@ -101,12 +104,18 @@ const ventasSemana = await pool.query(
     const hoy = Number(ventasHoy.rows[0].total || 0);
     const ayer = Number(ventasAyer.rows[0].total || 0);
 
-    let porcentajeVsAyer = 0;
+    let porcentajeVsAyer = null;
 
     if (ayer > 0) {
       porcentajeVsAyer = ((hoy - ayer) / ayer) * 100;
-    } else if (hoy > 0) {
-      porcentajeVsAyer = 100;
+
+      if (porcentajeVsAyer > 100) {
+        porcentajeVsAyer = 100;
+      }
+
+      if (porcentajeVsAyer < -100) {
+        porcentajeVsAyer = -100;
+      }
     }
 
     res.json({
@@ -118,7 +127,10 @@ const ventasSemana = await pool.query(
         productos_stock_bajo: Number(stockBajo.rows[0].total),
         ventas_hoy: hoy,
         ventas_ayer: ayer,
-        porcentaje_vs_ayer: Number(porcentajeVsAyer.toFixed(2)),
+        porcentaje_vs_ayer:
+          porcentajeVsAyer === null
+            ? null
+            : Number(porcentajeVsAyer.toFixed(2)),
       },
       ventas_semana: ventasSemana.rows.map((d) => ({
         fecha: d.fecha,
