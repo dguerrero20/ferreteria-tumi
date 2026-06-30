@@ -684,6 +684,7 @@ async function generarPDFComprobante(venta, detalle) {
   waitUntil: 'domcontentloaded',
   timeout: 0,
 });
+await page.emulateMediaType('screen');
 
     const pdfBuffer = await page.pdf({
       format: 'A4',
